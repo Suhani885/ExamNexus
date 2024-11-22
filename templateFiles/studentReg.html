@@ -1,0 +1,84 @@
+<div ng-controller="sRegController as regCtrl" class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-8">
+      <div class="container ">
+        <div class="card shadow border-0 ">
+          <div class="card-body p-5 bg-dark">
+            <div class="text-center d-flex flex-column justify-content-center align-items-center">
+              <h1 class="text-white fw-bold ">Student Registration</h1>
+            </div> 
+            <form ng-submit="regCtrl.Register()" id="form">
+              <div class="row g-3 mt-3">
+                <div class="col-sm-4 mb-2" >
+                  <label for="firstName" class="form-label text-white">First Name</label>
+                  <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" autocomplete="on" class="form-control" placeholder="Ron" pattern="[a-zA-Z]+" maxlength="20" ng-model="regCtrl.fname" id="firstName" required>
+                </div>
+                <div class="col-sm-4 mb-2">
+                  <label for="midName" class="form-label text-white">Middle Name (Optional)</label>
+                  <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" pattern="[a-zA-Z]+" placeholder="Van" maxlength="20" ng-model="regCtrl.mname" id="midName" autocomplete="on">
+                </div>
+                <div class="col-sm-4 mb-2">
+                  <label for="lastName" class="form-label text-white">Last Name (Optional)</label>
+                  <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" pattern="[a-zA-Z]+" placeholder="Doe" maxlength="20" ng-model="regCtrl.lname" id="lastName" autocomplete="on">
+                </div>
+                <div class="col-sm-7 mb-2">
+                  <label for="email" class="form-label text-white">Email Address</label>
+                  <input type="email" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" id="email" pattern="[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,3}" ng-model="regCtrl.email" placeholder="xyz@abc.com" required autocomplete="on">
+                </div>
+                <div class="col-sm-5 mb-2">
+                  <label for="phone" class="form-label text-white">Phone Number</label>
+                  <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" id="phone" placeholder="XXXXXXXXXX" ng-model="regCtrl.number" autocomplete="on" required pattern="[6 7 8 9][0-9]{9}">
+                </div>
+                <div class="col-sm-4 mb-2">
+                  <label for="dob" class="form-label text-white">Date of Birth</label>
+                  <input type="date" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" required autocomplete="on" ng-model="regCtrl.dob" id="dob">
+                </div>
+                <div class="col-8 mb-2">
+                  <label for="address" class="form-label text-white">Address</label>
+                  <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" ng-model="regCtrl.address" id="address" pattern="[A-Z1-9a-z]{1,5}[A-Za-z]{1,}[A-Z1-9a-z]{1,50}" required placeholder="Enter your address">
+                </div>
+                <div class="col-sm-6 mb-2">
+                  <label for="course" class="form-label text-white">Course</label>
+                  <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);"" required ng-model="regCtrl.course" id="course">
+                    <option value="" disabled selected>Select...</option>
+                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-2">
+                    <label for="year" class="form-label text-white">Year</label>
+                    <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="regCtrl.year" id="year">
+                      <option value="" disabled selected>Select...</option>
+                      <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 mb-2">
+                    <label for="dep" class="form-label text-white">Department</label>
+                    <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="regCtrl.dep" id="dep">
+                      <option value="" disabled selected>Select...</option>
+                      <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 mb-2">
+                    <label for="section" class="form-label text-white">Section</label>
+                    <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="regCtrl.section" id="section">
+                      <option value="" disabled selected>Select...</option>
+                      <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                  <label for="password" class="form-label text-white">Password</label>
+                  <input type="password" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" ng-model="regCtrl.pass1" id="password" required>
+                </div>
+                <div class="col-sm-6">
+                  <label for="confirmPassword" class="form-label text-white">Confirm Password</label>
+                  <input type="password" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" ng-model="regCtrl.pass2" id="confirmPassword" required>
+                </div>
+                <div class="col-12 mb-3 mt-5">
+                  <button type="submit" style="background-color: #bbdd72;" class="btn w-100">Create Account</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
