@@ -1,3 +1,152 @@
+<!-- <div ng-controller="NavController as navCtrl">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            width: 350px;
+        }
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        .main-content {
+            margin-left: 350px; 
+            padding-top: 20px;
+            transition: all 0.3s ease-in-out;
+        }
+        .main-content.collapsed {
+            margin-left: 80px; 
+        }
+        .toggle-btn {
+            position: absolute;
+            right: 30px;
+            top: 25px; 
+            z-index: 1000;
+            background: transparent;
+            width: 40px;
+            height: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: none;
+        }
+        .toggle-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        .toggle-btn i {
+            color: white;
+            font-size: 30px;
+        }
+        .nav-text {
+            transition: opacity 0.3s;
+            font-size: 18px;
+        }
+        .nav-text.collapsed {
+            opacity: 0;
+            display: none;
+        }
+        .sidebar-inner {
+            padding: 20px 30px;  
+        }
+        .nav-item a {
+            padding: 12px 20px;  
+        }
+        .dropdown-menu {
+            background-color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .dropdown-item {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        .nav-item i {
+            font-size: 23px;
+        }
+    </style>
+    <div class="d-flex">
+        <div class="sidebar position-fixed h-100" style="background-color: black; overflow-y: auto;" id="sidebar">
+            <div class="sidebar-inner h-100">
+                <div class="d-flex justify-content-between align-items-center mt-1 mb-5">
+                    <div style="width: 80%;">
+                        <img src="images/exam.png" class="img-fluid" style="max-height: 55px;" alt="logo">
+                    </div>
+                    <button class="toggle-btn" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 text-white align-items-center align-items-sm-start w-100" id="menu">
+                    <li class="nav-item w-100 mb-2" ng-repeat="nav in navCtrl.navs">
+                        <div ng-if="nav.type === 'dropdown'" class="dropdown">
+                            <a class="nav-link px-0 align-middle text-white dropdown-toggle" 
+                               data-bs-toggle="dropdown" 
+                               role="button"
+                               aria-expanded="false">
+                                <i class="{{nav.icon}} me-3"></i>
+                                <span class="ms-1 d-none d-sm-inline nav-text">{{nav.title}}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="subItem in nav.subItems">
+                                    <a class="dropdown-item" 
+                                       ng-click="navCtrl.navigateTo(subItem)">
+                                        {{subItem.title}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a ng-if="nav.type === 'single'" 
+                           ng-click="navCtrl.navigateTo(nav)"
+                           class="nav-link px-0 align-middle text-white" 
+                           ng-class="{'active': navCtrl.isActive(nav.url)}">
+                            <i class="{{nav.icon}} me-3"></i>
+                            <span class="ms-1 d-none d-sm-inline nav-text">{{nav.title}}</span>
+                        </a>
+                    </li>
+                
+                    <li class="nav-item w-100 mb-2">
+                        <a ng-click="navCtrl.logout()" class="nav-link px-0 align-middle text-white">
+                            <i class="bi bi-box-arrow-left me-3"></i>
+                            <span class="ms-1 d-none d-sm-inline nav-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-content" style="background-color: black;" id="main-content">
+            <div class="p-4 p-sm-2">
+                <div ui-view></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            const navTexts = document.querySelectorAll('.nav-text');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+            
+            navTexts.forEach(text => {
+                text.classList.toggle('collapsed');
+            });
+        }
+    </script>
+</div> -->
+
 <div ng-controller="NavController as navCtrl">
     <style>
         .sidebar {
@@ -43,7 +192,7 @@
         }
         .nav-text {
             transition: opacity 0.3s;
-            font-size: 18px;
+            font-size: 21px;
         }
         .nav-text.collapsed {
             opacity: 0;
@@ -67,58 +216,36 @@
                     <i class="bi bi-list"></i>
                 </button>
             </div>
-            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start w-100" id="menu">
-                <li class="nav-item w-100 mb-3">
-                    <a ui-sref="user.dashboard" class="nav-link px-0 align-middle text-white">
-                        <i class="bi bi-speedometer2 me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Dashboard</span>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 text-white align-items-center align-items-sm-start w-100" id="menu">
+                <li class="nav-item w-100 mb-2" ng-repeat="nav in navCtrl.navs">
+                    <div ng-if="nav.type === 'dropdown'" class="dropdown">
+                        <a class="nav-link px-0 align-middle text-white dropdown-toggle" 
+                           data-bs-toggle="dropdown" 
+                           role="button"
+                           aria-expanded="false">
+                            <i class="{{nav.icon}} me-3"></i>
+                            <span class="ms-1 d-none d-sm-inline nav-text">{{nav.title}}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="subItem in nav.subItems">
+                                <a class="dropdown-item" 
+                                   ng-click="navCtrl.navigateTo(subItem)">
+                                    {{subItem.title}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a ng-if="nav.type === 'single'" 
+                       ng-click="navCtrl.navigateTo(nav)"
+                       class="nav-link px-0 align-middle text-white" >
+                        <i class="{{nav.icon}} me-3"></i>
+                        <span class="ms-1 d-none d-sm-inline nav-text">{{nav.title}}</span>
                     </a>
                 </li>
-                <li class="nav-item w-100 dropdown mb-3">
-                    <a ui-sref="user.sRegister" class="nav-link px-0 align-middle text-white dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-layout-text-window me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Registration</span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Student Registration</a>
-                        <a class="dropdown-item" href="#">Faculty Registration</a>
-                      </div>
-                </li>
-                <li class="nav-item w-100 mb-3">
-                    <a ui-sref="login" class="nav-link px-0 align-middle text-white">
-                        <i class="bi bi-file-earmark-bar-graph me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Records</span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Student Registration</a>
-                        <a class="dropdown-item" href="#">Faculty Registration</a>
-                      </div>
-                </li>
-                <li class="nav-item w-100 dropdown mb-3">
-                    <a href="#" class="nav-link px-0 align-middle text-white dropdown-toggle">
-                        <i class="bi bi-calendar2-range me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Examination</span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Student Registration</a>
-                        <a class="dropdown-item" href="#">Faculty Registration</a>
-                      </div>
-                </li>
-                <li class="nav-item w-100 mb-3">
-                    <a href="#" class="nav-link px-0 align-middle text-white">
-                        <i class="bi bi-plus-circle-fill me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Add New</span>
-                    </a>
-                </li>
-                <li class="nav-item w-100 mb-3">
-                    <a href="#" class=" nav-link px-0 align-middle text-white">
-                        <i class="bi bi-calendar4-event me-3" style="font-size: 23px;"></i>
-                        <span class="ms-1 d-none d-sm-inline nav-text">Schedule</span>
-                    </a>
-                </li>
-                <li class="nav-item w-100 mb-3">
-                    <a ng-click="userCtrl.logout()" class="nav-link px-0 align-middle text-white">
-                        <i class="bi bi-box-arrow-left me-3" style="font-size: 23px;"></i>
+            
+                <li class="nav-item w-100 mb-2">
+                    <a ng-click="navCtrl.logout()" class="nav-link px-0 align-middle text-white">
+                        <i class="bi bi-box-arrow-left me-3"></i>
                         <span class="ms-1 d-none d-sm-inline nav-text">Logout</span>
                     </a>
                 </li>

@@ -1,0 +1,437 @@
+<!-- <div ng-controller="AddController as addCtrl" style="background-color: #1a1a1a; color: #ffffff;">
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-9">
+                <div id="coursesSection" class="card mb-4" style="background-color: #2d2d2d; border: none;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Courses</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                                <i class="fas fa-plus"></i> Add Course
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Duration</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="course in academicCtrl.academicData.courses">
+                                        <td>{{course.name}}</td>
+                                        <td>{{course.duration}}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" ng-click="academicCtrl.setSelection('course', course)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="departmentsSection" class="card mb-4" style="background-color: #2d2d2d; border: none;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Departments</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+                                <i class="fas fa-plus"></i> Add Department
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Department Name</th>
+                                        <th>Course</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dept in academicCtrl.selected.course.departments">
+                                        <td>{{dept.name}}</td>
+                                        <td>{{academicCtrl.selected.course.name}}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" ng-click="academicCtrl.setSelection('department', dept)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="sectionsSection" class="card" style="background-color: #2d2d2d; border: none;" 
+                     ng-if="academicCtrl.selected.department">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Sections</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+                                <i class="fas fa-plus"></i> Add Section
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Year</th>
+                                        <th>Section</th>
+                                        <th>Faculty Advisor</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="year in academicCtrl.selected.department.years">
+                                        <tr ng-repeat="section in year.sections">
+                                            <td>{{year.year}}</td>
+                                            <td>{{section.name}}</td>
+                                            <td>{{section.facultyAdvisor}}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="courseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" ng-model="academicCtrl.newCourse.name" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseDuration" class="form-label">Duration</label>
+                            <select class="form-select" id="courseDuration" ng-model="academicCtrl.newCourse.duration" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="2 Years">2 Years</option>
+                                <option value="3 Years">3 Years</option>
+                                <option value="4 Years">4 Years</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addDepartmentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Department</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="departmentName" class="form-label">Department Name</label>
+                            <input type="text" class="form-control" id="departmentName" ng-model="academicCtrl.newDepartment.name" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="departmentCourse" class="form-label">Course</label>
+                            <select class="form-select" id="departmentCourse" ng-model="academicCtrl.newDepartment.courseId" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option ng-repeat="course in academicCtrl.academicData.courses" value="{{course.id}}">
+                                    {{course.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Department</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addSectionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Section</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="sectionName" class="form-label">Section Name</label>
+                            <input type="text" class="form-control" id="sectionName" ng-model="academicCtrl.newSection.name" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sectionYear" class="form-label">Year</label>
+                            <select class="form-select" id="sectionYear" ng-model="academicCtrl.newSection.year" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="facultyAdvisor" class="form-label">Faculty Advisor</label>
+                            <select class="form-select" id="facultyAdvisor" ng-model="academicCtrl.newSection.facultyAdvisor" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option ng-repeat="faculty in academicCtrl.getFacultyByDepartment(academicCtrl.selected.department.id)" value="{{faculty.id}}">
+                                    {{faculty.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Section</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div ng-controller="AddController as addCtrl">
+    <div>
+        <h1 class="text-white fw-bold p-2">ADD</h1>
+    </div>
+    
+    <div class="container-fluid" style="background-color: #1a1a1a; min-height: calc(100vh - 80px); margin-top: 50px; padding: 20px;">
+        <div class="row">
+            <div class="col-md-10 p-2">
+                <div id="coursesSection" class="card mb-5" style="background-color: #2d2d2d; border: none;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title text-white">Courses</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                                <i class="bi bi-plus-lg"></i> Add Course
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Duration</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>B.Tech</td>
+                                        <td>4 Years</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="departmentsSection" class="card mb-5" style="background-color: #2d2d2d; border: none;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title text-white">Departments</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+                                <i class="bi bi-plus-lg"></i> Add Department
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Department Name</th>
+                                        <th>Course</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Computer Science</td>
+                                        <td>B.Tech</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sectionsSection" class="card" style="background-color: #2d2d2d; border: none;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title text-white">Sections</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+                                <i class="bi bi-plus-lg"></i> Add Section
+                            </button>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Year</th>
+                                        <th>Department</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>A</td>
+                                        <td>1st Year</td>
+                                        <td>Computer Science</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="courseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseDuration" class="form-label">Duration</label>
+                            <select class="form-select" id="courseDuration" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="2">2 Years</option>
+                                <option value="3">3 Years</option>
+                                <option value="4">4 Years</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addDepartmentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Department</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="departmentName" class="form-label">Department Name</label>
+                            <input type="text" class="form-control" id="departmentName" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="departmentCourse" class="form-label">Course</label>
+                            <select class="form-select" id="departmentCourse" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="btech">B.Tech</option>
+                                <option value="mtech">M.Tech</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Department</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addSectionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #2d2d2d; color: #ffffff;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Section</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff;"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="sectionName" class="form-label">Section Name</label>
+                            <input type="text" class="form-control" id="sectionName" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="departmentCourse" class="form-label">Course</label>
+                            <select class="form-select" id="departmentCourse" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="btech">B.Tech</option>
+                                <option value="mtech">M.Tech</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sectionDepartment" class="form-label">Department</label>
+                            <select class="form-select" id="sectionDepartment" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="cse">Computer Science</option>
+                                <option value="ece">Electronics</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sectionYear" class="form-label">Year</label>
+                            <select class="form-select" id="sectionYear" style="background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d;">
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Section</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

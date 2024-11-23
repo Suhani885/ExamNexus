@@ -36,21 +36,21 @@
                   <label for="address" class="form-label text-white">Address</label>
                   <input type="text" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" ng-model="fRegCtrl.address" id="address" pattern="[A-Z1-9a-z]{1,5}[A-Za-z]{1,}[A-Z1-9a-z]{1,50}" required placeholder="Enter your address">
                 </div>
-                <div class="col-sm-6 mb-2">
+                <div class="col-sm-4 mb-2">
                   <label for="course" class="form-label text-white">Course</label>
                   <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);"" required ng-model="fRegCtrl.course" id="course">
                     <option value="" disabled selected>Select...</option>
                     <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
                   </select>
                 </div>
-                <div class="col-sm-6 mb-2">
+                <div class="col-sm-4 mb-2">
                     <label for="year" class="form-label text-white">Year</label>
                     <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="fRegCtrl.year" id="year">
                       <option value="" disabled selected>Select...</option>
                       <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
                     </select>
                 </div>
-                <div class="col-sm-6 mb-2">
+                <div class="col-sm-4 mb-2">
                     <label for="dep" class="form-label text-white">Department</label>
                     <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="fRegCtrl.dep" id="dep">
                       <option value="" disabled selected>Select...</option>
@@ -64,6 +64,13 @@
                       <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
                     </select>
                 </div>
+                <div class="col-sm-6 mb-2">
+                  <label for="section" class="form-label text-white">Subjects</label>
+                  <select class="form-control" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="fRegCtrl.section" id="section">
+                    <option value="" disabled selected>Select...</option>
+                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                  </select>
+              </div>
                 <div class="col-sm-6">
                   <label for="password" class="form-label text-white">Password</label>
                   <input type="password" style="background-color: rgba(247, 244, 244, 0.578);" class="form-control" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" ng-model="fRegCtrl.pass1" id="password" required>

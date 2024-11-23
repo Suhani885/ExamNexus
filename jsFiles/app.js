@@ -88,46 +88,332 @@ function($state, ApiRequest, ApiEndpoints) {
     };
 }])
 
-app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
-function($state, ApiRequest, ApiEndpoints) {
-    var navCtrl = this;
-    navCtrl.navs=[];
+// app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
+// function($state, ApiRequest, ApiEndpoints) {
+//     var navCtrl = this;
+//     navCtrl.navs=[];
 
-    navCtrl.logout = function() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You're about to log out!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, log out!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                ApiRequest.get(ApiEndpoints.auth.logout, function(response) {
-                    console.log(response);
-                    Swal.fire(
-                        'Logged Out!',
-                        'You have been successfully logged out.',
-                        'success'
-                    ).then(() => {
-                        $state.go('login');
-                    });
-                });
+//     navCtrl.logout = function() {
+//         Swal.fire({
+//             title: 'Are you sure?',
+//             text: "You're about to log out!",
+//             icon: 'warning',
+//             showCancelButton: true,
+//             confirmButtonColor: '#3085d6',
+//             cancelButtonColor: '#d33',
+//             confirmButtonText: 'Yes, log out!'
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 ApiRequest.get(ApiEndpoints.auth.logout, function(response) {
+//                     console.log(response);
+//                     Swal.fire(
+//                         'Logged Out!',
+//                         'You have been successfully logged out.',
+//                         'success'
+//                     ).then(() => {
+//                         $state.go('login');
+//                     });
+//                 });
+//             }
+//         });
+//     };
+    
+//     navCtrl.fetchNav = function() {
+//         ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
+//             console.log(response);
+//             navCtrl.navs=response.data;
+//         });
+//     };
+
+//     $state.go('user.dashboard');
+//     navCtrl.fetchNav();
+// }])
+
+// app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', function($state, ApiRequest, ApiEndpoints) {
+//     var navCtrl = this;
+//     navCtrl.navs = [];
+
+//     navCtrl.fetchNav = function() {
+//         ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
+//             navCtrl.navs = response.data.map(function(item) {
+//                 if (item.children && item.children.length > 0) {
+//                     item.type = 'dropdown';
+//                     item.subItems = item.children.map(function(child) {
+//                         return {
+//                             title: child.title,
+//                             url: child.url
+//                         };
+//                     });
+//                 } else {
+//                     item.type = 'single';
+//                 }
+//                 return item;
+//             });
+//         });
+//     };
+
+//     navCtrl.navigateTo = function(item) {
+//         if (item.url) {
+//             $state.go('user.' + item.url);
+//         }
+//     };
+
+//     $state.go('user.dashboard');
+//     navCtrl.fetchNav();
+// }]);
+
+app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', 
+    function($state, ApiRequest, ApiEndpoints) {
+        var navCtrl = this;
+        
+        navCtrl.navs = [
+            {
+                title: "Dashboard",
+                icon: "bi bi-speedometer2",
+                url: "dashboard",
+                type: "single"
+            },
+            {
+                title: "Registration",
+                icon: "bi bi-layout-text-window",
+                type: "dropdown",
+                subItems: [
+                    {
+                        title: "Student Registration", 
+                        url: "sRegister"
+                    },
+                    {
+                        title: "Faculty Registration", 
+                        url: "fRegister"
+                    }
+                ]
+            },
+            {
+                title: "Records",
+                icon: "bi bi-file-earmark-bar-graph",
+                type: "dropdown",
+                subItems: [
+                    {
+                        title: "Student Records",
+                        url: "studentRec"
+                    },
+                    {
+                        title: "Faculty Records",
+                        url: "facultyRec"
+                    }
+                ]
+            },
+            {
+                title: "Examination",
+                icon: "bi bi-calendar2-range",
+                type: "dropdown",
+                subItems: [
+                    {
+                        title: "Exam Schedule",
+                        url: "examSchedule"
+                    },
+                    {
+                        title: "Exam Results",
+                        url: "examResults"
+                    }
+                ]
+            },
+            {
+                title: "Add New",
+                icon: "bi bi-plus-circle-fill",
+                url: "add",
+                type: "single"
+            },
+            {
+                title: "Schedule",
+                icon: "bi bi-calendar4-event",
+                url: "schedule",
+                type: "single"
             }
-        });
-    };
+        ];
 
-    navCtrl.fetchNav = function() {
-        ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
-            console.log(response);
-            navCtrl.navs=response.data.data;
-        });
-    };
+        navCtrl.logout = function() {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You're about to log out!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, log out!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            ApiRequest.get(ApiEndpoints.auth.logout, function(response) {
+                                console.log(response);
+                                Swal.fire(
+                                    'Logged Out!',
+                                    'You have been successfully logged out.',
+                                    'success'
+                                ).then(() => {
+                                    $state.go('login');
+                                });
+                            });
+                        }
+                    });
+                };
 
-    $state.go('user.dashboard');
-    navCtrl.fetchNav();
-}])
+        navCtrl.navigateTo = function(item) {
+            if (item.url) {
+                $state.go('user.' + item.url);
+            }
+        };
+
+        $state.go('user.dashboard');
+    }
+]);
+
+app.controller('AddController', ['$state', 'ApiRequest', 'ApiEndpoints',
+    function($state, ApiRequest, ApiEndpoints) {
+        var academicCtrl = this;
+        academicCtrl.academicData = {
+            courses: [
+                {
+                    id: 1,
+                    course: "B.Tech",
+                    duration: "4 Years",
+                    departments: [
+                        {
+                            id: 1,
+                            dep: "Computer Science",
+                            years: [
+                                {
+                                    year: "1st Year",
+                                    sections: [
+                                        {
+                                            name: "A",
+                                            strength: 60,
+                                        },
+                                        {
+                                            name: "B",
+                                            strength: 70,
+                                        }
+                                    ],
+                                    subjects: [
+                                        {
+                                            code: "CS101",
+                                            name: "Programming Fundamental",
+                                            faculty: " Jan Smith",
+                                            credits: 3
+                                        },
+                                        {
+                                            code: "CSE101",
+                                            name: "Programming Fundamentals",
+                                            faculty: "Dr. Jane Smith",
+                                            credits: 4
+                                        }
+                                    ]
+                                },
+                                {
+                                    year: "2nd Year",
+                                    sections: []
+                                }
+                            ]
+                        },
+                        {
+                            id: 2,
+                            dep: "Electronics",
+                            years: []
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    course: "M.Tech",
+                    duration: "2 Years",
+                    departments: []
+                }
+            ]
+        };
+
+        academicCtrl.facultyData = {
+            departments: [
+                {
+                    id: 1,
+                    name: "Computer Science",
+                    faculty: [
+                        {
+                            id: 1,
+                            name: "Dr. John Doe",
+                            designation: "Faculty",
+                            subjects: ["CS101", "CS405"],
+                        },
+                        {
+                            id: 2,
+                            name: "John Doe",
+                            designation: "Faculty",
+                            subjects: ["CS101", "CS405"],
+                        }
+                    ]
+                }
+            ]
+        };
+
+        academicCtrl.loadAcademicData = function() {
+            ApiRequest.get(ApiEndpoints.ACADEMIC_DATA)
+                .then(function(response) {
+                    academicCtrl.academicData = response.data;
+                })
+                .catch(function(error) {
+                    console.error('Error loading data:', error);
+                });
+        };
+
+        academicCtrl.loadFacultyData = function() {
+            ApiRequest.get(ApiEndpoints.FACULTY_DATA)
+                .then(function(response) {
+                    academicCtrl.facultyData = response.data;
+                })
+                .catch(function(error) {
+                    console.error('Error loading faculty data:', error);
+                });
+        };
+
+        
+        // academicCtrl.getDepartmentsByCourse = function(courseId) {
+        //     var course = academicCtrl.academicData.courses.find(c => c.id === courseId);
+        //     return course ? course.departments : [];
+        // };
+
+        // academicCtrl.getYearsByDepartment = function(courseId, deptId) {
+        //     var departments = academicCtrl.getDepartmentsByCourse(courseId);
+        //     var dept = departments.find(d => d.id === deptId);
+        //     return dept ? dept.years : [];
+        // };
+
+        // academicCtrl.getSectionsByYear = function(courseId, deptId, year) {
+        //     var years = academicCtrl.getYearsByDepartment(courseId, deptId);
+        //     var yearData = years.find(y => y.year === year);
+        //     return yearData ? yearData.sections : [];
+        // };
+
+        // academicCtrl.getFacultyByDepartment = function(deptId) {
+        //     var department = academicCtrl.facultyData.departments.find(d => d.id === deptId);
+        //     return department ? department.faculty : [];
+        // };
+
+        // academicCtrl.getCurrentPath = function() {
+        //     var path = [];
+        //     if (academicCtrl.selected.course) {
+        //         path.push(academicCtrl.selected.course.name);
+        //         if (academicCtrl.selected.department) {
+        //             path.push(academicCtrl.selected.department.name);
+        //             if (academicCtrl.selected.year) {
+        //                 path.push(academicCtrl.selected.year);
+        //                 if (academicCtrl.selected.section) {
+        //                     path.push('Section ' + academicCtrl.selected.section.name);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     return path.join(' > ');
+        // };
+    }
+]);
 
 app.controller('sRegController', ['$state', 'ApiRequest', 'ApiEndpoints',
 function($state, ApiRequest, ApiEndpoints) {
