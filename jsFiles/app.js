@@ -5,9 +5,10 @@ app.directive('loader', ['LoaderService', function(LoaderService) {
         restrict: 'E',
         template: `
             <div class="global-loader" ng-show="LoaderService.isLoading">
-                <div class="spinner-border text-success" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+                <button class="btn btn-secondary global-loader" ng-show="LoaderService.isLoading type="button" disabled>
+                <span class="spinner-border spinner-border-sm p-2 " role="status" aria-hidden="true"></span>
+                Loading...
+                </button>
             </div>
         `,
         controller: ['$scope', 'LoaderService', function($scope, LoaderService) {
@@ -45,12 +46,12 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'AddController',
             controllerAs: 'addCtrl'
         })
-        .state('user.exam', {
-            url: '/exam',
-            templateUrl: 'templateFiles/exam.html',
-            controller: 'ExamController',
-            controllerAs: 'examCtrl'
-        })
+        // .state('user.exam', {
+        //     url: '/exam',
+        //     templateUrl: 'templateFiles/exam.html',
+        //     controller: 'ExamController',
+        //     controllerAs: 'examCtrl'
+        // })
         .state('user.fRegister', {
             url: '/facultyRegister',
             templateUrl: 'templateFiles/facultyReg.html',
@@ -62,6 +63,18 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             templateUrl: 'templateFiles/studentReg.html',
             controller: 'sRegController',
             controllerAs: 'regCtrl'
+        })
+        .state('user.records', {
+            url: '/staffRecords',
+            templateUrl: 'templateFiles/staff.html',
+            controller: 'staffController',
+            controllerAs: 'staffCtrl'
+        })
+        .state('user.schedule', {
+            url: '/schedule',
+            templateUrl: 'templateFiles/schedule.html',
+            controller: 'schedController',
+            controllerAs: 'schedCtrl'
         });
 }])
 
@@ -173,21 +186,21 @@ app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
                 url: "dashboard",
                 type: "single"
             },
-            {
-                title: "Registration",
-                icon: "bi bi-layout-text-window",
-                type: "dropdown",
-                subItems: [
-                    {
-                        title: "Student Registration", 
-                        url: "sRegister"
-                    },
-                    {
-                        title: "Faculty Registration", 
-                        url: "fRegister"
-                    }
-                ]
-            },
+            // {
+            //     title: "Registration",
+            //     icon: "bi bi-layout-text-window",
+            //     type: "dropdown",
+            //     subItems: [
+            //         {
+            //             title: "Student Registration", 
+            //             url: "sRegister"
+            //         },
+            //         {
+            //             title: "Faculty Registration", 
+            //             url: "fRegister"
+            //         }
+            //     ]
+            // },
             {
                 title: "Records",
                 icon: "bi bi-file-earmark-bar-graph",
@@ -204,24 +217,27 @@ app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
                 ]
             },
             {
-                title: "Examination",
-                icon: "bi bi-calendar2-range",
-                type: "dropdown",
-                subItems: [
-                    {
-                        title: "Exam Schedule",
-                        url: "examSchedule"
-                    },
-                    {
-                        title: "Exam Results",
-                        url: "examResults"
-                    }
-                ]
-            },
-            {
                 title: "Add New",
                 icon: "bi bi-plus-circle-fill",
                 url: "add",
+                type: "single"
+            },
+            {
+                title: "Staff Records",
+                icon: "bi bi-file-earmark-bar-graph",
+                url: "records",
+                type: "single"
+            },
+            {
+                title: "Student Registration",
+                icon: "bi bi-layout-text-window",
+                url: "sRegister",
+                type: "single"
+            },
+            {
+                title: "Faculty Registration",
+                icon: "bi bi-layout-text-window",
+                url: "fRegister",
                 type: "single"
             },
             {
@@ -267,19 +283,19 @@ app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
     }
 ]);
 
-app.controller('AddController', ['$state', 'ApiRequest', 'ApiEndpoints',
+app.controller('AcademicController', ['$state', 'ApiRequest', 'ApiEndpoints',
     function($state, ApiRequest, ApiEndpoints) {
         var academicCtrl = this;
         academicCtrl.academicData = {
             courses: [
                 {
                     id: 1,
-                    course: "B.Tech",
+                    name: "B.Tech",
                     duration: "4 Years",
                     departments: [
                         {
                             id: 1,
-                            dep: "Computer Science",
+                            name: "Computer Science",
                             years: [
                                 {
                                     year: "1st Year",
@@ -287,24 +303,26 @@ app.controller('AddController', ['$state', 'ApiRequest', 'ApiEndpoints',
                                         {
                                             name: "A",
                                             strength: 60,
+                                            subjects: [
+                                                {
+                                                    code: "CS101",
+                                                    name: "Programming Fundamentals",
+                                                    faculty: "Dr. Jane Smith",
+                                                    credits: 4
+                                                }
+                                            ]
                                         },
                                         {
                                             name: "B",
-                                            strength: 70,
-                                        }
-                                    ],
-                                    subjects: [
-                                        {
-                                            code: "CS101",
-                                            name: "Programming Fundamental",
-                                            faculty: " Jan Smith",
-                                            credits: 3
-                                        },
-                                        {
-                                            code: "CSE101",
-                                            name: "Programming Fundamentals",
-                                            faculty: "Dr. Jane Smith",
-                                            credits: 4
+                                            strength: 60,
+                                            subjects: [
+                                                {
+                                                    code: "CS101",
+                                                    name: "Programming Fundamentals",
+                                                    faculty: "Dr. Bob Wilson",
+                                                    credits: 4
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -316,14 +334,14 @@ app.controller('AddController', ['$state', 'ApiRequest', 'ApiEndpoints',
                         },
                         {
                             id: 2,
-                            dep: "Electronics",
+                            name: "Electronics",
                             years: []
                         }
                     ]
                 },
                 {
                     id: 2,
-                    course: "M.Tech",
+                    name: "M.Tech",
                     duration: "2 Years",
                     departments: []
                 }
@@ -339,14 +357,9 @@ app.controller('AddController', ['$state', 'ApiRequest', 'ApiEndpoints',
                         {
                             id: 1,
                             name: "Dr. John Doe",
-                            designation: "Faculty",
-                            subjects: ["CS101", "CS405"],
-                        },
-                        {
-                            id: 2,
-                            name: "John Doe",
-                            designation: "Faculty",
-                            subjects: ["CS101", "CS405"],
+                            designation: "Professor",
+                            specialization: "Machine Learning",
+                            subjects: ["CS101", "CS405"]
                         }
                     ]
                 }

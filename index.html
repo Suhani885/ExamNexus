@@ -13,6 +13,8 @@
     <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
     <script src="jsFiles/services.js"></script>
     <script src="jsFiles/app.js"></script>
 
@@ -36,3 +38,61 @@
     <div ui-view></div>
 </body>
 </html>
+
+<div ng-repeat="medicine in patientCtrl.prescription.medicines" class="mb-3">
+    <div class="row">
+        <div class="col">
+            <label class="form-label">section</label>
+            <input type="text" class="form-control" ng-model="medicine.name" required>
+        </div>
+        <div class="col">
+            <label class="form-label">yaer</label>
+            <input type="number" class="form-control" autocomplete="on" ng-model="medicine.days" min="1" required>
+        </div>
+        <div class="col-auto d-flex align-items-end">
+            <button type="button" class="btn btn-sm btn-outline-danger" ng-click="patientCtrl.prescription.medicines.splice($index, 1)" ng-if="!$first">Remove</button>
+        </div>
+    </div>
+</div>
+<button type="button" class="btn btn-secondary mb-3" ng-click="patientCtrl.addMedicine()">Add</button>
+
+<!-- patientCtrl.openPrescriptionModal = function(patient) {
+patientCtrl.selectedPatient = patient;
+patientCtrl.prescription = {
+medicines: [{}],
+};
+
+
+patientCtrl.submitPrescription = function() {
+var prescriptionData = {
+"appointment_id": patientCtrl.selectedPatient.id,
+"diagnosis": patientCtrl.prescription.diagnosis,
+"medicine": patientCtrl.prescription.medicines.map(m => m.name),
+"day": patientCtrl.prescription.medicines.map(m => m.days),
+"dosage": patientCtrl.prescription.medicines.map(m => m.dosage),
+"instruction": patientCtrl.prescription.instructions
+};
+var req = {
+method: 'POST',
+url: `${baseUrl}/vitalcure/create_pres/`,
+data: prescriptionData,
+withCredentials: true
+};
+$http(req).then(function(response) {
+console.log("Prescription submitted:", response);
+Swal.fire({
+icon: 'success',
+text: response.data.message
+});
+var prescriptionModal = bootstrap.Modal.getInstance(document.getElementById('prescriptionModal'));
+patientCtrl.fetchAppointments(); 
+prescriptionModal.hide();
+}, function(error) {
+console.log("Error submitting prescription", error);
+Swal.fire({
+icon: 'error',
+title: 'Error',
+text: error.data.error || "An unexpected error occurred!"
+});
+});
+}; -->

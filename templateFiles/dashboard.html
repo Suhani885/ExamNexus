@@ -1,121 +1,118 @@
 <div ng-controller="dashController as dashCtrl">
-    <div>
-        <h1 class="text-white fw-bold p-2">DASHBOARD</h1>
-    </div>
-    <div class="container-fluid" style="background-color: #1a1a1a; min-height: calc(100vh - 80px); margin-top: 50px; padding: 20px;">
-        <div class="row g-4 mb-5">
-            <div class="col-12 col-sm-6 col-xl-4">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title mb-1">Total Students</h6>
-                                <h2 class="mb-0 fw-bold">1,234</h2>
+    <div class="container-fluid py-4" style="background-color: #121212;">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-11">
+                <div class="d-flex align-items-center mb-4">
+                    <h1 class="display-5 fw-bold mb-0" style="color: #ffffff;">
+                        Dashboard
+                    </h1>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50 mb-2">Total Students</h6>
+                                        <h2 class="text-white mb-0 fw-bold">1,234</h2>
+                                    </div>
+                                    <div class="p-3 rounded-circle" style="background-color: rgba(16, 228, 66, 0.15);">
+                                        <i class="bi bi-people-fill" style="font-size: 28px; color: #10e442;"></i>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="p-2 rounded-circle" style="background-color: rgba(16, 228, 66, 0.2);">
-                                <i class="bi bi-people-fill text-success" style="font-size: 24px;"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50 mb-2">Active Exams</h6>
+                                        <h2 class="text-white mb-0 fw-bold">42</h2>
+                                    </div>
+                                    <div class="p-3 rounded-circle" style="background-color: rgba(255, 193, 7, 0.15);">
+                                        <i class="bi bi-pencil-square" style="font-size: 28px; color: #ffc107;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50 mb-2">Results Pending</h6>
+                                        <h2 class="text-white mb-0 fw-bold">18</h2>
+                                    </div>
+                                    <div class="p-3 rounded-circle" style="background-color: rgba(53, 111, 220, 0.15);">
+                                        <i class="bi bi-hourglass-split" style="font-size: 28px; color: #356fdc;"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-sm-6 col-xl-4">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title mb-1">Active Exams</h6>
-                                <h2 class="mb-0 fw-bold">42</h2>
-                            </div>
-                            <div class="p-2 rounded-circle" style="background-color: rgba(255, 193, 7, 0.2);">
-                                <i class="bi bi-pencil-square text-warning" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
+
+                <div class="card mb-5" style="background-color: #1E1E1E; border: 1px solid #333333; border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div id="chart_div" style="width: 100%; height: 300px;"></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-sm-6 col-xl-4">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title mb-1">Results Pending</h6>
-                                <h2 class="mb-0 fw-bold">18</h2>
-                            </div>
-                            <div class="p-2 rounded-circle" style="background-color: rgba(53, 111, 220, 0.2);">
-                                <i class="bi bi-hourglass-split text-info" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title mb-1">Success Ratio</h6>
-                                <h2 class="mb-0 fw-bold">89%</h2>
-                                <small class="text-info">+2.5% increase</small>
-                            </div>
-                            <div class="p-2 rounded-circle" style="background-color: rgba(0, 123, 255, 0.2);">
-                                <i class="bi bi-graph-up text-info" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-        </div>
-      
-        <div class="row g-4 mb-5">
-            <div class="col-12 col-xl-12">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #333333;">
-                        <h5 class="p-1">Recent Examinations</h5>
+
+                <div class="card mb-5" style="background-color: #1E1E1E; border: 1px solid #333333; border-radius: 12px;">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #252525; border-bottom: 1px solid #333333;">
+                        <h5 class="card-title mb-0" style="color: #ffffff;">Recent Examinations</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-dark table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Exam Name</th>
-                                        <th scope="col">Course</th>
-                                        <th scope="col">Department</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Status</th>
-                                        <!-- <th scope="col">Action</th> -->
+                                        <th scope="col" class="py-3 px-4">Exam Name</th>
+                                        <th scope="col" class="py-3">Course</th>
+                                        <th scope="col" class="py-3">Department</th>
+                                        <th scope="col" class="py-3">Date</th>
+                                        <th scope="col" class="py-3">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Data Structures</td>
-                                        <td>BTech</td>
-                                        <td>CSE</td>
-                                        <td>Nov 22, 2024</td>
-                                        <td><span class="badge bg-success">Active</span></td>
-                                        <!-- <td>
-                                            <button class="btn btn-outline-light btn-sm">View</button>
-                                        </td> -->
+                                        <td class="py-3 px-4">Data Structures</td>
+                                        <td class="py-3">BTech</td>
+                                        <td class="py-3">CSE</td>
+                                        <td class="py-3">Nov 22, 2024</td>
+                                        <td class="py-3">
+                                            <span class="badge rounded-pill" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442; padding: 8px 16px;">
+                                                Active
+                                            </span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td>Data Algorithms</td>
-                                        <td>MTech</td>
-                                        <td>CSE (AI & ML)</td>
-                                        <td>Nov 23, 2024</td>
-                                        <td><span class="badge bg-warning">Pending</span></td>
-                                        <!-- <td>
-                                            <button class="btn btn-outline-light btn-sm">View</button>
-                                        </td> -->
+                                        <td class="py-3 px-4">Data Algorithms</td>
+                                        <td class="py-3">MTech</td>
+                                        <td class="py-3">CSE (AI & ML)</td>
+                                        <td class="py-3">Nov 23, 2024</td>
+                                        <td class="py-3">
+                                            <span class="badge rounded-pill" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107; padding: 8px 16px;">
+                                                Pending
+                                            </span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td>Database Systems</td>
-                                        <td>BTech</td>
-                                        <td>CSIT</td>
-                                        <td>Nov 24, 2024</td>
-                                        <td><span class="badge bg-danger">Cancelled</span></td>
-                                        <!-- <td>
-                                            <button class="btn btn-outline-light btn-sm">View</button>
-                                        </td> -->
+                                        <td class="py-3 px-4">Database Systems</td>
+                                        <td class="py-3">BTech</td>
+                                        <td class="py-3">CSIT</td>
+                                        <td class="py-3">Nov 24, 2024</td>
+                                        <td class="py-3">
+                                            <span class="badge rounded-pill" style="background-color: rgba(220, 53, 69, 0.15); color: #dc3545; padding: 8px 16px;">
+                                                Cancelled
+                                            </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -124,80 +121,40 @@
                 </div>
             </div>
         </div>
-      
-        <div class="row g-4">
-            <div class="col-12 col-xl-6">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-header" style="background-color: #333333;">
-                        <h5 class="p-1">Recent Notifications</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item text-white" style="background-color: #2d2d2d; border-bottom: 1px solid #404040;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">New exam schedule updated</h6>
-                                    </div>
-                                    <span class="badge bg-primary">New</span>
-                                </div>
-                            </div>
-                            <div class="list-group-item text-white" style="background-color: #2d2d2d; border-bottom: 1px solid #404040;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">Results published for BTech</h6>
-                                    </div>
-                                    <span class="badge bg-success">Complete</span>
-                                </div>
-                            </div>
-                            <!-- <div class="list-group-item text-white" style="background-color: #2d2d2d;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">System maintenance scheduled</h6>
-                                        <small class="text-muted">1 day ago</small>
-                                    </div>
-                                    <span class="badge bg-warning">Important</span>
-                                </div>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-      
-            <div class="col-12 col-xl-6">
-                <div class="card text-white" style="background-color: #2d2d2d; border: 1px solid #404040;">
-                    <div class="card-header" style="background-color: #333333;">
-                        <h5 class="p-1">Upcoming Events</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item text-white" style="background-color: #2d2d2d; border-bottom: 1px solid #404040;">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <div>
-                                        <h6 class="mb-1">End Semester Examination</h6>
-                                        <!-- <small class="text-muted">Computer Science Department</small> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item text-white" style="background-color: #2d2d2d; border-bottom: 1px solid #404040;">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <div>
-                                        <h6 class="mb-1">Class Tests</h6>
-                                        <!-- <small class="text-muted">Mechanical Department</small> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item text-white" style="background-color: #2d2d2d;">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <div>
-                                        <h6 class="mb-1">Result Declaration</h6>
-                                    </div>
-                                    <!-- <small class="text-success">Dec 1, 2024</small> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
+    </div>
+
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Year', 'PUE', 'UE'],
+                ['2013', 1000, 400],
+                ['2014', 1170, 460],
+                ['2015', 660, 1120],
+                ['2016', 1030, 540]
+            ]);
+
+            var options = {
+                title: 'Students Performance',
+                backgroundColor: 'transparent',
+                titleTextStyle: { color: '#ffffff' },
+                legendTextStyle: { color: '#ffffff' },
+                hAxis: {
+                    title: 'Year',
+                    titleTextStyle: { color: '#ffffff' },
+                    textStyle: { color: '#ffffff' }
+                },
+                vAxis: {
+                    minValue: 0,
+                    textStyle: { color: '#ffffff' }
+                },
+                colors: ['#10e442', '#ffc107']
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
 </div>
