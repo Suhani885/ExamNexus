@@ -5,7 +5,7 @@ app.directive('loader', ['LoaderService', function(LoaderService) {
         restrict: 'E',
         template: `
             <div class="global-loader" ng-show="LoaderService.isLoading">
-                <button class="btn btn-secondary global-loader" ng-show="LoaderService.isLoading type="button" disabled>
+                <button class="btn btn-secondary global-loader" ng-show="LoaderService.isLoading" type="button" disabled>
                 <span class="spinner-border spinner-border-sm p-2 " role="status" aria-hidden="true"></span>
                 Loading...
                 </button>
@@ -46,12 +46,6 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'AddController',
             controllerAs: 'addCtrl'
         })
-        // .state('user.exam', {
-        //     url: '/exam',
-        //     templateUrl: 'templateFiles/exam.html',
-        //     controller: 'ExamController',
-        //     controllerAs: 'examCtrl'
-        // })
         .state('user.fRegister', {
             url: '/facultyRegister',
             templateUrl: 'templateFiles/facultyReg.html',
@@ -64,7 +58,7 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'sRegController',
             controllerAs: 'regCtrl'
         })
-        .state('user.records', {
+        .state('user.staffRec', {
             url: '/staffRecords',
             templateUrl: 'templateFiles/staff.html',
             controller: 'staffController',
@@ -78,18 +72,19 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
         });
 }])
 
-app.controller('LoginController', ['$state', 'ApiRequest', 'ApiEndpoints',
-function($state, ApiRequest, ApiEndpoints) {
+app.controller('LoginController', ['$state', 'ApiRequest', 'ApiEndpoints', function($state, ApiRequest, ApiEndpoints) {
     var loginCtrl = this;
     loginCtrl.email = '';
     loginCtrl.password = '';
-  
+    
     loginCtrl.login = function() {
-        ApiRequest.post(ApiEndpoints.auth.login, {
+        var loginData = {
             "email": loginCtrl.email,
             "password": loginCtrl.password
-        }, function(response) {
-            console.log(response);
+        };
+  
+        ApiRequest.post(ApiEndpoints.auth.login, loginData, function(response) {
+            console.log('Login response:', response);
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
@@ -99,179 +94,55 @@ function($state, ApiRequest, ApiEndpoints) {
             });
         });
     };
-}])
-
-// app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
-// function($state, ApiRequest, ApiEndpoints) {
-//     var navCtrl = this;
-//     navCtrl.navs=[];
-
-//     navCtrl.logout = function() {
-//         Swal.fire({
-//             title: 'Are you sure?',
-//             text: "You're about to log out!",
-//             icon: 'warning',
-//             showCancelButton: true,
-//             confirmButtonColor: '#3085d6',
-//             cancelButtonColor: '#d33',
-//             confirmButtonText: 'Yes, log out!'
-//         }).then((result) => {
-//             if (result.isConfirmed) {
-//                 ApiRequest.get(ApiEndpoints.auth.logout, function(response) {
-//                     console.log(response);
-//                     Swal.fire(
-//                         'Logged Out!',
-//                         'You have been successfully logged out.',
-//                         'success'
-//                     ).then(() => {
-//                         $state.go('login');
-//                     });
-//                 });
-//             }
-//         });
-//     };
-    
-//     navCtrl.fetchNav = function() {
-//         ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
-//             console.log(response);
-//             navCtrl.navs=response.data;
-//         });
-//     };
-
-//     $state.go('user.dashboard');
-//     navCtrl.fetchNav();
-// }])
-
-// app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', function($state, ApiRequest, ApiEndpoints) {
-//     var navCtrl = this;
-//     navCtrl.navs = [];
-
-//     navCtrl.fetchNav = function() {
-//         ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
-//             navCtrl.navs = response.data.map(function(item) {
-//                 if (item.children && item.children.length > 0) {
-//                     item.type = 'dropdown';
-//                     item.subItems = item.children.map(function(child) {
-//                         return {
-//                             title: child.title,
-//                             url: child.url
-//                         };
-//                     });
-//                 } else {
-//                     item.type = 'single';
-//                 }
-//                 return item;
-//             });
-//         });
-//     };
-
-//     navCtrl.navigateTo = function(item) {
-//         if (item.url) {
-//             $state.go('user.' + item.url);
-//         }
-//     };
-
-//     $state.go('user.dashboard');
-//     navCtrl.fetchNav();
-// }]);
+  }]);
 
 app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', 
     function($state, ApiRequest, ApiEndpoints) {
         var navCtrl = this;
-        
-        navCtrl.navs = [
-            {
-                title: "Dashboard",
-                icon: "bi bi-speedometer2",
-                url: "dashboard",
-                type: "single"
-            },
-            // {
-            //     title: "Registration",
-            //     icon: "bi bi-layout-text-window",
-            //     type: "dropdown",
-            //     subItems: [
-            //         {
-            //             title: "Student Registration", 
-            //             url: "sRegister"
-            //         },
-            //         {
-            //             title: "Faculty Registration", 
-            //             url: "fRegister"
-            //         }
-            //     ]
-            // },
-            {
-                title: "Records",
-                icon: "bi bi-file-earmark-bar-graph",
-                type: "dropdown",
-                subItems: [
-                    {
-                        title: "Student Records",
-                        url: "studentRec"
-                    },
-                    {
-                        title: "Faculty Records",
-                        url: "facultyRec"
+
+        navCtrl.fetchNav = function() {
+            ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
+                navCtrl.navs = response.data.map(function(item) {
+                    if (item.children && item.children.length > 0) {
+                        item.type = 'dropdown';
+                        item.subItems = item.children.map(function(child) {
+                            return {
+                                title: child.title,
+                                url: child.url
+                            };
+                        });
+                    } else {
+                        item.type = 'single';
                     }
-                ]
-            },
-            {
-                title: "Add New",
-                icon: "bi bi-plus-circle-fill",
-                url: "add",
-                type: "single"
-            },
-            {
-                title: "Staff Records",
-                icon: "bi bi-file-earmark-bar-graph",
-                url: "records",
-                type: "single"
-            },
-            {
-                title: "Student Registration",
-                icon: "bi bi-layout-text-window",
-                url: "sRegister",
-                type: "single"
-            },
-            {
-                title: "Faculty Registration",
-                icon: "bi bi-layout-text-window",
-                url: "fRegister",
-                type: "single"
-            },
-            {
-                title: "Schedule",
-                icon: "bi bi-calendar4-event",
-                url: "schedule",
-                type: "single"
-            }
-        ];
+                    return item;
+                });
+            });
+        };
 
         navCtrl.logout = function() {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You're about to log out!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, log out!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            ApiRequest.get(ApiEndpoints.auth.logout, function(response) {
-                                console.log(response);
-                                Swal.fire(
-                                    'Logged Out!',
-                                    'You have been successfully logged out.',
-                                    'success'
-                                ).then(() => {
-                                    $state.go('login');
-                                });
-                            });
-                        }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You're about to log out!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log out!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiRequest.post(ApiEndpoints.auth.logout, function(response) {
+                        console.log(response);
+                        Swal.fire(
+                            'Logged Out!',
+                            'You have been successfully logged out.',
+                            'success'
+                        ).then(() => {
+                            $state.go('login');
+                        });
                     });
-                };
+                }
+            });
+        };
 
         navCtrl.navigateTo = function(item) {
             if (item.url) {
@@ -280,6 +151,7 @@ app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints',
         };
 
         $state.go('user.dashboard');
+        navCtrl.fetchNav();
     }
 ]);
 
@@ -386,45 +258,6 @@ app.controller('AcademicController', ['$state', 'ApiRequest', 'ApiEndpoints',
                 });
         };
 
-        
-        // academicCtrl.getDepartmentsByCourse = function(courseId) {
-        //     var course = academicCtrl.academicData.courses.find(c => c.id === courseId);
-        //     return course ? course.departments : [];
-        // };
-
-        // academicCtrl.getYearsByDepartment = function(courseId, deptId) {
-        //     var departments = academicCtrl.getDepartmentsByCourse(courseId);
-        //     var dept = departments.find(d => d.id === deptId);
-        //     return dept ? dept.years : [];
-        // };
-
-        // academicCtrl.getSectionsByYear = function(courseId, deptId, year) {
-        //     var years = academicCtrl.getYearsByDepartment(courseId, deptId);
-        //     var yearData = years.find(y => y.year === year);
-        //     return yearData ? yearData.sections : [];
-        // };
-
-        // academicCtrl.getFacultyByDepartment = function(deptId) {
-        //     var department = academicCtrl.facultyData.departments.find(d => d.id === deptId);
-        //     return department ? department.faculty : [];
-        // };
-
-        // academicCtrl.getCurrentPath = function() {
-        //     var path = [];
-        //     if (academicCtrl.selected.course) {
-        //         path.push(academicCtrl.selected.course.name);
-        //         if (academicCtrl.selected.department) {
-        //             path.push(academicCtrl.selected.department.name);
-        //             if (academicCtrl.selected.year) {
-        //                 path.push(academicCtrl.selected.year);
-        //                 if (academicCtrl.selected.section) {
-        //                     path.push('Section ' + academicCtrl.selected.section.name);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return path.join(' > ');
-        // };
     }
 ]);
 

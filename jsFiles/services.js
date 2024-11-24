@@ -1,15 +1,15 @@
 angular.module('app.services', [])
-.constant('BASE_URL', 'https://10.21.97.61:8000')
+.constant('BASE_URL', 'https://10.21.96.169:8000')
 
 .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
     return {
         auth: {
             login: `${BASE_URL}/portal/login/`,
             logout: `${BASE_URL}/portal/logout/`,
-            register: `${BASE_URL}/portal/reg/`
+            register: `${BASE_URL}/portal/register/`
         },
         user: {
-            profile: `${BASE_URL}/portal/profile/`,
+            records: `${BASE_URL}/portal/profile/`,
             navbar: `${BASE_URL}/portal/`,
             dashboard: `${BASE_URL}/portal/dashboard/`
         },
@@ -59,22 +59,6 @@ angular.module('app.services', [])
         }
     };
 }])
-
-// responseError: function (response) {
-//     console.log('response error started...');
-
-//     if (response.status === 401) {
-//         $location.path('/signin');
-//         $rootScope.$broadcast('error');
-//     }
-
-//     if (response.status === 500) {
-//         $rootScope.ErrorMsg = "An Unexpected error occured";
-//         $location.path('/Error');
-//     }
-
-//     return $q.reject(response);
-// }
 
 .service('ApiRequest', ['$http', 'ApiEndpoints', function($http, ApiEndpoints) {
     this.get = function(path, callback) {
@@ -133,3 +117,21 @@ angular.module('app.services', [])
         });
     };
 }]);
+
+
+// responseError: function (response) {
+//     console.log('response error started...');
+
+//     if (response.status === 401) {
+//         $location.path('/signin');
+//         $rootScope.$broadcast('error');
+//     }
+
+//     if (response.status === 500) {
+//         $rootScope.ErrorMsg = "An Unexpected error occured";
+//         $location.path('/Error');
+//     }
+
+//     return $q.reject(response);
+// }
+
