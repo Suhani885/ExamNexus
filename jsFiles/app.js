@@ -5,10 +5,13 @@ app.directive('loader', ['LoaderService', function(LoaderService) {
         restrict: 'E',
         template: `
             <div class="global-loader" ng-show="LoaderService.isLoading">
-                <button class="btn btn-secondary global-loader" ng-show="LoaderService.isLoading" type="button" disabled>
-                <span class="spinner-border spinner-border-sm p-2 " role="status" aria-hidden="true"></span>
-                Loading...
-                </button>
+                <div class="loader-content">
+                    <div class="spinner-ripple">
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <div class="loader-text">Loading...</div>
+                </div>
             </div>
         `,
         controller: ['$scope', 'LoaderService', function($scope, LoaderService) {
@@ -16,6 +19,16 @@ app.directive('loader', ['LoaderService', function(LoaderService) {
         }]
     };
 }])
+
+// toggleMode() {
+//     this.document.body.classList.toggle(Mode.LIGHT);
+//     this.document.body.classList.toggle(Mode.DARK);
+//     if (this.currentMode === Mode.LIGHT) {
+//       this.updateCurrentMode(Mode.DARK);
+//     } else {
+//       this.updateCurrentMode(Mode.LIGHT);
+//     }
+// }
 
 app.config(['$urlRouterProvider', '$stateProvider', '$httpProvider', 
 function($urlRouterProvider, $stateProvider, $httpProvider) {
@@ -64,6 +77,12 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'staffController',
             controllerAs: 'staffCtrl'
         })
+        .state('user.makeExam', {
+            url: '/makeExam',
+            templateUrl: 'templateFiles/makeExam.html',
+            controller: 'makeController',
+            controllerAs: 'makeCtrl'
+        })
         .state('user.schedule', {
             url: '/schedule',
             templateUrl: 'templateFiles/schedule.html',
@@ -96,67 +115,88 @@ app.controller('LoginController', ['$state', 'ApiRequest', 'ApiEndpoints', funct
     };
   }]);
 
-app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', 
-    function($state, ApiRequest, ApiEndpoints) {
-        var navCtrl = this;
-
-        navCtrl.fetchNav = function() {
-            ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
-                navCtrl.navs = response.data.map(function(item) {
-                    if (item.children && item.children.length > 0) {
-                        item.type = 'dropdown';
-                        item.subItems = item.children.map(function(child) {
-                            return {
-                                title: child.title,
-                                url: child.url
-                            };
-                        });
-                    } else {
-                        item.type = 'single';
-                    }
-                    return item;
-                });
-            });
-        };
-
-        navCtrl.logout = function() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You're about to log out!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, log out!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    ApiRequest.post(ApiEndpoints.auth.logout, function(response) {
-                        console.log(response);
-                        Swal.fire(
-                            'Logged Out!',
-                            'You have been successfully logged out.',
-                            'success'
-                        ).then(() => {
-                            $state.go('login');
-                        });
-                    });
-                }
-            });
-        };
-
-        navCtrl.navigateTo = function(item) {
-            if (item.url) {
-                $state.go('user.' + item.url);
-            }
-        };
-
-        $state.go('user.dashboard');
-        navCtrl.fetchNav();
+  app.controller('NavController', ['$state', 'ApiRequest', 'ApiEndpoints', function($state, ApiRequest, ApiEndpoints) {
+    var navCtrl = this;
+    
+    navCtrl.currentMode = localStorage.getItem('appMode') || 'dark';
+    
+    navCtrl.toggleMode = function() {
+        navCtrl.currentMode = navCtrl.currentMode === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('appMode', navCtrl.currentMode);
+        applyMode();
+    };
+    
+    function applyMode() {
+        if (navCtrl.currentMode === 'dark') {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        }
     }
-]);
+    
+    navCtrl.fetchNav = function() {
+        ApiRequest.get(ApiEndpoints.user.navbar, function(response) {
+            navCtrl.navs = response.data.map(function(item) {
+                if (item.children && item.children.length > 0) {
+                    item.type = 'dropdown';
+                    item.subItems = item.children.map(function(child) {
+                        return {
+                            title: child.title,
+                            url: child.url
+                        };
+                    });
+                } else {
+                    item.type = 'single';
+                }
+                return item;
+            });
+        });
+    };
+    
+    navCtrl.logout = function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You're about to log out!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, log out!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ApiRequest.post(ApiEndpoints.auth.logout, function(response) {
+                    console.log(response);
+                    Swal.fire(
+                        'Logged Out!',
+                        'You have been successfully logged out.',
+                        'success'
+                    ).then(() => {
+                        $state.go('login');
+                    });
+                });
+            }
+        });
+    };
+    
+    navCtrl.navigateTo = function(item) {
+        if (item.url) {
+            $state.go('user.' + item.url);
+        }
+    };
+    
+    navCtrl.init = function() {
+        applyMode();
+    };
+    
+    $state.go('user.dashboard');
+    navCtrl.fetchNav();
+    navCtrl.init();
+}]);
 
-app.controller('AcademicController', ['$state', 'ApiRequest', 'ApiEndpoints',
-    function($state, ApiRequest, ApiEndpoints) {
+app.controller('AcademicController', ['ApiRequest', 'ApiEndpoints',
+    function(ApiRequest, ApiEndpoints) {
         var academicCtrl = this;
         academicCtrl.academicData = {
             courses: [
@@ -191,7 +231,7 @@ app.controller('AcademicController', ['$state', 'ApiRequest', 'ApiEndpoints',
                                                 {
                                                     code: "CS101",
                                                     name: "Programming Fundamentals",
-                                                    faculty: "Dr. Bob Wilson",
+                                                    faculty: "Dr. Bob Wil",
                                                     credits: 4
                                                 }
                                             ]
@@ -238,92 +278,199 @@ app.controller('AcademicController', ['$state', 'ApiRequest', 'ApiEndpoints',
             ]
         };
 
-        academicCtrl.loadAcademicData = function() {
-            ApiRequest.get(ApiEndpoints.ACADEMIC_DATA)
-                .then(function(response) {
-                    academicCtrl.academicData = response.data;
-                })
-                .catch(function(error) {
-                    console.error('Error loading data:', error);
-                });
-        };
+        // academicCtrl.loadAcademicData = function() {
+        //     ApiRequest.get(ApiEndpoints.ACADEMIC_DATA)
+        //         .then(function(response) {
+        //             academicCtrl.academicData = response.data;
+        //         })
+        //         .catch(function(error) {
+        //             console.error('Error loading data:', error);
+        //         });
+        // };
 
-        academicCtrl.loadFacultyData = function() {
-            ApiRequest.get(ApiEndpoints.FACULTY_DATA)
-                .then(function(response) {
-                    academicCtrl.facultyData = response.data;
-                })
-                .catch(function(error) {
-                    console.error('Error loading faculty data:', error);
-                });
-        };
+        // academicCtrl.loadFacultyData = function() {
+        //     ApiRequest.get(ApiEndpoints.FACULTY_DATA)
+        //         .then(function(response) {
+        //             academicCtrl.facultyData = response.data;
+        //         })
+        //         .catch(function(error) {
+        //             console.error('Error loading faculty data:', error);
+        //         });
+        // };
 
     }
 ]);
 
-app.controller('sRegController', ['$state', 'ApiRequest', 'ApiEndpoints',
-function($state, ApiRequest, ApiEndpoints) {
+app.controller('sRegController', ['ApiRequest', 'ApiEndpoints',
+function(ApiRequest, ApiEndpoints) {
     var regCtrl = this;
   
     regCtrl.register = function() {
         ApiRequest.post(ApiEndpoints.auth.register, {
             "email": regCtrl.email,
-            "fname": regCtrl.fname,
-            "mname": regCtrl.mname,
-            "lname": regCtrl.lname,
-            "password": regCtrl.password,
-            "number": regCtrl.number,
+            "first_name": regCtrl.fname,
+            "middle_name": regCtrl.mname,
+            "last_name": regCtrl.lname,
+            "password": regCtrl.pass1,
+            "phone_number": regCtrl.number,
             "dob": regCtrl.dob,
+            "gender": regCtrl.gender,
             "course": regCtrl.course,
-            "year": regCtrl.year,
-            "dep": regCtrl.dep,
-            "section": regCtrl.section,
+            "department": regCtrl.dep,
+            "detail": regCtrl.section,
             "address": regCtrl.address,
-            "pass1": regCtrl.pass1,
-            "pass2": regCtrl.pass2
+            "confirm_password": regCtrl.pass2
         }, function(response) {
             console.log(response);
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
                 text: response.message
-            }).then(() => {
-                $state.go('login');
-            });
+            })
+        });
+    };
+
+    regCtrl.detail = [{
+        year: '',
+        section:''
+    }];
+    
+    regCtrl.addDetail = function() {
+        regCtrl.detail.push({
+            year: '',
+            sec_sub_details: [{
+                section: '',
+                subject: ''
+            }]
         });
     };
 }]);
 
-app.controller('fRegController', ['$state', 'ApiRequest', 'ApiEndpoints',
-    function($state, ApiRequest, ApiEndpoints) {
-        var fRegCtrl = this;
-      
-        fRegCtrl.register = function() {
-            ApiRequest.post(ApiEndpoints.auth.register, {
-                "email": fRegCtrl.email,
-                "fname": fRegCtrl.fname,
-                "mname": fRegCtrl.mname,
-                "lname": fRegCtrl.lname,
-                "password": fRegCtrl.password,
-                "number": fRegCtrl.number,
-                "dob": fRegCtrl.dob,
-                "course": fRegCtrl.course,
-                "year": fRegCtrl.year,
-                "dep": fRegCtrl.dep,
-                "section": fRegCtrl.section,
-                "address": fRegCtrl.address,
-                "pass1": fRegCtrl.pass1,
-                "pass2": fRegCtrl.pass2
+app.controller('AddController', ['ApiRequest', 'ApiEndpoints',
+    function(ApiRequest, ApiEndpoints) {
+        var addCtrl = this;
+        addCtrl.courses=[];
+
+        addCtrl.createCourse = function() {
+            ApiRequest.post(ApiEndpoints.create.main, {
+                "duration": parseInt(addCtrl.duration),
+                "value": addCtrl.course
             }, function(response) {
                 console.log(response);
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
                     text: response.message
-                }).then(() => {
-                    $state.go('login');
-                });
+                })
+                addCtrl.fetchCourses();
+                $('#addCourseModal').modal('hide')
+            });
+        };
+      
+        addCtrl.create = function() {
+            ApiRequest.post(ApiEndpoints.create.main, {
+                "pid": addCtrl.courseId,
+                "value": addCtrl.dep
+            }, function(response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                })
+                $('#addCourseModal').modal('hide')
+            });
+        };
+
+        addCtrl.fetchCourses = function() {
+            ApiRequest.get(ApiEndpoints.create.course, function(response) {
+                console.log(response);
+                addCtrl.courses = response.data
+            });
+        };
+
+        addCtrl.fetchDeps = function(course) {
+            if (!course) {
+                course = addCtrl.course;
+            }
+            ApiRequest.get(ApiEndpoints.create.getDep, {
+                params: {
+                  course:course
+                }
+              }, function(response) {
+                console.log(response);
+                addCtrl.deps = response.data
+            });
+        };
+
+        addCtrl.fetchYear = function() {
+            ApiRequest.get(ApiEndpoints.create.getYear, function(response) {
+                console.log(response);
+                addCtrl.years = response.data.detail
+            });
+        };
+
+        addCtrl.fetchCourses()
+}]);
+
+app.controller('fRegController', ['ApiRequest', 'ApiEndpoints',
+    function(ApiRequest, ApiEndpoints) {
+        var fRegCtrl = this;
+        
+        fRegCtrl.showPassword = false;
+        fRegCtrl.showConfirmPassword = false;
+        
+        fRegCtrl.togglePassword = function(inputId) {
+            fRegCtrl.showPassword = !fRegCtrl.showPassword;
+            var input = document.getElementById(inputId);
+            input.type = fRegCtrl.showPassword ? 'text' : 'password';
+        };
+        fRegCtrl.toggleConfirmPassword = function(inputId) {
+            fRegCtrl.showConfirmPassword = !fRegCtrl.showConfirmPassword;
+            var input = document.getElementById(inputId);
+            input.type = fRegCtrl.showConfirmPassword ? 'text' : 'password';
+        };
+
+        fRegCtrl.detail = [{
+            year: '',
+            subject: '',
+            section:[]
+        }];
+        
+        fRegCtrl.addDetail = function() {
+            fRegCtrl.detail.push({
+                year: '',
+                subject: '',
+                section: []
+            });
+        };
+        
+        fRegCtrl.removeDetail = function(index) {
+            fRegCtrl.detail.splice(index, 1);
+        };
+        
+        fRegCtrl.register = function() {
+            ApiRequest.post(ApiEndpoints.auth.register, {
+                "email": fRegCtrl.email,
+                "first_name": fRegCtrl.fname,
+                "middle_name": fRegCtrl.mname,
+                "last_name": fRegCtrl.lname,
+                "gender": fRegCtrl.gender,
+                "password": fRegCtrl.pass1,
+                "phone_number": fRegCtrl.number,
+                "dob": fRegCtrl.dob,
+                "course": fRegCtrl.course,
+                "department": fRegCtrl.dep,
+                "detail": fRegCtrl.detail,
+                "address": fRegCtrl.address,
+                "confirm_password": fRegCtrl.pass2
+            }, function(response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                })
             });
         };
 }]);
-

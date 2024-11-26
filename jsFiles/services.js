@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-.constant('BASE_URL', 'https://10.21.96.169:8000')
+.constant('BASE_URL', 'https://10.21.97.44:8000')
 
 .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
     return {
@@ -13,10 +13,13 @@ angular.module('app.services', [])
             navbar: `${BASE_URL}/portal/`,
             dashboard: `${BASE_URL}/portal/dashboard/`
         },
-        exam: {
-            list: `${BASE_URL}/portal/exams/`,
-            create: `${BASE_URL}/portal/exam/create/`,
-            submit: `${BASE_URL}/portal/exam/submit/`
+        create: {
+            main: `${BASE_URL}/portal/dropdowns/`,
+            course: `${BASE_URL}/portal/get-courses/`,
+            // getDep: `${BASE_URL}/portal/get-departments/`,
+            // getYear: `${BASE_URL}/portal/get-years/`,
+            // create: `${BASE_URL}/portal/exam/create/`,
+            // submit: `${BASE_URL}/portal/exam/submit/`
         }
     };
 }])

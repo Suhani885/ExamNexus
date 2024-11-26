@@ -1,104 +1,147 @@
 <div ng-controller="fRegController as fRegCtrl" class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-8">
-      <div class="container ">
-        <div class="card shadow border-0 ">
-          <div class="card-body p-5 bg-dark">
-            <div class="text-center d-flex flex-column justify-content-center align-items-center">
-              <h1 class="text-white fw-bold ">Faculty Registration</h1>
-            </div> 
-            <form ng-submit="fRegCtrl.Register()" id="form">
-              <div class="row g-3 mt-3">
-                <div class="col-sm-4 mb-2" >
-                  <label for="firstName" class="form-label text-white">First Name</label>
-                  <input type="text" style="background-color: rgb(233, 231, 231);" autocomplete="on" class="form-control" placeholder="Ron" pattern="[a-zA-Z]+" maxlength="20" ng-model="fRegCtrl.fname" id="firstName" required>
-                </div>
-                <div class="col-sm-4 mb-2">
-                  <label for="midName" class="form-label text-white">Middle Name (Optional)</label>
-                  <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" pattern="[a-zA-Z]+" placeholder="Van" maxlength="20" ng-model="fRegCtrl.mname" id="midName" autocomplete="on">
-                </div>
-                <div class="col-sm-4 mb-2">
-                  <label for="lastName" class="form-label text-white">Last Name (Optional)</label>
-                  <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" pattern="[a-zA-Z]+" placeholder="Doe" maxlength="20" ng-model="fRegCtrl.lname" id="lastName" autocomplete="on">
-                </div>
-                <div class="col-sm-7 mb-2">
-                  <label for="email" class="form-label text-white">Email Address</label>
-                  <input type="email" style="background-color: rgb(233, 231, 231);" class="form-control" id="email" pattern="[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,3}" ng-model="fRegCtrl.email" placeholder="xyz@abc.com" required autocomplete="on">
-                </div>
-                <div class="col-sm-5 mb-2">
-                  <label for="phone" class="form-label text-white">Phone Number</label>
-                  <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="phone" placeholder="XXXXXXXXXX" ng-model="fRegCtrl.number" autocomplete="on" required pattern="[6 7 8 9][0-9]{9}">
-                </div>
-                <div class="col-sm-5 mb-2">
-                  <label for="dob" class="form-label text-white">Date of Birth</label>
-                  <input type="date" style="background-color: rgb(233, 231, 231);" class="form-control" required autocomplete="on" ng-model="fRegCtrl.dob" id="dob">
-                </div>
-                <div class="col-7 mb-2">
-                  <label for="address" class="form-label text-white">Address</label>
-                  <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" ng-model="fRegCtrl.address" id="address" pattern="[A-Z1-9a-z]{1,5}[A-Za-z]{1,}[A-Z1-9a-z]{1,50}" required placeholder="Enter your address">
-                </div>
-                <div class="col-sm-6 mb-2">
-                  <label for="course" class="form-label text-white">Course</label>
-                  <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.course" id="course">
-                    <option value="" disabled selected>Select...</option>
-                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
-                  </select>
-                </div>
-                <div class="col-sm-6  mb-2">
-                    <label for="dep" class="form-label text-white">Department</label>
-                    <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.dep" id="dep">
-                      <option value="" disabled selected>Select...</option>
-                      <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+  <div class="col-12 col-md-10 col-lg-8 col-xl-8">
+    <div class="container">
+      <div class="card shadow border-0">
+        <div class="card-body p-5 bg-dark">
+          <div class="text-center d-flex flex-column justify-content-center align-items-center">
+            <h1 class="text-white fw-bold">Faculty Registration</h1>
+          </div> 
+          <form ng-submit="fRegCtrl.Register()" id="form">
+            <div class="row g-3 mt-3">
+              <div class="col-sm-4 mb-2">
+                <label for="firstName" class="form-label text-white">First Name</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" autocomplete="on" class="form-control" placeholder="Ron" pattern="[a-zA-Z]+" maxlength="20" ng-model="fRegCtrl.fname" id="firstName" required>
+              </div>
+              <div class="col-sm-4 mb-2">
+                <label for="midName" class="form-label text-white">Middle Name (Optional)</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" pattern="[a-zA-Z]+" placeholder="Van" maxlength="20" ng-model="fRegCtrl.mname" id="midName" autocomplete="on">
+              </div>
+              <div class="col-sm-4 mb-2">
+                <label for="lastName" class="form-label text-white">Last Name (Optional)</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" pattern="[a-zA-Z]+" placeholder="Doe" maxlength="20" ng-model="fRegCtrl.lname" id="lastName" autocomplete="on">
+              </div>
+              <div class="col-sm-7 mb-2">
+                <label for="email" class="form-label text-white">Email Address</label>
+                <input type="email" style="background-color: rgb(233, 231, 231);" class="form-control" id="email" pattern="[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,3}" ng-model="fRegCtrl.email" placeholder="xyz@abc.com" required autocomplete="on">
+              </div>
+              <div class="col-sm-5 mb-2">
+                <label for="phone" class="form-label text-white">Phone Number</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="phone" placeholder="XXXXXXXXXX" ng-model="fRegCtrl.number" autocomplete="on" required pattern="[6 7 8 9][0-9]{9}">
+              </div>
+              <div class="col-sm-5 mb-2">
+                <label for="dob" class="form-label text-white">Date of Birth</label>
+                <input type="date" style="background-color: rgb(233, 231, 231);" class="form-control" required autocomplete="on" ng-model="fRegCtrl.dob" id="dob">
+              </div>
+              <div class="col-7 mb-2">
+                <label for="address" class="form-label text-white">Address</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" ng-model="fRegCtrl.address" id="address" pattern="[A-Z1-9a-z]{1,5}[A-Za-z]{1,}[A-Z1-9a-z]{1,50}" required placeholder="Enter your address">
+              </div>
+
+              <div class="col-sm-6 mb-2">
+                <label for="course" class="form-label text-white">Course</label>
+                <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.course" id="course">
+                  <option value="" disabled selected>Select...</option>
+                  <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                </select>
+              </div>
+              <div class="col-sm-6 mb-2">
+                <label for="dep" class="form-label text-white">Department</label>
+                <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.dep" id="dep">
+                  <option value="" disabled selected>Select...</option>
+                  <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label text-white">Teaching Details</label>
+                <div ng-repeat="assignment in fRegCtrl.teachingDetail" class="row g-3 mb-3 p-3" style="background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                  <div class="col-sm-3">
+                    <label class="form-label text-white">Year</label>
+                    <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="detail.year">
+                      <option value="" disabled selected>Select Year</option>
+                      <option value="1">1st Year</option>
+                      <option value="2">2nd Year</option>
+                      <option value="3">3rd Year</option>
+                      <option value="4">4th Year</option>
                     </select>
-                </div>
-                <div class="col-sm-4 mb-2">
-                  <label for="year" class="form-label text-white">Year</label>
-                  <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.year" id="year">
-                    <option value="" disabled selected>Select...</option>
-                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
-                  </select>
-              </div>
-                <!-- <div class="col-sm-4 mb-2">
-                    <label for="section" class="form-label text-white">Sections</label>
-                    <select class="form-multi-select form-control" id="multiple-select-text" multiple data-coreui-selection-type="text" data-coreui-search="true" style="background-color: rgba(247, 244, 244, 0.578);" required ng-model="fRegCtrl.section" id="section">
-                      <option value="" disabled selected>Select...</option>
-                      <option value="0">Angular</option>
-                      <option value="1">Bootstrap</option>
-                      <option value="2">React.js</option>
-                      <option value="0">Angular</option>
-                      <option value="1">Bootstrap</option>
-                      <option value="2">React.js</option>
-                      <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
+                  </div>
+
+                  <div class="col-sm-5">
+                    <label class="form-label text-white">Sections</label>
+                    <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="detail.sections" multiple>
+                      <option value="A">Section A</option>
+                      <option value="B">Section B</option>
+                      <option value="C">Section C</option>
+                      <option value="D">Section D</option>
+                      <option value="E">Section E</option>
                     </select>
-                </div> -->
-                <div class="col-sm-4 mb-2">
-                  <label for="section" class="form-label text-white">Sections</label>
-                  <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.section" id="section">
-                    <option value="" disabled selected>Select...</option>
-                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
-                  </select>
+                    <small class="text-white-50">Hold Ctrl/Cmd to select multiple</small>
+                  </div>
+
+                  <div class="col-sm-3">
+                    <label class="form-label text-white">Subject</label>
+                    <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="detail.subject">
+                      <option value="" disabled selected>Select Subject</option>
+                      <option value="MATH">Mathematics</option>
+                      <option value="PHY">Physics</option>
+                      <option value="CHEM">Chemistry</option>
+                      <option value="CS">Computer Science</option>
+                      <option value="ENG">English</option>
+                    </select>
+                  </div>
+
+                  <div class="col-sm-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger" ng-click="fRegCtrl.removeDetail($index)" ng-if="!$first">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
                 </div>
-                <div class="col-sm-4 mb-2">
-                  <label for="section" class="form-label text-white">Subject</label>
-                  <select class="form-control" style="background-color: rgb(233, 231, 231);" required ng-model="fRegCtrl.section" id="section">
-                    <option value="" disabled selected>Select...</option>
-                    <option ng-repeat="bg in regCtrl.bgs" ng-value="bg.blood_grp">{{bg.blood_grp}}</option>
-                  </select>
+                <div class="col-12 mb-3">
+                  <button type="button" class="btn btn-secondary w-100" ng-click="fRegCtrl.addDetail()">
+                    Add
+                  </button>
+                </div>
               </div>
-                <div class="col-sm-6">
-                  <label for="password" class="form-label text-white">Password</label>
-                  <input type="password" style="background-color: rgb(233, 231, 231);" placeholder="Enter your password" class="form-control" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" ng-model="fRegCtrl.pass1" id="password" required>
-                </div>
-                <div class="col-sm-6">
-                  <label for="confirmPassword" class="form-label text-white">Confirm Password</label>
-                  <input type="password" style="background-color: rgb(233, 231, 231);" placeholder="Confirm your password" class="form-control" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" ng-model="fRegCtrl.pass2" id="confirmPassword" required>
-                </div>
-                <div class="col-12 mb-2 mt-5">
-                  <button type="submit" style="background-color: #bbdd72;" class="btn w-100">Create Account</button>
+
+              <div class="col-sm-6">
+                <label for="password" class="form-label text-white">Password</label>
+                <div class="input-group">
+                  <input type="password" style="background-color: rgb(233, 231, 231);" 
+                         placeholder="Enter your password" 
+                         class="form-control" 
+                         pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" 
+                         ng-model="fRegCtrl.pass1" 
+                         id="password" 
+                         required>
+                  <button class="btn" type="button" style="background-color: rgb(233, 231, 231);" 
+                          ng-click="fRegCtrl.togglePassword('password')">
+                    <i class="fas" ng-class="{'fa-eye': !fRegCtrl.showPassword, 'fa-eye-slash': fRegCtrl.showPassword}"></i>
+                  </button>
                 </div>
               </div>
-            </form>
-          </div>
+              <div class="col-sm-6">
+                <label for="confirmPassword" class="form-label text-white">Confirm Password</label>
+                <div class="input-group">
+                  <input type="password" style="background-color: rgb(233, 231, 231);" 
+                         placeholder="Confirm your password" 
+                         class="form-control" 
+                         pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" 
+                         ng-model="fRegCtrl.pass2" 
+                         id="confirmPassword" 
+                         required>
+                  <button class="btn" type="button" style="background-color: rgb(233, 231, 231);" 
+                          ng-click="fRegCtrl.toggleConfirmPassword('confirmPassword')">
+                    <i class="fas" ng-class="{'fa-eye': !fRegCtrl.showConfirmPassword, 'fa-eye-slash': fRegCtrl.showConfirmPassword}"></i>
+                  </button>
+                </div>
+              </div>              
+
+              <div class="col-12 mb-2 mt-5">
+                <button type="submit" style="background-color: #bbdd72;" class="btn w-100">Create Account</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 </div>

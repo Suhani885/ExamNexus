@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamNexus</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -24,11 +26,87 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(113, 112, 112, 0.7);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
+        }
+        
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .spinner-ripple {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .spinner-ripple div {
+            position: absolute;
+            border: 4px solid #ffffff;
+            opacity: 1;
+            border-radius: 50%;
+            animation: ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+        
+        .spinner-ripple div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+        
+        .loader-text {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes ripple {
+            0% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            4.9% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            5% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                top: 0px;
+                left: 0px;
+                width: 72px;
+                height: 72px;
+                opacity: 0;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
         }
     </style>
 </head>
@@ -37,61 +115,3 @@
     <div ui-view></div>
 </body>
 </html>
-
-<div ng-repeat="medicine in patientCtrl.prescription.medicines" class="mb-3">
-    <div class="row">
-        <div class="col">
-            <label class="form-label">section</label>
-            <input type="text" class="form-control" ng-model="medicine.name" required>
-        </div>
-        <div class="col">
-            <label class="form-label">yaer</label>
-            <input type="number" class="form-control" autocomplete="on" ng-model="medicine.days" min="1" required>
-        </div>
-        <div class="col-auto d-flex align-items-end">
-            <button type="button" class="btn btn-sm btn-outline-danger" ng-click="patientCtrl.prescription.medicines.splice($index, 1)" ng-if="!$first">Remove</button>
-        </div>
-    </div>
-</div>
-<button type="button" class="btn btn-secondary mb-3" ng-click="patientCtrl.addMedicine()">Add</button>
-
-<!-- patientCtrl.openPrescriptionModal = function(patient) {
-patientCtrl.selectedPatient = patient;
-patientCtrl.prescription = {
-medicines: [{}],
-};
-
-
-patientCtrl.submitPrescription = function() {
-var prescriptionData = {
-"appointment_id": patientCtrl.selectedPatient.id,
-"diagnosis": patientCtrl.prescription.diagnosis,
-"medicine": patientCtrl.prescription.medicines.map(m => m.name),
-"day": patientCtrl.prescription.medicines.map(m => m.days),
-"dosage": patientCtrl.prescription.medicines.map(m => m.dosage),
-"instruction": patientCtrl.prescription.instructions
-};
-var req = {
-method: 'POST',
-url: `${baseUrl}/vitalcure/create_pres/`,
-data: prescriptionData,
-withCredentials: true
-};
-$http(req).then(function(response) {
-console.log("Prescription submitted:", response);
-Swal.fire({
-icon: 'success',
-text: response.data.message
-});
-var prescriptionModal = bootstrap.Modal.getInstance(document.getElementById('prescriptionModal'));
-patientCtrl.fetchAppointments(); 
-prescriptionModal.hide();
-}, function(error) {
-console.log("Error submitting prescription", error);
-Swal.fire({
-icon: 'error',
-title: 'Error',
-text: error.data.error || "An unexpected error occurred!"
-});
-});
-}; -->
