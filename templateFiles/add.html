@@ -21,7 +21,7 @@
                                         <i class="bi bi-plus-lg me-2"></i> Add Course
                                     </button>
                                 </div>
-                                <div class="row g-4">
+                                <!-- <div class="row g-4">
                                     <div class="col-12">
                                         <div class="table-responsive">
                                             <table class="table table-dark table-striped">
@@ -55,7 +55,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,27 @@
                     </div>
                 </div>
 
-                <div class="row g-4">
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="p-3 rounded-circle me-3" style="background-color: rgba(255, 193, 7, 0.15);">
+                                            <i class="bi bi-building" style="font-size: 24px; color: #ffc107;"></i>
+                                        </div>
+                                        <h5 style="color: #ffffff; font-size: 1.25rem; margin: 0;">Years</h5>
+                                    </div>
+                                    <button class="btn" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107; border: none;" data-bs-toggle="modal" data-bs-target="#addYearModal">
+                                        <i class="bi bi-plus-lg me-2"></i> Add Year
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-5">
                     <div class="col-12">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
                             <div class="card-body p-4">
@@ -100,6 +120,27 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="p-3 rounded-circle me-3" style="background-color: rgba(16, 228, 66, 0.15);">
+                                            <i class="bi bi-book" style="font-size: 24px; color: #10e442;"></i>
+                                        </div>
+                                        <h5 style="color: #ffffff; font-size: 1.25rem; margin: 0;">Subjects</h5>
+                                    </div>
+                                    <button class="btn" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442; border: none;" data-bs-toggle="modal" data-bs-target="#addSubjectsModal">
+                                        <i class="bi bi-plus-lg me-2"></i> Add Subjects
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -146,7 +187,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form ng-submit="addCtrl.create()">
+                    <form ng-submit="addCtrl.createDep()">
                         <div class="mb-3">
                             <label class="form-label" style="color: #B0B0B0;">Course</label>
                             <select class="form-select" required ng-model="addCtrl.courseId" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
@@ -170,6 +211,38 @@
         </div>
     </div>
 
+    <div class="modal fade" id="addYearModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" style="color: #ffffff;">Add New Year</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="addCtrl.createYear()">
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Course</label>
+                            <select class="form-select" required ng-model="addCtrl.depId" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                                <option value="" disabled selected>Select Course</option>
+                                <option ng-repeat="course in addCtrl.courses" ng-value="course.id">
+                                    {{course.course}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Year</label>
+                            <input type="text" class="form-control" ng-model="addCtrl.year" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn" style="background-color: rgba(255, 255, 255, 0.1); color: #ffffff;" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn" style="background-color: rgba(255, 193, 7, 0.15); color:#ffc107;">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="addSectionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
@@ -181,16 +254,60 @@
                     <form ng-submit="addCtrl.createSection()">
                         <div class="mb-3">
                             <label class="form-label" style="color: #B0B0B0;">Course</label>
-                            <select class="form-select" ng-model="addCtrl.course" id="course" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                            <select class="form-select" ng-model="addCtrl.course" id="course.id" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                                 <option value="" disabled selected>Select...</option>
-                                <option ng-repeat="course in addCtrl.courses" ng-click="addCtrl.fetchDeps()" ng-value="course.course">{{course.course}}</option>
+                                <option ng-repeat="course in addCtrl.courses" ng-click="addCtrl.fetchDeps()" ng-value="course.duration_id">{{course.course}}</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" style="color: #B0B0B0;">Department</label>
                             <select class="form-select" ng-model="addCtrl.dep" ng-change="addCtrl.fetchDeps(addCtrl.course)" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                                 <option value="" disabled selected>Select...</option>
-                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.course">{{dep.course}}</option>
+                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.parent_id">{{dep.value}}</option>
+                        </select>
+                        </div>
+                        <!-- <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Year</label>
+                            <select class="form-select" ng-model="addCtrl.year" style="background-color: rgba(255, 255, 255, 0.05);  border: 1px solid #404040; color: #ffffff;">
+                                <option value="" disabled selected>Select...</option>
+                                <option ng-repeat="course in addCtrl.courses" ng-value="course.duration">{{course.duration}}</option>
+                            </select>
+                        </div> -->
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Section</label>
+                            <input type="text" ng-model="addCtrl.section" class="form-control" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn" style="background-color: rgba(255, 255, 255, 0.1); color: #ffffff;" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn" style="background-color: rgba(53, 111, 220, 0.15); color:#356fdc;">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addSubjectsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" style="color: #ffffff;">Add New Subjects</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="addCtrl.createSubjects()">
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Course</label>
+                            <select class="form-select" ng-model="addCtrl.course" id="course.id" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                                <option value="" disabled selected>Select course</option>
+                                <option ng-repeat="course in addCtrl.courses" ng-click="addCtrl.fetchDeps()" ng-value="course.duration_id">{{course.course}}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #B0B0B0;">Department</label>
+                            <select class="form-select" ng-model="addCtrl.dep" ng-change="addCtrl.fetchDeps(addCtrl.course)" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                                <option value="" disabled selected>Select department</option>
+                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.parent_id">{{dep.value}}</option>
                         </select>
                         </div>
                         <div class="mb-3">
@@ -201,8 +318,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" style="color: #B0B0B0;">Section</label>
-                            <input type="text" class="form-control" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                            <label class="form-label" style="color: #B0B0B0;">Subject</label>
+                            <input type="text" ng-model="addCtrl.subject" class="form-control" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                         </div>
                         <div class="modal-footer border-0">
                             <button type="button" class="btn" style="background-color: rgba(255, 255, 255, 0.1); color: #ffffff;" data-bs-dismiss="modal">Close</button>

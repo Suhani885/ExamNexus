@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-.constant('BASE_URL', 'https://10.21.97.44:8000')
+.constant('BASE_URL', 'https://10.21.99.136:8000')
 
 .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
     return {
@@ -16,10 +16,10 @@ angular.module('app.services', [])
         create: {
             main: `${BASE_URL}/portal/dropdowns/`,
             course: `${BASE_URL}/portal/get-courses/`,
-            // getDep: `${BASE_URL}/portal/get-departments/`,
-            // getYear: `${BASE_URL}/portal/get-years/`,
-            // create: `${BASE_URL}/portal/exam/create/`,
-            // submit: `${BASE_URL}/portal/exam/submit/`
+        },
+        exam: {
+            create: `${BASE_URL}/portal/qp/`,
+            view: `${BASE_URL}/portal/fetchqp/`,
         }
     };
 }])
@@ -72,12 +72,12 @@ angular.module('app.services', [])
         };
         $http(req).then(function(response) {
             callback(response.data);
-        }, function(err) {
-            console.log("Error:", err);
+        }, function(response) {
+            console.log("Error:", response);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.data.error || "An unexpected error occurred. Please try again!"
+                text: response.message || "An unexpected error occurred. Please try again!"
             });
         });
     };
@@ -91,12 +91,12 @@ angular.module('app.services', [])
         };
         $http(req).then(function(response) {
             callback(response.data);
-        }, function(err) {
-            console.log("Error:", err);
+        }, function(response) {
+            console.log("Error:", response);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.data.error || "An unexpected error occurred. Please try again!"
+                text: response.message || "An unexpected error occurred. Please try again!"
             });
         });
     };
@@ -110,31 +110,15 @@ angular.module('app.services', [])
         };
         $http(req).then(function(response) {
             callback(response.data);
-        }, function(err) {
-            console.log("Error:", err);
+        }, function(response) {
+            console.log("Error:", response);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.data.error || "An unexpected error occurred. Please try again!"
+                text: response.message || "An unexpected error occurred. Please try again!"
             });
         });
     };
 }]);
 
-
-// responseError: function (response) {
-//     console.log('response error started...');
-
-//     if (response.status === 401) {
-//         $location.path('/signin');
-//         $rootScope.$broadcast('error');
-//     }
-
-//     if (response.status === 500) {
-//         $rootScope.ErrorMsg = "An Unexpected error occured";
-//         $location.path('/Error');
-//     }
-
-//     return $q.reject(response);
-// }
 

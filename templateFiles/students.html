@@ -1,0 +1,112 @@
+<body ng-controller="questionController as qpCtrl">
+    <div class="container-fluid py-4" style="background-color: #121212;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-10">
+                    <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <h1 class="display-6 mb-4 text-white">Create Question Paper</h1>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-2">
+                                    <select class="form-select" ng-model="qpCtrl.selectedCourse" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="">Select Course</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <select class="form-select" ng-model="qpCtrl.selectedYear" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="">Select Department</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <select class="form-select" ng-model="qpCtrl.selectedYear" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="">Select Year</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <select class="form-select" ng-model="qpCtrl.selectedSubject" ng-disabled="!qpCtrl.selectedYear" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="">Select Subject</option>
+                                        <option value="ds">DS</option>
+                                        <option value="algo">DA</option>
+                                        <option value="dbms">DBMS</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button class="btn btn-primary w-100" ng-click="qpCtrl.openQuestionModal()" ng-disabled="!qpCtrl.selectedSubject" data-bs-toggle="modal" data-bs-target="#questionModal">
+                                        Create Question Paper
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="questionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #1a1a1a;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-white">Add Questions</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="qpCtrl.saveQuestionPaper()">
+                        <div ng-repeat="question in qpCtrl.questions" class="card mb-3" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label class="form-label text-white">Question</label>
+                                        <textarea class="form-control" ng-model="question.text" placeholder="Enter question" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-6 mb-2" ng-repeat="i in [1,2,3,4]">
+                                        <label class="form-label text-white">Option {{i}}</label>
+                                        <input type="text" class="form-control" ng-model="question.options[i-1]" placeholder="Enter option" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="form-label text-white">Correct Answer</label>
+                                        <select class="form-select" ng-model="question.correctAnswer" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                                            <option value="">Select Correct Option</option>
+                                            <option ng-repeat="i in [1,2,3,4]" value="{{i-1}}">
+                                                Option {{i}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger" ng-click="qpCtrl.remove($index)" ng-if="!$first">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn btn-success mb-3" ng-click="qpCtrl.addQuestion()">
+                            <i class="bi bi-plus"></i> Add Another Question
+                        </button>
+
+                        <div class="modal-footer border-top border-secondary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">
+                                Submit Question Paper
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

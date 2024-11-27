@@ -1,5 +1,7 @@
 const app = angular.module('app', ['ui.router', 'ui.bootstrap', 'app.services'])
 
+BASE_URL= 'https://10.21.97.44:8000';
+
 app.directive('loader', ['LoaderService', function(LoaderService) {
     return {
         restrict: 'E',
@@ -77,11 +79,11 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'staffController',
             controllerAs: 'staffCtrl'
         })
-        .state('user.makeExam', {
-            url: '/makeExam',
-            templateUrl: 'templateFiles/makeExam.html',
-            controller: 'makeController',
-            controllerAs: 'makeCtrl'
+        .state('user.studentRec', {
+            url: '/makeQuestion',
+            templateUrl: 'templateFiles/students.html',
+            controller: 'questionController',
+            controllerAs: 'qpCtrl'
         })
         .state('user.schedule', {
             url: '/schedule',
@@ -107,7 +109,7 @@ app.controller('LoginController', ['$state', 'ApiRequest', 'ApiEndpoints', funct
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
-                text: response.message
+                text: response.message 
             }).then(() => {
                 $state.go('user');
             });
@@ -217,10 +219,8 @@ app.controller('AcademicController', ['ApiRequest', 'ApiEndpoints',
                                             strength: 60,
                                             subjects: [
                                                 {
-                                                    code: "CS101",
                                                     name: "Programming Fundamentals",
-                                                    faculty: "Dr. Jane Smith",
-                                                    credits: 4
+                                                    faculty: "Dr. Jane Smith"
                                                 }
                                             ]
                                         },
@@ -229,10 +229,8 @@ app.controller('AcademicController', ['ApiRequest', 'ApiEndpoints',
                                             strength: 60,
                                             subjects: [
                                                 {
-                                                    code: "CS101",
                                                     name: "Programming Fundamentals",
-                                                    faculty: "Dr. Bob Wil",
-                                                    credits: 4
+                                                    faculty: "Dr. Bob Wil"
                                                 }
                                             ]
                                         }
@@ -346,8 +344,8 @@ function(ApiRequest, ApiEndpoints) {
     };
 }]);
 
-app.controller('AddController', ['ApiRequest', 'ApiEndpoints',
-    function(ApiRequest, ApiEndpoints) {
+app.controller('AddController', ['ApiRequest', 'ApiEndpoints','$http',
+    function(ApiRequest, ApiEndpoints,$http) {
         var addCtrl = this;
         addCtrl.courses=[];
 
@@ -367,10 +365,40 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints',
             });
         };
       
-        addCtrl.create = function() {
+        addCtrl.createDep = function() {
             ApiRequest.post(ApiEndpoints.create.main, {
                 "pid": addCtrl.courseId,
                 "value": addCtrl.dep
+            }, function(response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                })
+                $('#addDepartmentModal').modal('hide')
+            });
+        };
+
+        addCtrl.createYear = function() {
+            ApiRequest.post(ApiEndpoints.create.main, {
+                "pid": addCtrl.depId,
+                "value": addCtrl.year
+            }, function(response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                })
+                $('#addYearModal').modal('hide')
+            });
+        };
+
+        addCtrl.createSection = function() {
+            ApiRequest.post(ApiEndpoints.create.main, {
+                "pid": addCtrl.dep,
+                "value": addCtrl.section
             }, function(response) {
                 console.log(response);
                 Swal.fire({
@@ -389,17 +417,37 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints',
             });
         };
 
+        // addCtrl.fetchDeps = function(course) {
+        //     if (!course) {
+        //         course = addCtrl.course;
+        //     }
+        //     ApiRequest.get(ApiEndpoints.create.main, {
+        //         params: {
+        //           pid:course
+        //         }
+        //       }, function(response) {
+        //         console.log(response);
+        //         addCtrl.deps = response.data
+        //     });
+        // };
+
         addCtrl.fetchDeps = function(course) {
             if (!course) {
-                course = addCtrl.course;
+              course = addCtrl.course;
             }
-            ApiRequest.get(ApiEndpoints.create.getDep, {
-                params: {
-                  course:course
-                }
-              }, function(response) {
+            var req = {
+                method: 'GET',
+                url: `${BASE_URL}/portal/dropdowns/`,
+                withCredentials: true,
+                params: { 
+                    "pid": course
+                }       
+            };
+            $http(req).then(function(response) {
                 console.log(response);
-                addCtrl.deps = response.data
+                addCtrl.deps = response.data.message;
+            }, function(error) {
+                console.log("Error", error);
             });
         };
 
@@ -473,4 +521,55 @@ app.controller('fRegController', ['ApiRequest', 'ApiEndpoints',
                 })
             });
         };
+}]);
+
+app.controller('questionController', ['ApiRequest', 'ApiEndpoints', function(ApiRequest, ApiEndpoints) {
+    var qpCtrl = this;
+    
+    qpCtrl.selectedYear = '';
+    qpCtrl.selectedSubject = '';
+    qpCtrl.questions = [];
+
+    // qpCtrl.openQuestionModal = function() {
+    //     qpCtrl.questions = [{ 
+    //         text: '', 
+    //         options: ['','','',''], 
+    //         correctAnswer: '' 
+    //     }];
+        
+    //     var questionModal = new bootstrap.Modal(document.getElementById('questionModal'));
+    //     questionModal.show();
+    // };
+
+    qpCtrl.addQuestion = function() {
+        qpCtrl.questions.push({ 
+            text: '', 
+            options: ['','','',''], 
+            correctAnswer: '' 
+        });
+    };
+
+    qpCtrl.remove = function(index) {
+        qpCtrl.questions.splice(index, 1);
+    };
+
+    qpCtrl.saveQuestionPaper = function() {
+        ApiRequest.post(ApiEndpoints.questionPaper.create, {
+            "course": qpCtrl.selectedCourse,
+            "dep": qpCtrl.selectedDep,
+            "year": qpCtrl.selectedYear,
+            "subject": qpCtrl.selectedSubject,
+            "questions": qpCtrl.questions
+        }, function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message
+            });
+            $('questionModal').modal('hide')
+            
+            // var questionModal = bootstrap.Modal.getInstance(document.getElementById('questionModal'));
+            // questionModal.hide();
+        });
+    };
 }]);
