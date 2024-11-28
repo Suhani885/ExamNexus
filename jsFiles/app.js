@@ -1,6 +1,6 @@
 const app = angular.module('app', ['ui.router', 'ui.bootstrap', 'app.services'])
 
-BASE_URL= 'https://10.21.97.44:8000';
+BASE_URL= 'https://10.21.98.228:8000';
 
 app.directive('loader', ['LoaderService', function(LoaderService) {
     return {
@@ -275,27 +275,6 @@ app.controller('AcademicController', ['ApiRequest', 'ApiEndpoints',
                 }
             ]
         };
-
-        // academicCtrl.loadAcademicData = function() {
-        //     ApiRequest.get(ApiEndpoints.ACADEMIC_DATA)
-        //         .then(function(response) {
-        //             academicCtrl.academicData = response.data;
-        //         })
-        //         .catch(function(error) {
-        //             console.error('Error loading data:', error);
-        //         });
-        // };
-
-        // academicCtrl.loadFacultyData = function() {
-        //     ApiRequest.get(ApiEndpoints.FACULTY_DATA)
-        //         .then(function(response) {
-        //             academicCtrl.facultyData = response.data;
-        //         })
-        //         .catch(function(error) {
-        //             console.error('Error loading faculty data:', error);
-        //         });
-        // };
-
     }
 ]);
 
@@ -348,6 +327,9 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints','$http',
     function(ApiRequest, ApiEndpoints,$http) {
         var addCtrl = this;
         addCtrl.courses=[];
+        addCtrl.years=[];
+        addCtrl.deps=[];
+        addCtrl.subject = [];
 
         addCtrl.createCourse = function() {
             ApiRequest.post(ApiEndpoints.create.main, {
@@ -380,21 +362,6 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints','$http',
             });
         };
 
-        addCtrl.createYear = function() {
-            ApiRequest.post(ApiEndpoints.create.main, {
-                "pid": addCtrl.depId,
-                "value": addCtrl.year
-            }, function(response) {
-                console.log(response);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: response.message
-                })
-                $('#addYearModal').modal('hide')
-            });
-        };
-
         addCtrl.createSection = function() {
             ApiRequest.post(ApiEndpoints.create.main, {
                 "pid": addCtrl.dep,
@@ -406,8 +373,33 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints','$http',
                     title: 'Success!',
                     text: response.message
                 })
-                $('#addCourseModal').modal('hide')
+                $('#addSectionModal').modal('hide')
             });
+        };
+
+        addCtrl.createSubjects = function() {
+            ApiRequest.post(ApiEndpoints.create.main, {
+                "pid": addCtrl.dep,
+                "value": addCtrl.subject
+            }, function(response) {
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                })
+                $('#addSubjectsModal').modal('hide')
+            });
+        };
+
+        addCtrl.add = function() {
+            addCtrl.subject.push({ 
+                text: ''
+            });
+        };
+    
+        addCtrl.remove = function(index) {
+            addCtrl.subject.splice(index, 1);
         };
 
         addCtrl.fetchCourses = function() {
@@ -417,44 +409,43 @@ app.controller('AddController', ['ApiRequest', 'ApiEndpoints','$http',
             });
         };
 
-        // addCtrl.fetchDeps = function(course) {
-        //     if (!course) {
-        //         course = addCtrl.course;
-        //     }
-        //     ApiRequest.get(ApiEndpoints.create.main, {
-        //         params: {
-        //           pid:course
-        //         }
-        //       }, function(response) {
-        //         console.log(response);
-        //         addCtrl.deps = response.data
-        //     });
-        // };
-
-        addCtrl.fetchDeps = function(course) {
-            if (!course) {
-              course = addCtrl.course;
+        addCtrl.fetchDeps = function(yearId) {
+            if (!yearId) {
+                yearId = addCtrl.year;
             }
             var req = {
                 method: 'GET',
                 url: `${BASE_URL}/portal/dropdowns/`,
                 withCredentials: true,
                 params: { 
-                    "pid": course
+                    "pid": yearId
                 }       
             };
             $http(req).then(function(response) {
                 console.log(response);
-                addCtrl.deps = response.data.message;
+                addCtrl.deps = response.data;
             }, function(error) {
                 console.log("Error", error);
             });
         };
 
-        addCtrl.fetchYear = function() {
-            ApiRequest.get(ApiEndpoints.create.getYear, function(response) {
+        addCtrl.fetchYear = function(courseId) {
+            if (!courseId) {
+                courseId = addCtrl.course;
+            }
+            var req = {
+                method: 'GET',
+                url: `${BASE_URL}/portal/dropdowns/`,
+                withCredentials: true,
+                params: { 
+                    "pid": courseId
+                }       
+            };
+            $http(req).then(function(response) {
                 console.log(response);
-                addCtrl.years = response.data.detail
+                addCtrl.years = response.data;
+            }, function(error) {
+                console.log("Error", error);
             });
         };
 
