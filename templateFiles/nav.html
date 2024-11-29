@@ -12,31 +12,26 @@
             <ul class="nav flex-column px-3">
                 <div class="nav-item w-100 mb-2" ng-repeat="nav in navCtrl.navs">
                     <li class="nav-item mb-2" ng-if="nav.type === 'dropdown'">
-                        <div class="nav-link px-0 align-middle text-white">
-                            <div class="d-flex align-items-center">
-                                <i class="{{nav.icon}} me-3"></i>
-                                <select class="form-select bg-transparent text-white border-0 ms-1 nav-text"
-                                    ng-model="nav.selected"
-                                    ng-change="navCtrl.navigateTo(nav.subItems[nav.selected])"
+                        <div class="nav-link d-flex align-items-center px-0 align-middle text-white">
+                            <i class="{{nav.icon}} me-3"></i>
+                            <select class="form-select bg-transparent text-white border-0 ms-1 nav-text" ng-model="nav.selected" ng-change="navCtrl.navigateTo(nav.subItems[nav.selected])"
                                     style="width: calc(100% - 40px);">
                                     <option value="" disabled selected>{{nav.title}}</option>
                                     <option ng-repeat="subItem in nav.subItems" value="{{$index}}">
                                         {{subItem.title}}
                                     </option>
-                                </select>
-                            </div>
+                            </select>
                         </div>
                     </li>
                     <li class="nav-item mb-2">
-                        <a ng-if=" nav.type === 'single' " ng-click="navCtrl.navigateTo(nav)"
-                           class="nav-link px-0 align-middle text-white">
+                        <a ng-if=" nav.type === 'single' " ng-click="navCtrl.navigateTo(nav)" class="nav-link d-flex align-items-center px-0 align-middle text-white">
                             <i class="{{nav.icon}} me-3"></i>
                             <span class="ms-1 d-none d-sm-inline nav-text">{{nav.title}}</span>
                         </a>
                     </li>
                 </div>
                 <li class="nav-item mb-2">
-                    <a ng-click="navCtrl.toggleMode()" class="nav-link px-0 align-middle text-white d-flex align-items-center">
+                    <a ng-click="navCtrl.toggleMode()" class="nav-link d-flex align-items-center px-0 align-middle text-white">
                         <i ng-class="navCtrl.currentMode === 'dark' ? 'bi bi-brightness-high-fill' : 'bi bi-moon-fill'" class="me-3 fs-5"></i>
                         <span class="nav-text">
                             {{ navCtrl.currentMode === 'dark' ? 'Light Mode' : 'Dark Mode' }}
@@ -67,7 +62,7 @@
             mainContent.style.marginLeft = isCollapsed ? '320px' : '80px';
             const navTexts = document.querySelectorAll('.nav-text');
             navTexts.forEach(text => {
-                text.style.display = isCollapsed ? 'block' : 'none';
+                text.style.display = isCollapsed ? 'inline' : 'none';
             });
         }
     </script>
@@ -88,7 +83,10 @@
             color: white;
         }
         .nav-item i {
-            font-size: 19px;
+            font-size: 20px;
+        }
+        .nav-text {
+            transition: display 0.3s ease;
         }
     </style>
 </div>
