@@ -1,6 +1,6 @@
 const app = angular.module('app', ['ui.router', 'ui.bootstrap', 'app.services'])
 
-const BASE_URL = 'https://10.21.97.242:8000';
+const BASE_URL = 'https://10.21.97.202:8000';
 
 app.directive('loader', ['LoaderService', function(LoaderService) {
     return {
@@ -197,46 +197,130 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
 app.controller('sRegController', ['HttpService', 'ApiEndpoints',
 function(HttpService, ApiEndpoints) {
     var regCtrl = this;
-  
+
+    regCtrl.courses=[];
+    regCtrl.deps=[];
+    regCtrl.years=[];
+    regCtrl.genders=[];
+    regCtrl.sections=[];
+
+    regCtrl.fname = '';
+    regCtrl.mname = '';
+    regCtrl.lname = '';
+    regCtrl.email = '';
+    regCtrl.number = '';
+    regCtrl.gender = '';
+    regCtrl.dob = '';
+    regCtrl.year = '';
+    regCtrl.course = '';
+    regCtrl.dep = '';
+    regCtrl.password = '';
+    regCtrl.confirmPassword = '';
+
+    var currentDate = new Date();
+    currentDate.setFullYear(currentDate.getFullYear() - 15);
+    regCtrl.maxDateOfBirth = currentDate.toISOString().split('T')[0];
+
     regCtrl.register = function() {
-        HttpService.post(ApiEndpoints.auth.register, {
+        if (regCtrl.password !== regCtrl.confirmPassword) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Password Mismatch',
+                text: 'Passwords do not match. Please try again.'
+            });
+            return;
+        }
+        var registrationData = {
             "type":student,
             "email": regCtrl.email,
             "first_name": regCtrl.fname,
             "middle_name": regCtrl.mname,
             "last_name": regCtrl.lname,
-            "password": regCtrl.pass1,
             "phone_number": regCtrl.number,
             "dob": regCtrl.dob,
             "gender": regCtrl.gender,
             "course": regCtrl.course,
             "department": regCtrl.dep,
-            "detail": regCtrl.section,
-            "address": regCtrl.address,
+            "detail": regCtrl.detail,
+            "password": regCtrl.pass1,
             "confirm_password": regCtrl.pass2
-        }).then(function(response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: response.message
+        };
+        HttpService.post(ApiEndpoints.auth.register, registrationData)
+            .then(function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful!',
+                    text: response.message || 'Account has been created.'
+                });
             });
-        });
     };
 
     regCtrl.detail = [{
-        year: '',
-        section:''
+        year_id: parseInt(''),
+        section: []
     }];
-    
-    regCtrl.addDetail = function() {
-        regCtrl.detail.push({
-            year: '',
-            sec_sub_details: [{
-                section: '',
-                subject: ''
-            }]
-        });
+
+    regCtrl.passwordVisibility = {
+        password: false,
+        confirmPassword: false,
+        
+        toggle: function(field) {
+            this[field] = !this[field];
+            var inputElement = document.getElementById(field);
+            inputElement.type = this[field] ? 'text' : 'password';
+        }
     };
+
+    regCtrl.fetchCourses = function() {
+        HttpService.get(ApiEndpoints.create.course)
+            .then(function(response) {
+                regCtrl.courses = response.data;
+            });
+    };
+
+    regCtrl.fetchGender = function() {
+        HttpService.get(ApiEndpoints.user.gender)
+            .then(function(response) {
+                regCtrl.genders = response.data;
+            });
+    };
+
+    regCtrl.fetchDeps = function(courseId) {
+        if (!courseId) {
+            courseId = regCtrl.course;
+        }
+        
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+            .then(function(response) {
+                console.log('Department Fetch Response:', response);
+                regCtrl.deps = response.data;
+            });
+    };
+
+    regCtrl.fetchYears = function(depId) {
+        if (!depId) {
+            depId = regCtrl.dep;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+            .then(function(response) {
+                regCtrl.years = response.data;
+                console.log(regCtrl.years);
+            });
+    };
+
+    regCtrl.fetchSections = function(yearId) {
+        if (!yearId) {
+            yearId = detail.year;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+            .then(function(response) {
+                regCtrl.sections = response.data;
+                console.log(regCtrl.sections);
+            });
+    };
+
+    regCtrl.fetchCourses();
+    regCtrl.fetchGender();
 }])
 
 app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function(HttpService, ApiEndpoints, $http) {
@@ -348,97 +432,84 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                 });
         };
 
-        addCtrl.fetchDeps = function(yearId) {
-            if (!yearId) {
-                yearId = addCtrl.year;
-            }
-            var req = {
-                method: 'GET',
-                url: `${BASE_URL}/portal/dropdowns/`,
-                withCredentials: true,
-                params: { 
-                    "pid": yearId
-                }       
-            };
-            $http(req).then(function(response) {
-                addCtrl.deps = response.data;
-            }, function(error) {
-                console.log("Error", error);
-            });
-        };
-
-        addCtrl.fetchYear = function(courseId) {
+        addCtrl.fetchDeps = function(courseId) {
             if (!courseId) {
                 courseId = addCtrl.course;
             }
-            var req = {
-                method: 'GET',
-                url: `${BASE_URL}/portal/dropdowns/`,
-                withCredentials: true,
-                params: { 
-                    "pid": courseId
-                }       
-            };
-            $http(req).then(function(response) {
-                addCtrl.years = response.data;
-                console.log(addCtrl.years);
-            }, function(error) {
-                console.log("Error", error);
-            });
+            HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+                .then(function(response) {
+                    addCtrl.deps = response.data;
+                    console.log(addCtrl.deps);
+                })
+                .catch(function(error) {
+                    console.log("Error", error);
+                });
+        };
+    
+        addCtrl.fetchYears = function(depId) {
+            if (!depId) {
+                depId = addCtrlCtrl.dep;
+            }
+            HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+                .then(function(response) {
+                    addCtrl.years = response;
+                    console.log(addCtrl.years);
+                })
+                .catch(function(error) {
+                    console.log("Error", error);
+                });
         };
 
         addCtrl.fetchCourses();
 }])
 
-app.controller('fRegController', ['HttpService', 'ApiEndpoints','$http', function(HttpService, ApiEndpoints,$http) {
+app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpService, ApiEndpoints) {
     var fRegCtrl = this;
+
     fRegCtrl.courses=[];
     fRegCtrl.deps=[];
     fRegCtrl.years=[];
     fRegCtrl.genders=[];
     fRegCtrl.subjects=[];
     fRegCtrl.sections=[];
-    fRegCtrl.firstName = '';
-    fRegCtrl.middleName = '';
-    fRegCtrl.lastName = '';
+
+    fRegCtrl.fname = '';
+    fRegCtrl.mname = '';
+    fRegCtrl.lname = '';
     fRegCtrl.email = '';
-    fRegCtrl.phoneNumber = '';
-    fRegCtrl.dateOfBirth = '';
+    fRegCtrl.number = '';
+    fRegCtrl.gender = '';
+    fRegCtrl.dob = '';
     fRegCtrl.course = '';
-    fRegCtrl.department = '';
+    fRegCtrl.dep = '';
     fRegCtrl.password = '';
     fRegCtrl.confirmPassword = '';
 
     fRegCtrl.passwordVisibility = {
         password: false,
         confirmPassword: false,
-    
-        toggle: function(inputId) {
-            var inputElement = document.getElementById(inputId);
-            var visibilityFlag = inputId + 'Visibility';
-            if (inputElement.type === 'password') {
-                inputElement.type = 'text';
-                this[visibilityFlag] = true;
-            } else {
-                inputElement.type = 'password';
-                this[visibilityFlag] = false;
-            }
+        
+        toggle: function(field) {
+            this[field] = !this[field];
+            var inputElement = document.getElementById(field);
+            inputElement.type = this[field] ? 'text' : 'password';
         }
     };
 
     fRegCtrl.teachingDetails = [{
-        year_id: '',
-        subject_id: '',
-        sections: []
+        year_id: parseInt(''),
+        subject_id: parseInt(''),
+        section: []
     }];
 
     fRegCtrl.addTeachingDetail = function() {
         fRegCtrl.teachingDetails.push({
-            year_id: '',
-            subject_id: '',
+            year_id: parseInt(''),
+            subject_id: parseInt(''),
             section: []
         });
     };
+
     fRegCtrl.removeTeachingDetail = function(index) {
         if (fRegCtrl.teachingDetails.length > 1) {
             fRegCtrl.teachingDetails.splice(index, 1);
@@ -501,87 +572,55 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints','$http', functio
         if (!courseId) {
             courseId = fRegCtrl.course;
         }
-        var req = {
-            method: 'GET',
-            url: `${BASE_URL}/portal/dropdowns/`,
-            withCredentials: true,
-            params: { 
-                "pid": courseId
-            }       
-        };
-        $http(req).then(function(response) {
-            fRegCtrl.deps = response.data;
-            console.log(fRegCtrl.deps);
-        }, function(error) {
-            console.log("Error", error);
-        });
+        
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+            .then(function(response) {
+                console.log('Department Fetch Response:', response);
+                fRegCtrl.deps = response.data;
+            });
     };
 
     fRegCtrl.fetchYears = function(depId) {
         if (!depId) {
             depId = fRegCtrl.dep;
         }
-        var req = {
-            method: 'GET',
-            url: `${BASE_URL}/portal/dropdowns/`,
-            withCredentials: true,
-            params: { 
-                "pid": depId
-            }       
-        };
-        $http(req).then(function(response) {
-            fRegCtrl.years = response.data;
-            console.log(fRegCtrl.years);
-        }, function(error) {
-            console.log("Error", error);
-        });
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+            .then(function(response) {
+                fRegCtrl.years = response.data;
+                console.log(fRegCtrl.years);
+            });
     };
 
     fRegCtrl.fetchSections = function(yearId) {
         if (!yearId) {
-            yearId = fRegCtrl.year;
+            yearId = detail.year;
         }
-        var req = {
-            method: 'GET',
-            url: `${BASE_URL}/portal/dropdowns/`,
-            withCredentials: true,
-            params: { 
-                "pid": yearId
-            }       
-        };
-        $http(req).then(function(response) {
-            fRegCtrl.sections = response.data;
-            console.log(fRegCtrl.sections);
-        }, function(error) {
-            console.log("Error", error);
-        });
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+            .then(function(response) {
+                fRegCtrl.sections = response.data;
+                console.log(fRegCtrl.sections);
+            });
     };
 
     fRegCtrl.fetchSubjects = function(secId) {
         if (!secId) {
-            secId = fRegCtrl.sec;
+            secId = detail.section;
         }
-        var req = {
-            method: 'GET',
-            url: `${BASE_URL}/portal/dropdowns/`,
-            withCredentials: true,
-            params: { 
-                "pid": secId
-            }       
-        };
-        $http(req).then(function(response) {
-            fRegCtrl.subjects = response.data;
-            console.log(fRegCtrl.subjects);
-        }, function(error) {
-            console.log("Error", error);
-        });
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + secId)
+            .then(function(response) {
+                fRegCtrl.subjects = response.data;
+                console.log(fRegCtrl.subjects);
+            })
+            .catch(function(error) {
+                console.log("Error", error);
+            });
     };
 
     fRegCtrl.fetchCourses();
     fRegCtrl.fetchGender();
 }]);
 
-    app.controller('questionController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+app.controller('questionController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var qpCtrl = this;
     
     qpCtrl.selectedCourse = '';
@@ -604,39 +643,29 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints','$http', functio
         });
     };
 
+    qpCtrl.addOption = function(questionIndex) {
+        if (qpCtrl.questions[questionIndex].options.length < 6) {
+            qpCtrl.questions[questionIndex].options.push('');
+        }
+    };
+
+    qpCtrl.removeOption = function(questionIndex, optionIndex) {
+        if (qpCtrl.questions[questionIndex].options.length > 2) {
+            qpCtrl.questions[questionIndex].options.splice(optionIndex, 1);
+            
+            if (qpCtrl.questions[questionIndex].correctAnswer === optionIndex) {
+                qpCtrl.questions[questionIndex].correctAnswer = '';
+            } else if (qpCtrl.questions[questionIndex].correctAnswer > optionIndex) {
+                qpCtrl.questions[questionIndex].correctAnswer--;
+            }
+        }
+    };
+
     qpCtrl.remove = function(index) {
         qpCtrl.questions.splice(index, 1);
     };
 
-    // qpCtrl.validateQuestionPaper = function() {
-    //     if (!qpCtrl.selectedCourse || !qpCtrl.selectedDepartment || 
-    //         !qpCtrl.selectedYear || !qpCtrl.selectedSubject) {
-    //         alert('Please complete all selections before submitting.');
-    //         return false;
-    //     }
-
-    //     for (var i = 0; i < qpCtrl.questions.length; i++) {
-    //         var q = qpCtrl.questions[i];
-    //         if (!q.text) {
-    //             alert('Question text is required for all questions.');
-    //             return false;
-    //         }
-    //         if (q.options.some(opt => !opt)) {
-    //             alert('All options must be filled for each question.');
-    //             return false;
-    //         }
-    //         if (q.correctAnswer === '') {
-    //             alert('Please select a correct answer for all questions.');
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // };
-
     qpCtrl.saveQuestionPaper = function() {
-        // if (!qpCtrl.validateQuestionPaper()) {
-        //     return;
-        // }
         var data = {
             course: qpCtrl.selectedCourse,
             department: qpCtrl.selectedDepartment,
@@ -644,7 +673,9 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints','$http', functio
             subject: qpCtrl.selectedSubject,
             questions: qpCtrl.questions
         };
-        console.log(data);
+
+        console.log(JSON.stringify(data, null, 2));
+        
         HttpService.post(ApiEndpoints.auth.save, data)
             .then(function(response) {
                 Swal.fire({

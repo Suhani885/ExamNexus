@@ -70,7 +70,7 @@
                        max="{{fRegCtrl.maxDate}}">
               </div>
               <div class="col-sm-6 mb-2">
-                <label for="section" class="form-label text-white">Gender</label>
+                <label for="gender" class="form-label text-white">Gender</label>
                 <select class="form-control" style="background-color: rgb(233, 231, 231);" 
                         id="gender" ng-model="fRegCtrl.gender" name="gender" required>
                         <option value="" disabled selected>Select Gender</option>
@@ -83,9 +83,9 @@
                 <label for="course" class="form-label text-white">Course</label>
                 <select class="form-control" style="background-color: rgb(233, 231, 231);" 
                         id="course" ng-model="fRegCtrl.course"
-                        name="course" ng-click="fRegCtrl.fetchDeps(fRegCtrl.course)" required>
+                        name="course" required>
                         <option value="" disabled selected>Select Course</option>
-                        <option ng-repeat="course in fRegCtrl.courses" ng-value="course.id">
+                        <option ng-repeat="course in fRegCtrl.courses" ng-click="fRegCtrl.fetchDeps(fRegCtrl.course)" ng-value="course.id">
                             {{course.course}}
                         </option>
                 </select>
@@ -94,9 +94,9 @@
                 <label for="department" class="form-label text-white">Department</label>
                 <select class="form-control" 
                         style="background-color: rgb(233, 231, 231);" id="department" 
-                        ng-model="fRegCtrl.dep" ng-click="fRegCtrl.fetchYears(fRegCtrl.dep)" name="department" required>
+                        ng-model="fRegCtrl.dep"  name="department" required>
                         <option value="" disabled selected>Select Department</option>
-                        <option ng-repeat="dep in fRegCtrl.deps" ng-value="dep.id">
+                        <option ng-repeat="dep in fRegCtrl.deps" ng-click="fRegCtrl.fetchYears(fRegCtrl.dep)" ng-value="dep.id">
                             {{dep.value}}
                         </option>
                 </select>
@@ -104,15 +104,19 @@
               <div class="col-sm-6 mb-2">
                 <label for="password" class="form-label text-white">Password</label>
                 <div class="input-group">
-                  <input type="password" class="form-control"
+                  <input type="password" 
+                         style="background-color: rgb(233, 231, 231);" 
+                         class="form-control" 
                          id="password"
                          name="password"
-                         ng-model="fRegCtrl.password">
-                  <button type="button" 
+                         placeholder="Enter your password" 
+                         ng-model="fRegCtrl.password"
+                         required
+                         pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}">
+                  <button class="btn btn-outline-secondary" 
+                          type="button" 
                           ng-click="fRegCtrl.passwordVisibility.toggle('password')">
-                      <i class="fas" 
-                         ng-class="{'fa-eye': fRegCtrl.passwordVisibility.passwordVisibility, 
-                                   'fa-eye-slash': !fRegCtrl.passwordVisibility.passwordVisibility}"></i>
+                    <i class="fas" ng-class="{'fa-eye': !fRegCtrl.passwordVisibility.password, 'fa-eye-slash': fRegCtrl.passwordVisibility.password}"></i>
                   </button>
                 </div>
                 <div class="invalid-feedback">
@@ -122,19 +126,22 @@
               <div class="col-sm-6 mb-2">
                 <label for="confirmPassword" class="form-label text-white">Confirm Password</label>
                 <div class="input-group">
-                  <input type="password" class="form-control"
+                  <input type="password" 
+                         style="background-color: rgb(233, 231, 231);" 
+                         class="form-control" 
                          id="confirmPassword"
                          name="confirmPassword"
-                         ng-model="fRegCtrl.confirmPassword">
-                  <button type="button" 
+                         placeholder="Confirm your password" 
+                         ng-model="fRegCtrl.confirmPassword"
+                         required>
+                  <button class="btn btn-outline-secondary" 
+                          type="button" 
                           ng-click="fRegCtrl.passwordVisibility.toggle('confirmPassword')">
-                      <i class="fas" 
-                         ng-class="{'fa-eye': fRegCtrl.passwordVisibility.confirmPasswordVisibility, 
-                                   'fa-eye-slash': !fRegCtrl.passwordVisibility.confirmPasswordVisibility}"></i>
+                    <i class="fas" ng-class="{'fa-eye': !fRegCtrl.passwordVisibility.confirmPassword, 'fa-eye-slash': fRegCtrl.passwordVisibility.confirmPassword}"></i>
                   </button>
                 </div>
                 <div class="invalid-feedback">
-                  Passwords don't match.
+                  Passwords must match.
                 </div>
               </div>
               <div class="col-12 mb-4">
@@ -149,8 +156,8 @@
                     </select>
                   </div>
                   <div class="col-sm-4 mb-2">
-                    <label for="sections" class="form-label text-white">Sections</label>
-                    <select class="form-control" style="background-color: rgb(233, 231, 231);" id="sections" ng-model="detail.sections" multiple required>
+                    <label for="section" class="form-label text-white">Sections</label>
+                    <select class="form-control" style="background-color: rgb(233, 231, 231);" id="section" ng-model="detail.section" multiple required>
                       <option ng-repeat="sec in fRegCtrl.sections" ng-value="sec.id">{{sec.value}}</option>
                     </select>
                   </div>

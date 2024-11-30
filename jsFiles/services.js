@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-    .constant('BASE_URL', 'https://10.21.97.242:8000')
+    .constant('BASE_URL', 'https://10.21.97.202:8000')
     
     .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
         return {
