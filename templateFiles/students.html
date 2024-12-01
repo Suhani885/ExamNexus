@@ -1,28 +1,28 @@
 <div ng-controller="questionController as qpCtrl">
-    <div class="container-fluid py-4" style="background-color: #121212;">
+    <div class="container-fluid py-5" style="background-color: #121212;">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-12 col-xl-10">
-                    <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                        <div class="card-body p-4">
+                <div class="col-12 col-xl-10 p-5">
+                    <div class="card"  style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                        <div class="card-body p-5" id="form">
                             <h1 class="display-6 mb-4 text-white">Create Question Paper</h1>
                             
                             <div class="row mb-3">
-                                <div class="col-md-3 mb-2">
+                                <div class="col-md-6 mb-4">
                                     <select class="form-select" ng-model="qpCtrl.selectedCourse" required style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
                                         <option value="">Select Course</option>
                                         <option value="cs">Computer Science</option>
                                         <option value="it">Information Technology</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 mb-2">
+                                <div class="col-md-6 mb-4">
                                     <select class="form-select" ng-model="qpCtrl.selectedDepartment" required style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
                                         <option value="">Select Department</option>
                                         <option value="eng">Engineering</option>
                                         <option value="mgmt">Management</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 mb-2">
+                                <div class="col-md-6 mb-3">
                                     <select class="form-select" ng-model="qpCtrl.selectedYear" required style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
                                         <option value="">Select Year</option>
                                         <option value="1">First Year</option>
@@ -31,7 +31,7 @@
                                         <option value="4">Fourth Year</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 mb-2">
+                                <div class="col-md-6 mb-3">
                                     <select class="form-select" ng-model="qpCtrl.selectedSubject" required ng-disabled="!qpCtrl.selectedYear" style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
                                         <option value="">Select Subject</option>
                                         <option value="ds">Data Structures</option>
@@ -60,7 +60,7 @@
 
     <div class="modal fade" id="questionModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="background-color: #1a1a1a;">
+            <div class="modal-content" id="form" style="background-color: #1a1a1a;">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title text-white">Add Questions</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -109,16 +109,17 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row mt-3" ng-if="!$first">
+                                
+                                <div class="row mt-3" ng-if="qpCtrl.questions.length > 1">
                                     <div class="col-12">
                                         <button type="button" class="btn btn-danger w-100" ng-click="qpCtrl.remove($index)">
                                             Remove Question
                                         </button>
                                     </div>
                                 </div>
-                                <div class="row mt-3" ng-if="!$first">
+                                <div class="row mt-3">
                                     <div class="col-12">
-                                        <button class="btn btn-success mb-3" ng-click="qpCtrl.addQuestion()">
+                                        <button type="button" class="btn btn-success mb-3" ng-click="qpCtrl.addQuestion()">
                                             <i class="bi bi-plus"></i> Add Another Question
                                         </button>
                                     </div>
@@ -127,12 +128,15 @@
                         </div>
                     </form>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="qpCtrl.saveQuestionPaper()">
+                        Save Question Paper
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
  <!-- <div ng-controller="academicController as academicCtrl">
     <div class="container-fluid py-4" style="background-color: #121212;">

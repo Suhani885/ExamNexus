@@ -1,4 +1,4 @@
-<div ng-controller="LoginController as loginCtrl" class="min-vh-100 d-flex align-items-center" style="background-color: #000000;">
+<div ng-controller="LoginController as loginCtrl" id="form" class="min-vh-100 d-flex align-items-center" style="background-color: #000000;">
   <div class="container">
       <div class="row align-items-center g-4">
           <div class="col-12 col-lg-6 text-center text-lg-start px-4">
@@ -32,12 +32,14 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label text-white">Password</label>
-                            <input type="password"
-                                   ng-model="loginCtrl.password"
-                                   id="password"
+                            <div class="input-group">
+                                <input type="password" ng-model="loginCtrl.password" id="password"
                                    class="form-control bg-dark text-white border-secondary"
-                                   required
-                                   pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}">
+                                   required pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}">
+                                   <button class="btn btn-outline-secondary" type="button" ng-click="loginCtrl.passwordVisibility.toggle('password')">
+                                        <i class="fas" ng-class="{'fa-eye': !loginCtrl.passwordVisibility.password, 'fa-eye-slash': loginCtrl.passwordVisibility.password}"></i>
+                                    </button>
+                            </div>
                         </div>
                         <button type="submit"
                                 class="btn btn-lg w-100 mt-4 text-dark fw-bold"
@@ -51,3 +53,4 @@
       </div>
   </div>
 </div>
+

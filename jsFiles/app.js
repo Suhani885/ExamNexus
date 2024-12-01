@@ -105,6 +105,16 @@ app.controller('LoginController', ['$state', 'HttpService', 'ApiEndpoints', func
                 });
             });
     };
+
+    loginCtrl.passwordVisibility = {
+        password: false,
+        
+        toggle: function(field) {
+            this[field] = !this[field];
+            var inputElement = document.getElementById(field);
+            inputElement.type = this[field] ? 'text' : 'password';
+        }
+    };
 }])
 
 app.controller('dashController', ['$state', 'HttpService', 'ApiEndpoints', function($state, HttpService, ApiEndpoints) {
@@ -115,14 +125,12 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
     var navCtrl = this;
     
     navCtrl.currentMode = localStorage.getItem('appMode') || 'dark';
-    
-    navCtrl.toggleMode = function() {
-        navCtrl.currentMode = navCtrl.currentMode === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('appMode', navCtrl.currentMode);
-        applyMode();
+
+    navCtrl.init = function() {
+        navCtrl.applyMode();
     };
     
-    function applyMode() {
+    navCtrl.applyMode = function() {
         if (navCtrl.currentMode === 'dark') {
             document.body.classList.remove('light-mode');
             document.body.classList.add('dark-mode');
@@ -130,12 +138,19 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
             document.body.classList.remove('dark-mode');
             document.body.classList.add('light-mode');
         }
-    }
+        localStorage.setItem('appMode', navCtrl.currentMode);
+    };
+    
+    navCtrl.toggleMode = function() {
+        navCtrl.currentMode = navCtrl.currentMode === 'dark' ? 'light' : 'dark';
+        navCtrl.applyMode();
+    };
     
     navCtrl.fetchNav = function() {
         HttpService.get(ApiEndpoints.user.navbar)
             .then(function(response) {
-                navCtrl.navs = response.data.map(function(item) {
+                console.log(response.data[0].left_panel);
+                navCtrl.navs = response.data[0].left_panel[0].map(function(item) {
                     if (item.children && item.children.length > 0) {
                         item.type = 'dropdown';
                         item.subItems = item.children.map(function(child) {
@@ -183,10 +198,6 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
         if (item.url) {
             $state.go('user.' + item.url);
         }
-    };
-    
-    navCtrl.init = function() {
-        applyMode();
     };
     
     $state.go('user.dashboard');
@@ -386,16 +397,6 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
         };
 
         addCtrl.createSubjects = function() {
-            // if (!addCtrl.depForSubjects || addCtrl.subjects.some(s => !s.text.trim())) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Incomplete Information',
-            //         text: 'Please select a department and fill in all subject names'
-            //     });
-            //     return;
-            // }
-            // var subjectsData = addCtrl.subjects.map(s => s.text.trim()).filter(s => s);
-        
             HttpService.post(ApiEndpoints.create.main, {
                 "pid": addCtrl.depForSubjects,
                 "value": subjectsData
@@ -616,8 +617,8 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             });
     };
 
-    fRegCtrl.fetchCourses();
-    fRegCtrl.fetchGender();
+    // fRegCtrl.fetchCourses();
+    // fRegCtrl.fetchGender();
 }]);
 
 app.controller('questionController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
@@ -628,27 +629,27 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
     qpCtrl.selectedYear = '';
     qpCtrl.selectedSubject = '';
     qpCtrl.questions = [];
-
+    
     qpCtrl.openQuestionModal = function() {
         if (qpCtrl.questions.length === 0) {
             qpCtrl.addQuestion();
         }
     };
-
+    
     qpCtrl.addQuestion = function() {
-        qpCtrl.questions.push({ 
-            text: '', 
-            options: ['','','',''], 
-            correctAnswer: '' 
+        qpCtrl.questions.push({
+            text: '',
+            options: ['','','',''],
+            correctAnswer: ''
         });
     };
-
+    
     qpCtrl.addOption = function(questionIndex) {
         if (qpCtrl.questions[questionIndex].options.length < 6) {
             qpCtrl.questions[questionIndex].options.push('');
         }
     };
-
+    
     qpCtrl.removeOption = function(questionIndex, optionIndex) {
         if (qpCtrl.questions[questionIndex].options.length > 2) {
             qpCtrl.questions[questionIndex].options.splice(optionIndex, 1);
@@ -660,11 +661,11 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
             }
         }
     };
-
+    
     qpCtrl.remove = function(index) {
         qpCtrl.questions.splice(index, 1);
     };
-
+    
     qpCtrl.saveQuestionPaper = function() {
         var data = {
             course: qpCtrl.selectedCourse,
@@ -673,7 +674,7 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
             subject: qpCtrl.selectedSubject,
             questions: qpCtrl.questions
         };
-
+        
         console.log(JSON.stringify(data, null, 2));
         
         HttpService.post(ApiEndpoints.auth.save, data)

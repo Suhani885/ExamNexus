@@ -2,50 +2,113 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Dark Mode  */
-body.dark-mode {
-    background-color: #121212;
-    color: #ffffff;
+.dark-mode .text-muted {
+    color: #f7f4f4 !important;
 }
 
-body.dark-mode .bg-dark {
-    background-color: #1a1a1a;
+.dark-mode .main {
+    background-color: #020202 !important;
 }
 
-body.dark-mode .card {
-    background-color: #1E1E1E ;
-    border-color: #333333 ;
-    color: #ffffff;
+.light-mode #form{
+    background-color: #f4f4f4 !important;
 }
 
-body.dark-mode .table-dark {
-    background-color: transparent;
+.light-mode .modal-content{
+    background-color: #f4f4f4 !important;
 }
 
-body.dark-mode .text-white-50 {
-    color: rgba(255,255,255,0.5);
+.light-mode .container-fluid ,
+.light-mode .main  {
+    background-color: #abd4fa !important;
 }
 
-/* Light Mode */
-body.light-mode {
-    background-color: #f4f4f4;
-    color: #333333;
+.light-mode .text-white {
+    color: #0b0b0b !important;
 }
 
-body.light-mode .bg-dark {
-    background-color: #ffffff;
+.light-mode .card {
+    background-color: #8ec5f8 !important;
+    border: 1px solid #f9f6f6 !important;
 }
 
-body.light-mode .card {
-    background-color: #ffffff;
-    border-color: #e0e0e0 ;
-    color: #333333;
+.light-mode .cardC,
+.light-mode .card-header {
+    background-color: #d4eafe !important;
+    border: 1px solid #f9f6f6 !important;
 }
 
-body.light-mode .table {
-    color: #333333;
+.light-mode .bg-dark {
+    background-color: #c4dbf3 !important;
 }
 
-body.light-mode .text-white-50 {
-    color: rgba(0,0,0,0.5);
+.light-mode #sidebar {
+    background-color:#71b8fa !important;
+    color: #171717 !important;
 }
+
+.light-mode .form-control,
+.light-mode .form-select {
+    background-color: #ffffff !important;
+    border-color: #ced4da !important;
+    color: #333333 !important;
+}
+
+.light-mode .form-label {
+    color: #333333 !important;
+}
+
+.light-mode .btn-outline-secondary {
+    border-color: #ced4da !important;
+    color: #333333 !important;
+}
+
+.light-mode .cardB {
+    background-color: #f8f9fa !important;
+}
+
+.light-mode .theme-toggle {
+    color: #333333 !important;
+}
+
+.card {
+    transition: 
+        transform 0.3s ease, 
+        box-shadow 0.3s ease, 
+        background-color 0.3s ease !important;
+}
+
+.card:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+}
+
+.card-body {
+    transition: all 0.3s ease !important;
+}
+
+.card-body .rounded-circle {
+    transition: 
+        transform 0.3s ease, 
+        box-shadow 0.3s ease !important;
+}
+
+.card-body .rounded-circle:hover {
+    transform: rotate(360deg) scale(1.1) !important;
+}
+
+#chart_div {
+    transition: opacity 0.5s ease !important;
+}
+
+.btn {
+    transition: 
+        transform 0.2s ease, 
+        box-shadow 0.2s ease !important;
+}
+
+.btn:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+}
+
