@@ -1,6 +1,6 @@
 const app = angular.module('app', ['ui.router', 'ui.bootstrap', 'app.services'])
 
-const BASE_URL = 'https://10.21.97.202:8000';
+const BASE_URL = 'https://10.21.96.138:8000';
 
 app.directive('loader', ['LoaderService', function(LoaderService) {
     return {
@@ -212,8 +212,8 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
     };
     
     $state.go('user.dashboard');
-    // navCtrl.fetchNav();
-    // navCtrl.init();
+    navCtrl.fetchNav();
+    navCtrl.init();
 }])
 
 app.controller('sRegController', ['HttpService', 'ApiEndpoints',
@@ -252,33 +252,42 @@ function(HttpService, ApiEndpoints) {
             });
             return;
         }
+        var formattedDate = '';
+        if (regCtrl.dob) {
+            var dateObj = new Date(regCtrl.dob);
+            formattedDate = dateObj.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
         var registrationData = {
-            "type":student,
+            "type":"student",
             "email": regCtrl.email,
             "first_name": regCtrl.fname,
             "middle_name": regCtrl.mname,
             "last_name": regCtrl.lname,
             "phone_number": regCtrl.number,
-            "dob": regCtrl.dob,
+            "dob": formattedDate,
             "gender_id": regCtrl.gender,
             "course_id": regCtrl.course,
             "department_id": regCtrl.dep,
             "detail": regCtrl.detail,
-            "password": regCtrl.pass1,
-            "confirm_password": regCtrl.pass2
+            "password": regCtrl.password,
+            "confirm_password": regCtrl.confirmPassword
         };
         HttpService.post(ApiEndpoints.auth.register, registrationData)
             .then(function(response) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Registration Successful!',
+                    title: 'Successful!',
                     text: response.message || 'Account has been created.'
                 });
             });
     };
 
     regCtrl.detail = [{
-        year_id: parseInt(''),
+        year: parseInt(''),
         section: []
     }];
 
@@ -326,7 +335,6 @@ function(HttpService, ApiEndpoints) {
         HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
             .then(function(response) {
                 regCtrl.years = response.data;
-                console.log(regCtrl.years);
             });
     };
 
@@ -336,14 +344,14 @@ function(HttpService, ApiEndpoints) {
         }
         HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
             .then(function(response) {
-                regCtrl.sections = response.data;
-                console.log(regCtrl.sections);
+                regCtrl.sections = response.sections;
             });
     };
 
     regCtrl.fetchCourses();
     regCtrl.fetchGender();
 }])
+
 
 app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function(HttpService, ApiEndpoints, $http) {
         var addCtrl = this;
@@ -381,17 +389,9 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
         };
 
         addCtrl.createSection = function() {
-            if (!addCtrl.depForSection || !addCtrl.sectionName) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Incomplete Information',
-                    text: 'Please select a department and enter a section name'
-                });
-                return;
-            }
         
             HttpService.post(ApiEndpoints.create.main, {
-                "pid": addCtrl.depForSection,
+                "pid": addCtrl.year,
                 "value": addCtrl.sectionName
             }).then(function(response) {
                 Swal.fire({
@@ -401,16 +401,16 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                 });
                 $('#addSectionModal').modal('hide');
                 addCtrl.sectionName = '';
-                addCtrl.depForSection = '';
-                addCtrl.yearForSection = '';
-                addCtrl.courseForSection = '';
+                addCtrl.dep = '';
+                addCtrl.year = '';
+                addCtrl.course = '';
             });
         };
 
         addCtrl.createSubjects = function() {
             HttpService.post(ApiEndpoints.create.main, {
-                "pid": addCtrl.depForSubjects,
-                "value": subjectsData
+                "pid": addCtrl.year,
+                "value": subjects
             }).then(function(response) {
                 Swal.fire({
                     icon: 'success',
@@ -419,9 +419,9 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                 });
                 $('#addSubjectsModal').modal('hide');
                 addCtrl.subjects = [{ text: '' }];
-                addCtrl.depForSubjects = '';
-                addCtrl.yearForSubjects = '';
-                addCtrl.courseForSubjects = '';
+                addCtrl.dep = '';
+                addCtrl.year = '';
+                addCtrl.course = '';
             });
         };
 
@@ -451,24 +451,16 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
             HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
                 .then(function(response) {
                     addCtrl.deps = response.data;
-                    console.log(addCtrl.deps);
-                })
-                .catch(function(error) {
-                    console.log("Error", error);
                 });
         };
     
         addCtrl.fetchYears = function(depId) {
             if (!depId) {
-                depId = addCtrlCtrl.dep;
+                depId = addCtrl.dep;
             }
             HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
                 .then(function(response) {
-                    addCtrl.years = response;
-                    console.log(addCtrl.years);
-                })
-                .catch(function(error) {
-                    console.log("Error", error);
+                    addCtrl.years = response.data;
                 });
         };
 
@@ -509,15 +501,15 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
     };
 
     fRegCtrl.teachingDetails = [{
-        year_id: parseInt(''),
-        subject_id: parseInt(''),
+        year: parseInt(''),
+        subject: parseInt(''),
         section: []
     }];
 
     fRegCtrl.addTeachingDetail = function() {
         fRegCtrl.teachingDetails.push({
-            year_id: parseInt(''),
-            subject_id: parseInt(''),
+            year: parseInt(''),
+            subject: parseInt(''),
             section: []
         });
     };
@@ -541,6 +533,17 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             });
             return;
         }
+
+        var formattedDate = '';
+        if (fRegCtrl.dob) {
+            var dateObj = new Date(fRegCtrl.dob);
+            formattedDate = dateObj.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    
         var registrationData = {
             "type":"faculty",
             "email": fRegCtrl.email,
@@ -548,8 +551,8 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             "middle_name": fRegCtrl.mname,
             "last_name": fRegCtrl.lname,
             "phone_number": fRegCtrl.number,
-            "dob": fRegCtrl.dob,
-            "gender_id":fRegCtrl.gender,
+            "dob": formattedDate, 
+            "gender_id": fRegCtrl.gender,
             "course_id": fRegCtrl.course,
             "department_id": fRegCtrl.dep,
             "password": fRegCtrl.password,
@@ -560,7 +563,7 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             .then(function(response) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Registration Successful!',
+                    title: 'Successful!',
                     text: response.message || 'Account has been created.'
                 });
             });
@@ -599,7 +602,6 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
         HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
             .then(function(response) {
                 fRegCtrl.years = response.data;
-                console.log(fRegCtrl.years);
             });
     };
 
@@ -672,7 +674,7 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
             questions: qpCtrl.questions
         };
         
-        console.log(JSON.stringify(data, null, 2));
+        // console.log(JSON.stringify(data, null, 2));
         
         HttpService.post(ApiEndpoints.auth.save, data)
             .then(function(response) {
@@ -685,203 +687,51 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
     };
 }]);
 
-app.controller('academicController', function($http) {
-    var academicCtrl = this;
+app.controller('studentController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var studentCtrl = this;
 
-   
-    academicCtrl.academicData = {
-        courses: [
-            {
-                id: 1,
-                name: "B.Tech",
-                duration: "4 Years",
-                departments: [
-                    {
-                        id: 1,
-                        name: "Computer Science",
-                        years: [
-                            {
-                                year: "1st Year",
-                                sections: [
-                                    {
-                                        name: "A",
-                                        strength: 60,
-                                        subjects: [
-                                            {
-                                                name: "Programming Fundamentals",
-                                                faculty: "Dr. Jane Smith"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        name: "B",
-                                        strength: 60,
-                                        subjects: [
-                                            {
-                                                name: "Programming Fundamentals",
-                                                faculty: "Dr. Bob Wil"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                year: "2nd Year",
-                                sections: []
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        name: "Electronics",
-                        years: []
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "M.Tech",
-                duration: "2 Years",
-                departments: []
-            }
-        ]
+    studentCtrl.fetchDetails = function() {
+        HttpService.get(ApiEndpoints.user.records + '?choice=' + "student")
+            .then(function(response) {
+                studentCtrl.students = response.data;
+            });
     };
 
-    academicCtrl.fetchCourses = function() {
-        $http.get('/api/courses')
-        .then(function(response) {
-            academicCtrl.academicData.courses = response.data;
-        })
-        .catch(function(error) {
-            console.error('Error:', error);
-        });
-    };
-
-    // academicCtrl.editCourse = function(course) {
+    // studentCtrl.editCourse = function(course) {
     //     alert('Editing course: ' + course.name);
     // };
 
-    // academicCtrl.deleteCourse = function(course) {
+    // studentCtrl.deleteCourse = function(course) {
     //     var index = academicCtrl.academicData.courses.indexOf(course);
     //     if (index > -1) {
     //         academicCtrl.academicData.courses.splice(index, 1);
     //     }
     // };
 
-    academicCtrl.fetchDetails();
-});
-
-app.controller('studentController', function($http) {
-    var studentCtrl = this;
-   
-    studentCtrl.academicData = {
-        courses: [
-            {
-                id: 1,
-                name: "B.Tech",
-                duration: "4 Years",
-                departments: [
-                    {
-                        id: 1,
-                        name: "Computer Science",
-                        years: [
-                            {
-                                year: "1st Year",
-                                sections: [
-                                    {
-                                        name: "A",
-                                        strength: 60,
-                                        students: [
-                                            {
-                                                name: "Alex Johnson",
-                                                email: "alex.j@college.edu",
-                                                phoneNo: "9876543210",
-                                                subjects: [
-                                                    {
-                                                        name: "Programming Fundamentals",
-                                                        faculty: "Dr. Jane Smith"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                name: "Emily Chen",
-                                                email: "emily.c@college.edu",
-                                                phoneNo: "8765432109",
-                                                subjects: [
-                                                    {
-                                                        name: "Programming Fundamentals",
-                                                        faculty: "Dr. Bob Wil"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        name: "B",
-                                        strength: 60,
-                                        students: []
-                                    }
-                                ]
-                            },
-                            {
-                                year: "2nd Year",
-                                sections: []
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        name: "Electronics",
-                        years: []
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "M.Tech",
-                duration: "2 Years",
-                departments: []
-            }
-        ]
-    };
-
-    studentCtrl.fetchDetails = function() {
-        $http.get('/api/students')
-        .then(function(response) {
-            studentCtrl.academicData = response.data;
-        })
-        .catch(function(error) {
-            console.error('Error fetching student details:', error);
-        });
-    };
-
-    // studentCtrl.addStudent = function(student) {
-    //     var course = studentCtrl.academicData.courses.find(c => c.name === student.courseName);
-    //     var department = course.departments.find(d => d.name === student.departmentName);
-    //     var year = department.years.find(y => y.year === student.year);
-    //     var section = year.sections.find(s => s.name === student.section);
-        
-    //     section.students.push(student);
-    // };
-
-    // studentCtrl.editStudent = function(student) {
-    //     alert('Editing student: ' + student.name);
-    // };
-
-    studentCtrl.deleteStudent = function(student) {
-        studentCtrl.academicData.courses.forEach(course => {
-            course.departments.forEach(department => {
-                department.years.forEach(year => {
-                    year.sections.forEach(section => {
-                        var index = section.students.indexOf(student);
-                        if (index > -1) {
-                            section.students.splice(index, 1);
-                        }
-                    });
-                });
-            });
-        });
-    };
-
     studentCtrl.fetchDetails();
-});
+}]);
+
+app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var facCtrl = this;
+
+    facCtrl.fetchDetails = function() {
+        HttpService.get(ApiEndpoints.user.records + '?choice=' + "faculty")
+            .then(function(response) {
+                facCtrl.facs = response.data;
+            });
+    };
+
+    // facCtrl.editCourse = function(course) {
+    //     alert('Editing course: ' + course.name);
+    // };
+
+    // facCtrl.deleteCourse = function(course) {
+    //     var index = academicCtrl.academicData.courses.indexOf(course);
+    //     if (index > -1) {
+    //         academicCtrl.academicData.courses.splice(index, 1);
+    //     }
+    // };
+
+    facCtrl.fetchDetails();
+}]);
+

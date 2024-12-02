@@ -137,14 +137,14 @@
                             <label class="form-label text-white">Course</label>
                             <select class="form-select text-white" required ng-model="addCtrl.courseId" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
                                 <option value="" disabled selected>Select Course</option>
-                                <option ng-repeat="course in addCtrl.courses" ng-value="course.id">
-                                    {{course.course}}
+                                <option ng-repeat="course in addCtrl.courses" ng-value="course.course_id">
+                                    {{course.course_name}}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-white">Department Name</label>
-                            <input type="text" class="form-control" ng-model="addCtrl.dep" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
+                            <input type="text" required class="form-control" ng-model="addCtrl.dep" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                         </div>
                         <div class="modal-footer border-0">
                             <button type="button" class="btn text-white" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-dismiss="modal">Close</button>
@@ -167,23 +167,22 @@
                     <form ng-submit="addCtrl.createSection()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course</label>
-                            <select class="form-select text-white" 
-                                    ng-model="addCtrl.courseForSection" 
-                                    ng-change="addCtrl.fetchYear(addCtrl.courseForSection)" 
+                            <select class="form-select text-white" required
+                                    ng-model="addCtrl.course"  
                                     style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
                                 <option value="" disabled selected>Select Course</option>
-                                <option ng-repeat="course in addCtrl.courses" ng-value="course.id">
-                                    {{course.course}}
+                                <option ng-repeat="course in addCtrl.courses" ng-click="addCtrl.fetchDeps(addCtrl.course)" ng-value="course.course_id">
+                                    {{course.course_name}}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-white">Department</label>
-                            <select class="form-select text-white" 
-                                    ng-model="addCtrl.depForSection" 
+                            <select class="form-select text-white" required
+                                    ng-model="addCtrl.dep" 
                                     style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
                                 <option value="" disabled selected>Select Department</option>
-                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.id">
+                                <option ng-repeat="dep in addCtrl.deps" ng-click="addCtrl.fetchYears(addCtrl.dep)" ng-value="dep.id">
                                     {{dep.value}}
                                 </option>
                             </select>
@@ -191,8 +190,7 @@
                         <div class="mb-3">
                             <label for="year" class="form-label text-white">Year</label>
                             <select class="form-select" id="year" name="year"
-                                    ng-model="addCtrl.yearForSection" 
-                                    ng-change="addCtrl.fetchDeps(addCtrl.yearForSection)" required
+                                    ng-model="addCtrl.year" required
                                     style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                                 <option value="" disabled selected>Select Year</option>
                                 <option ng-repeat="year in addCtrl.years" ng-value="year.id">
@@ -204,7 +202,7 @@
                             <label class="form-label text-white">Section</label>
                             <input type="text" 
                                    ng-model="addCtrl.sectionName" 
-                                   class="form-control" 
+                                   class="form-control" required
                                    style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                         </div>
                         <div class="modal-footer border-0">
@@ -228,36 +226,35 @@
                     <form ng-submit="addCtrl.createSubjects()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course</label>
-                            <select class="form-select text-white" 
-                                    ng-model="addCtrl.courseForSubjects" 
-                                    ng-change="addCtrl.fetchYear(addCtrl.courseForSubjects)" 
+                            <select class="form-select text-white" required
+                                    ng-model="addCtrl.course" 
+                                    ng-change="addCtrl.fetchYear(addCtrl.course)" 
                                     style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
                                 <option value="" disabled selected>Select Course</option>
-                                <option ng-repeat="course in addCtrl.courses" ng-value="course.id">
-                                    {{course.course}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white">Year</label>
-                            <select class="form-select text-white" 
-                                    ng-model="addCtrl.yearForSubjects" 
-                                    ng-change="addCtrl.fetchDeps(addCtrl.yearForSubjects)" 
-                                    style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
-                                <option value="" disabled selected>Select Year</option>
-                                <option ng-repeat="year in addCtrl.years" ng-value="year.id">
-                                    {{year.value}}
+                                <option ng-repeat="course in addCtrl.courses" ng-click="addCtrl.fetchDeps(addCtrl.course)" ng-value="course.course_id">
+                                    {{course.course_name}}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-white">Department</label>
-                            <select class="form-select" 
-                                    ng-model="addCtrl.depForSubjects" 
+                            <select class="form-select" required
+                                    ng-model="addCtrl.dep" 
                                     style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040; color: #ffffff;">
                                 <option value="" disabled selected>Select Department</option>
-                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.id">
+                                <option ng-repeat="dep in addCtrl.deps" ng-click="addCtrl.fetchYears(addCtrl.dep)" ng-value="dep.id">
                                     {{dep.value}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white">Year</label>
+                            <select class="form-select text-white" required
+                                    ng-model="addCtrl.year" 
+                                    style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
+                                <option value="" disabled selected>Select Year</option>
+                                <option ng-repeat="year in addCtrl.years" ng-value="year.id">
+                                    {{year.value}}
                                 </option>
                             </select>
                         </div>
@@ -266,7 +263,7 @@
                                 <label class="form-label p-2 text-white">Subject</label>
                                 <input type="text" 
                                        ng-model="subject.text" 
-                                       class="form-control me-2 text-white" 
+                                       class="form-control me-2 text-white" required
                                        style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
                                 <button type="button" 
                                         class="btn btn-danger" 

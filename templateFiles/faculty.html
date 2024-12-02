@@ -1,10 +1,10 @@
-<div ng-controller="studentController as studentCtrl">
+<div ng-controller="facultyController as facCtrl">
     <div class="container-fluid py-5" style="background-color: #121212;">
         <div class="row justify-content-center h-100">
             <div class="col-12 col-xl-11 mb-5">
                 <div class="d-flex align-items-center mb-4">
                     <h1 class="display-6 fw-bold mb-0 text-white">
-                        Student Records
+                        Faculty Records
                     </h1>
                 </div>
 
@@ -28,15 +28,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="student in studentCtrl.students">
-                                                <td class="py-3 px-4 text-white">{{ student.full_name }}</td>
-                                                <td class="py-3 text-white">{{ student.email }}</td>
-                                                <td class="py-3 text-white">{{ student.phone_number }}</td>
-                                                <td class="py-3 text-white">{{ student.dob }}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.course}}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.department}}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.year}}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.section}}</td>
+                                            <tr ng-repeat="fac in facCtrl.facs">
+                                                <td class="py-3 px-4 text-white">{{ fac.full_name }}</td>
+                                                <td class="py-3 text-white">{{ fac.email }}</td>
+                                                <td class="py-3 text-white">{{ fac.phone_number }}</td>
+                                                <td class="py-3 text-white">{{ fac.dob }}</td>
+                                                <td class="py-3 text-white">{{ fac.academic_info.course}}</td>
+                                                <td class="py-3 text-white">{{ fac.academic_info.department}}</td>
+                                                <td class="py-3 text-white">{{ fac.academic_info.detail.year}}</td>
+                                                <td class="py-3 text-white">{{ fac.academic_info.detail.section_list}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
