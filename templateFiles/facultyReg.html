@@ -6,7 +6,7 @@
           <div class="text-center d-flex flex-column justify-content-center align-items-center mb-4">
             <h1 class="text-white fw-bold">Faculty Registration</h1>
           </div> 
-          <form name="facultyRegistrationForm" ng-submit="fRegCtrl.register(facultyRegistrationForm)">
+          <form name="facultyRegistrationForm" ng-submit="fRegCtrl.registerFaculty(facultyRegistrationForm)">
             <div class="row g-3">
               <div class="col-sm-4 mb-2">
                 <label for="firstName" class="form-label text-white">First Name</label>
@@ -85,8 +85,8 @@
                         id="course" ng-model="fRegCtrl.course"
                         name="course" required>
                         <option value="" disabled selected>Select Course</option>
-                        <option ng-repeat="course in fRegCtrl.courses" ng-click="fRegCtrl.fetchDeps(fRegCtrl.course)" ng-value="course.id">
-                            {{course.course}}
+                        <option ng-repeat="course in fRegCtrl.courses" ng-click="fRegCtrl.fetchDeps(fRegCtrl.course)" ng-value="course.course_id">
+                            {{course.course_name}}
                         </option>
                 </select>
               </div>
@@ -152,20 +152,20 @@
                             style="background-color: rgb(233, 231, 231);" 
                             id="year" ng-model="detail.year" required>
                       <option value="" disabled selected>Select Year</option>
-                      <option ng-repeat="year in fRegCtrl.years" ng-value="year.id">{{year.value}}</option>
+                      <option ng-repeat="year in fRegCtrl.years" ng-click="fRegCtrl.fetchSections(detail.year)" ng-value="year.id">{{year.value}}</option>
                     </select>
                   </div>
                   <div class="col-sm-4 mb-2">
                     <label for="section" class="form-label text-white">Sections</label>
                     <select class="form-control" style="background-color: rgb(233, 231, 231);" id="section" ng-model="detail.section" multiple required>
-                      <option ng-repeat="sec in fRegCtrl.sections" ng-value="sec.id">{{sec.value}}</option>
+                      <option ng-repeat="sec in fRegCtrl.sections" ng-click="fRegCtrl.fetchSubjects(detail.section)" ng-value="sec.id">{{sec.value}}</option>
                     </select>
                   </div>
                   <div class="col-sm-4 mb-2">
                     <label for="subject" class="form-label text-white">Subject</label>
                     <select class="form-control" style="background-color: rgb(233, 231, 231);" id="subject" ng-model="detail.subject" required>
                       <option value="" disabled selected>Select Subject</option>
-                      <option ng-repeat="sub in fRegCtrl.subjects" ng-value="year.id">{{sub.value}}</option>
+                      <option ng-repeat="sub in fRegCtrl.subjects" ng-value="sub.id">{{sub.value}}</option>
                     </select>
                   </div>
                   <div class="col-12 mt-2" ng-if="fRegCtrl.teachingDetails.length > 1">

@@ -75,6 +75,18 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'questionController',
             controllerAs: 'qpCtrl'
         })
+        .state('user.courseRec', {
+            url: '/courseRecords',
+            templateUrl: 'templateFiles/courses.html',
+            controller: 'courseController',
+            controllerAs: 'coCtrl'
+        })
+        // .state('user.studentRec', {
+        //     url: '/studentRecords',
+        //     templateUrl: 'templateFiles/students.html',
+        //     controller: 'studentController',
+        //     controllerAs: 'studentCtrl'
+        // })
         .state('user.schedule', {
             url: '/schedule',
             templateUrl: 'templateFiles/schedule.html',
@@ -149,7 +161,6 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
     navCtrl.fetchNav = function() {
         HttpService.get(ApiEndpoints.user.navbar)
             .then(function(response) {
-                console.log(response.data[0].left_panel);
                 navCtrl.navs = response.data[0].left_panel[0].map(function(item) {
                     if (item.children && item.children.length > 0) {
                         item.type = 'dropdown';
@@ -201,8 +212,8 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
     };
     
     $state.go('user.dashboard');
-    navCtrl.fetchNav();
-    navCtrl.init();
+    // navCtrl.fetchNav();
+    // navCtrl.init();
 }])
 
 app.controller('sRegController', ['HttpService', 'ApiEndpoints',
@@ -249,9 +260,9 @@ function(HttpService, ApiEndpoints) {
             "last_name": regCtrl.lname,
             "phone_number": regCtrl.number,
             "dob": regCtrl.dob,
-            "gender": regCtrl.gender,
-            "course": regCtrl.course,
-            "department": regCtrl.dep,
+            "gender_id": regCtrl.gender,
+            "course_id": regCtrl.course,
+            "department_id": regCtrl.dep,
             "detail": regCtrl.detail,
             "password": regCtrl.pass1,
             "confirm_password": regCtrl.pass2
@@ -531,14 +542,14 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             return;
         }
         var registrationData = {
-            "type":faculty,
+            "type":"faculty",
             "email": fRegCtrl.email,
             "first_name": fRegCtrl.fname,
             "middle_name": fRegCtrl.mname,
             "last_name": fRegCtrl.lname,
             "phone_number": fRegCtrl.number,
             "dob": fRegCtrl.dob,
-            "gender":fRegCtrl.gender,
+            "gender_id":fRegCtrl.gender,
             "course_id": fRegCtrl.course,
             "department_id": fRegCtrl.dep,
             "password": fRegCtrl.password,
@@ -598,27 +609,13 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
         }
         HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
             .then(function(response) {
-                fRegCtrl.sections = response.data;
-                console.log(fRegCtrl.sections);
+                fRegCtrl.sections = response.sections;
+                fRegCtrl.subjects = response.subjects;
             });
     };
 
-    fRegCtrl.fetchSubjects = function(secId) {
-        if (!secId) {
-            secId = detail.section;
-        }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + secId)
-            .then(function(response) {
-                fRegCtrl.subjects = response.data;
-                console.log(fRegCtrl.subjects);
-            })
-            .catch(function(error) {
-                console.log("Error", error);
-            });
-    };
-
-    // fRegCtrl.fetchCourses();
-    // fRegCtrl.fetchGender();
+    fRegCtrl.fetchCourses();
+    fRegCtrl.fetchGender();
 }]);
 
 app.controller('questionController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
@@ -756,19 +753,135 @@ app.controller('academicController', function($http) {
             academicCtrl.academicData.courses = response.data;
         })
         .catch(function(error) {
-            console.error('Error fetching courses:', error);
+            console.error('Error:', error);
         });
     };
 
-    academicCtrl.editCourse = function(course) {
-        alert('Editing course: ' + course.name);
+    // academicCtrl.editCourse = function(course) {
+    //     alert('Editing course: ' + course.name);
+    // };
+
+    // academicCtrl.deleteCourse = function(course) {
+    //     var index = academicCtrl.academicData.courses.indexOf(course);
+    //     if (index > -1) {
+    //         academicCtrl.academicData.courses.splice(index, 1);
+    //     }
+    // };
+
+    academicCtrl.fetchDetails();
+});
+
+app.controller('studentController', function($http) {
+    var studentCtrl = this;
+   
+    studentCtrl.academicData = {
+        courses: [
+            {
+                id: 1,
+                name: "B.Tech",
+                duration: "4 Years",
+                departments: [
+                    {
+                        id: 1,
+                        name: "Computer Science",
+                        years: [
+                            {
+                                year: "1st Year",
+                                sections: [
+                                    {
+                                        name: "A",
+                                        strength: 60,
+                                        students: [
+                                            {
+                                                name: "Alex Johnson",
+                                                email: "alex.j@college.edu",
+                                                phoneNo: "9876543210",
+                                                subjects: [
+                                                    {
+                                                        name: "Programming Fundamentals",
+                                                        faculty: "Dr. Jane Smith"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                name: "Emily Chen",
+                                                email: "emily.c@college.edu",
+                                                phoneNo: "8765432109",
+                                                subjects: [
+                                                    {
+                                                        name: "Programming Fundamentals",
+                                                        faculty: "Dr. Bob Wil"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: "B",
+                                        strength: 60,
+                                        students: []
+                                    }
+                                ]
+                            },
+                            {
+                                year: "2nd Year",
+                                sections: []
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Electronics",
+                        years: []
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "M.Tech",
+                duration: "2 Years",
+                departments: []
+            }
+        ]
     };
 
-    academicCtrl.deleteCourse = function(course) {
-        var index = academicCtrl.academicData.courses.indexOf(course);
-        if (index > -1) {
-            academicCtrl.academicData.courses.splice(index, 1);
-        }
+    studentCtrl.fetchDetails = function() {
+        $http.get('/api/students')
+        .then(function(response) {
+            studentCtrl.academicData = response.data;
+        })
+        .catch(function(error) {
+            console.error('Error fetching student details:', error);
+        });
     };
-    academicCtrl.fetchCourses();
+
+    // studentCtrl.addStudent = function(student) {
+    //     var course = studentCtrl.academicData.courses.find(c => c.name === student.courseName);
+    //     var department = course.departments.find(d => d.name === student.departmentName);
+    //     var year = department.years.find(y => y.year === student.year);
+    //     var section = year.sections.find(s => s.name === student.section);
+        
+    //     section.students.push(student);
+    // };
+
+    // studentCtrl.editStudent = function(student) {
+    //     alert('Editing student: ' + student.name);
+    // };
+
+    studentCtrl.deleteStudent = function(student) {
+        studentCtrl.academicData.courses.forEach(course => {
+            course.departments.forEach(department => {
+                department.years.forEach(year => {
+                    year.sections.forEach(section => {
+                        var index = section.students.indexOf(student);
+                        if (index > -1) {
+                            section.students.splice(index, 1);
+                        }
+                    });
+                });
+            });
+        });
+    };
+
+    studentCtrl.fetchDetails();
 });

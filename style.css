@@ -19,8 +19,13 @@ body {
 }
 
 .light-mode .container-fluid ,
-.light-mode .main  {
+.light-mode .main {
     background-color: #abd4fa !important;
+}
+
+.light-mode .custom-dropdown-menu {
+    background-color: #81bdf5  !important;
+    color: black;
 }
 
 .light-mode .text-white {

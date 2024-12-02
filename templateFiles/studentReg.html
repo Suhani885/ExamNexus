@@ -62,8 +62,8 @@
                 <label for="course" class="form-label text-white">Course</label>
                 <select class="form-control" style="background-color: rgb(233, 231, 231);" id="course" ng-model="regCtrl.course" name="course" required>
                         <option value="" disabled selected>Select Course</option>
-                        <option ng-repeat="course in regCtrl.courses" ng-click="regCtrl.fetchDeps(regCtrl.course)" ng-value="course.id">
-                            {{course.course}}
+                        <option ng-repeat="course in regCtrl.courses" ng-click="regCtrl.fetchDeps(regCtrl.course)" ng-value="course.course_id">
+                            {{course.course_name}}
                         </option>
                 </select>
               </div>
@@ -76,23 +76,23 @@
                         </option>
                 </select>
               </div>
-              <div class="col-sm-6 mb-2">
-                <label for="department" class="form-label text-white">Year</label>
-                <select class="form-control" style="background-color: rgb(233, 231, 231);" id="year" ng-model="regCtrl.year"  name="year" required>
-                        <option value="" disabled selected>Select Year</option>
-                        <option ng-repeat="year in regCtrl.years" ng-click="regCtrl.fetchSections(regCtrl.year)" ng-value="year.id">
-                            {{year.value}}
-                        </option>
-                </select>
-              </div>
-              <div class="col-sm-6 mb-2">
-                <label for="section" class="form-label text-white">Section</label>
-                <select class="form-control" style="background-color: rgb(233, 231, 231);" id="section" ng-model="regCtrl.section"  name="section" required>
-                        <option value="" disabled selected>Select Section</option>
-                        <option ng-repeat="section in regCtrl.sections" ng-value="section.id">
-                            {{section.value}}
-                        </option>
-                </select>
+              <div ng-repeat="detail in regCtrl.detail track by $index" class="row">
+                <div class="col-sm-6 mb-2">
+                  <label for="year" class="form-label text-white">Year</label>
+                  <select class="form-control" 
+                          style="background-color: rgb(233, 231, 231);" 
+                          id="year" ng-model="detail.year" required>
+                    <option value="" disabled selected>Select Year</option>
+                    <option ng-repeat="year in regCtrl.years" ng-click="regCtrl.fetchSections(detail.year)" ng-value="year.id">{{year.value}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-2">
+                  <label for="section" class="form-label text-white">Section</label>
+                  <select class="form-control" style="background-color: rgb(233, 231, 231);" id="section" ng-model="detail.section" required>
+                    <option value="" disabled selected>Select Section</option>
+                    <option ng-repeat="sec in regCtrl.sections" ng-value="sec.id">{{sec.value}}</option>
+                  </select>
+                </div>
               </div>
               <div class="col-sm-6 mb-2">
                 <label for="password" class="form-label text-white">Password</label>

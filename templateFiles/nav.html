@@ -12,27 +12,31 @@
             <ul class="nav flex-column px-3">
                 <div class="nav-item w-100 mb-2" ng-repeat="nav in navCtrl.navs">
                     <li class="nav-item mb-2" ng-if="nav.type === 'dropdown'">
-                        <div class="nav-link d-flex align-items-center px-0 align-middle text-white nav-icon-container">
-                            <i class="{{nav.icon}} me-3 nav-icon d-md-inline d-none"></i>
-                            <select class="form-select bg-transparent text-white border-0 ms-1 nav-text" ng-model="nav.selected" ng-change="navCtrl.navigateTo(nav.subItems[nav.selected])"
-                                    style="width: calc(100% - 40px);">
-                                    <option value="" disabled selected>{{nav.title}}</option>
-                                    <option ng-repeat="subItem in nav.subItems" value="{{$index}}">
+                        <div class="custom-dropdown position-relative">
+                            <div class="nav-link d-flex align-items-center px-0 align-middle text-white nav-icon-container" ng-click="nav.isOpen = !nav.isOpen">
+                                <i class="{{nav.icon}} me-3 px-1 nav-icon d-md-inline d-none"></i>
+                                <span class="ms-1 nav-text flex-grow-1">{{nav.title}}</span>
+                                <i ng-class="nav.isOpen ? 'bi bi-chevron-up' : 'bi bi-chevron-down'" class="ms-2"></i>
+                            </div>
+                            <ul class="custom-dropdown-menu" ng-class="{'show': nav.isOpen}">
+                                <li ng-repeat="subItem in nav.subItems">
+                                    <a class="dropdown-item" ng-click="navCtrl.navigateTo(subItem)">
                                         {{subItem.title}}
-                                    </option>
-                            </select>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </li>
                     <li class="nav-item mb-2">
                         <a ng-if="nav.type === 'single'" ng-click="navCtrl.navigateTo(nav)" class="nav-link d-flex align-items-center px-0 align-middle text-white nav-icon-container">
-                            <i class="{{nav.icon}} me-3 nav-icon d-md-inline d-none"></i>
+                            <i class="{{nav.icon}} me-3 px-1 nav-icon d-md-inline d-none"></i>
                             <span class="ms-1 nav-text">{{nav.title}}</span>
                         </a>
                     </li>
                 </div>
                 <li class="nav-item mb-2">
                     <a ng-click="navCtrl.toggleMode()" class="nav-link d-flex align-items-center px-0 align-middle text-white nav-icon-container">
-                        <i ng-class="navCtrl.currentMode === 'dark' ? 'bi bi-brightness-high-fill' : 'bi bi-moon-fill'" class="me-3 nav-icon d-md-inline d-none fs-5"></i>
+                        <i ng-class="navCtrl.currentMode === 'dark' ? 'bi bi-brightness-high-fill' : 'bi bi-moon-fill'" class="me-3 px-1 nav-icon d-md-inline d-none fs-5"></i>
                         <span class="nav-text">
                             {{ navCtrl.currentMode === 'dark' ? 'Light Mode' : 'Dark Mode' }}
                         </span>
@@ -72,25 +76,38 @@
     </script>
 
     <style>
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .form-select {
-            cursor: pointer;
-        }
-        .form-select:focus {
-            box-shadow: none;
-            border-color: transparent;
-        }
-        .form-select option {
-            background-color: #212529;
-            color: white;
-        }
         .nav-item i {
             font-size: 20px;
         }
         .nav-text {
             transition: display 0.3s ease;
         }
+        .custom-dropdown .nav-link {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .custom-dropdown .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .custom-dropdown-menu {
+            z-index: 1000;
+            display: none;
+            padding: 0.1rem ;
+            font-size: 1rem;
+            color: #ffffff;
+            list-style: none;
+        }
+        .custom-dropdown-menu.show {
+            display: block;
+        }
+        .custom-dropdown-menu li a {
+            padding: 0.5rem ;
+        }
+        .custom-dropdown-menu li a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
     </style>
 </div>
+
+
+

@@ -3,54 +3,54 @@
         <div class="row justify-content-center">
             <div class="col-12 col-xl-11">
                 <div class="d-flex align-items-center mb-4">
-                    <h1 class="display-5 fw-bold mb-0 text-white">
+                    <h1 class="display-6 fw-bold mb-0 text-white">
                         Dashboard
                     </h1>
                 </div>
 
-                <div class="row g-4 mb-5">
-                    <div class="col-12 col-sm-6 col-xl-4">
+                <div class="row g-3 mb-5">
+                    <div class="col-12 col-sm-6 col-md-4">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                            <div class="card-body cardC p-4">
+                            <div class="card-body cardC p-3 p-md-4">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Total Students</h6>
+                                        <h6 class="text-white mb-2 small">Total Students</h6>
                                         <h2 class="text-white mb-0 fw-bold">1,234</h2>
                                     </div>
-                                    <div class="p-3 rounded-circle cardB" style="background-color: rgba(16, 228, 66, 0.15);">
-                                        <i class="bi bi-people-fill" style="font-size: 28px; color: #10e442;"></i>
+                                    <div class="p-2 p-md-3 rounded-circle cardB" style="background-color: rgba(16, 228, 66, 0.15);">
+                                        <i class="bi bi-people-fill" style="font-size: 20px; font-size: clamp(20px, 4vw, 28px); color: #10e442;"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-xl-4">
+                    <div class="col-12 col-sm-6 col-md-4">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                            <div class="card-body cardC p-4">
+                            <div class="card-body cardC p-3 p-md-4">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Total Courses</h6>
+                                        <h6 class="text-white mb-2 small">Total Courses</h6>
                                         <h2 class="text-white mb-0 fw-bold">42</h2>
                                     </div>
-                                    <div class="p-3 rounded-circle cardB" style="background-color: rgba(255, 193, 7, 0.15);">
-                                        <i class="bi bi-pencil-square" style="font-size: 28px; color: #ffc107;"></i>
+                                    <div class="p-2 p-md-3 rounded-circle cardB" style="background-color: rgba(255, 193, 7, 0.15);">
+                                        <i class="bi bi-pencil-square" style="font-size: 20px; font-size: clamp(20px, 4vw, 28px); color: #ffc107;"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-xl-4">
+                    <div class="col-12 col-sm-6 col-md-4">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                            <div class="card-body cardC p-4">
+                            <div class="card-body cardC p-3 p-md-4">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Total Employees</h6>
+                                        <h6 class="text-white mb-2 small">Total Employees</h6>
                                         <h2 class="text-white mb-0 fw-bold">18</h2>
                                     </div>
-                                    <div class="p-3 rounded-circle cardB" style="background-color: rgba(53, 111, 220, 0.15);">
-                                        <i class="bi bi-people-fill" style="font-size: 28px; color: #356fdc;"></i>
+                                    <div class="p-2 p-md-3 rounded-circle cardB" style="background-color: rgba(53, 111, 220, 0.15);">
+                                        <i class="bi bi-people-fill" style="font-size: 20px; font-size: clamp(20px, 4vw, 28px); color: #356fdc;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -58,67 +58,11 @@
                     </div>
                 </div>
 
-                <div class="card mt-5 mb-5" style="background-color: #1E1E1E; border: 1px solid #333333; border-radius: 12px;">
-                    <div class="card-body p-5">
-                        <div id="chart_div" style="width: 100%; height: 350px;"></div>
+                <div class="card mt-4 mt-md-5 mb-4 mb-md-5" style="background-color: #1E1E1E; border: 1px solid #333333; border-radius: 12px;">
+                    <div class="card-body p-3 p-md-5">
+                        <div id="chart_div" class="w-100" style="height: 250px; height: clamp(250px, 50vw, 350px);"></div>
                     </div>
                 </div>
-
-                <!-- <div class="card mb-5" style="background-color: #1E1E1E; border: 1px solid #333333; border-radius: 12px;">
-                    <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #252525; border-bottom: 1px solid #333333;">
-                        <h5 class="card-title mb-0 text-white" >Recent Examinations</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="py-3 px-4">Exam Name</th>
-                                        <th scope="col" class="py-3">Course</th>
-                                        <th scope="col" class="py-3">Department</th>
-                                        <th scope="col" class="py-3">Date</th>
-                                        <th scope="col" class="py-3">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="py-3 px-4">Data Structures</td>
-                                        <td class="py-3">BTech</td>
-                                        <td class="py-3">CSE</td>
-                                        <td class="py-3">Nov 22, 2024</td>
-                                        <td class="py-3">
-                                            <span class="badge rounded-pill" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442; padding: 8px 16px;">
-                                                Active
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-3 px-4">Data Algorithms</td>
-                                        <td class="py-3">MTech</td>
-                                        <td class="py-3">CSE (AI & ML)</td>
-                                        <td class="py-3">Nov 23, 2024</td>
-                                        <td class="py-3">
-                                            <span class="badge rounded-pill" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107; padding: 8px 16px;">
-                                                Pending
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-3 px-4">Database Systems</td>
-                                        <td class="py-3">BTech</td>
-                                        <td class="py-3">CSIT</td>
-                                        <td class="py-3">Nov 24, 2024</td>
-                                        <td class="py-3">
-                                            <span class="badge rounded-pill" style="background-color: rgba(220, 53, 69, 0.15); color: #dc3545; padding: 8px 16px;">
-                                                Cancelled
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div> -->
             </div>
         </div>
     </div>

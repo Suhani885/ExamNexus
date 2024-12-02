@@ -91,13 +91,13 @@
     </div>
 
     <div class="modal fade" id="addCourseModal" tabindex="-1">
-        <div class="modal-dialog" >
+        <div class="modal-dialog">
             <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                <div class="modal-header border-0">
+                <div class="modal-header border-0" id="form">
                     <h5 class="modal-title text-white">Add New Course</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="form">
                     <form ng-submit="addCtrl.createCourse()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course Name</label>
@@ -127,11 +127,11 @@
     <div class="modal fade" id="addDepartmentModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                <div class="modal-header border-0">
+                <div class="modal-header border-0" id="form">
                     <h5 class="modal-title text-white">Add New Department</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="form">
                     <form ng-submit="addCtrl.createDep()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course</label>
@@ -159,11 +159,11 @@
     <div class="modal fade" id="addSectionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                <div class="modal-header border-0">
+                <div class="modal-header border-0" id="form">
                     <h5 class="modal-title text-white" >Add New Section</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="form">
                     <form ng-submit="addCtrl.createSection()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course</label>
@@ -178,6 +178,17 @@
                             </select>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label text-white">Department</label>
+                            <select class="form-select text-white" 
+                                    ng-model="addCtrl.depForSection" 
+                                    style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
+                                <option value="" disabled selected>Select Department</option>
+                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.id">
+                                    {{dep.value}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label for="year" class="form-label text-white">Year</label>
                             <select class="form-select" id="year" name="year"
                                     ng-model="addCtrl.yearForSection" 
@@ -186,17 +197,6 @@
                                 <option value="" disabled selected>Select Year</option>
                                 <option ng-repeat="year in addCtrl.years" ng-value="year.id">
                                     {{year.value}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white">Department</label>
-                            <select class="form-select text-white" 
-                                    ng-model="addCtrl.depForSection" 
-                                    style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
-                                <option value="" disabled selected>Select Department</option>
-                                <option ng-repeat="dep in addCtrl.deps" ng-value="dep.id">
-                                    {{dep.value}}
                                 </option>
                             </select>
                         </div>
@@ -220,11 +220,11 @@
     <div class="modal fade" id="addSubjectsModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                <div class="modal-header border-0">
+                <div class="modal-header border-0" id="form">
                     <h5 class="modal-title text-white">Add New Subjects</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="form">
                     <form ng-submit="addCtrl.createSubjects()">
                         <div class="mb-3">
                             <label class="form-label text-white">Course</label>
