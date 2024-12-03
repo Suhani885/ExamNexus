@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-    .constant('BASE_URL', 'https://10.21.96.138:8000')
+    .constant('BASE_URL', 'https://10.21.98.33:8000')
     
     .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
         return {
@@ -9,6 +9,7 @@ angular.module('app.services', [])
                 register: `${BASE_URL}/portal/register/`
             },
             user: {
+                dashboard: `${BASE_URL}/portal/dashboard/`,
                 records: `${BASE_URL}/portal/records/`,
                 gender: `${BASE_URL}/portal/get-genders/`,
                 navbar: `${BASE_URL}/portal/`,

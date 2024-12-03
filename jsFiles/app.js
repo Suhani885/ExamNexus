@@ -1,7 +1,5 @@
 const app = angular.module('app', ['ui.router', 'ui.bootstrap', 'app.services'])
 
-const BASE_URL = 'https://10.21.96.138:8000';
-
 app.directive('loader', ['LoaderService', function(LoaderService) {
     return {
         restrict: 'E',
@@ -64,18 +62,18 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controllerAs: 'regCtrl'
         })
         .state('user.staffRec', {
-            url: '/staffRecords',
-            templateUrl: 'templateFiles/staff.html',
-            controller: 'staffController',
-            controllerAs: 'staffCtrl'
+            url: '/facultyRecords',
+            templateUrl: 'templateFiles/faculty.html',
+            controller: 'facultyController',
+            controllerAs: 'facCtrl'
         })
         .state('user.studentRec', {
-            url: '/makeQuestion',
+            url: '/studentRecords',
             templateUrl: 'templateFiles/students.html',
             controller: 'questionController',
             controllerAs: 'qpCtrl'
         })
-        .state('user.courseRec', {
+        .state('user.course', {
             url: '/courseRecords',
             templateUrl: 'templateFiles/courses.html',
             controller: 'courseController',
@@ -89,8 +87,14 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
         // })
         .state('user.schedule', {
             url: '/schedule',
-            templateUrl: 'templateFiles/schedule.html',
-            controller: 'schedController',
+            templateUrl: 'templateFiles/makeSchedule.html',
+            controller: 'makeController',
+            controllerAs: 'makeCtrl'
+        })
+        .state('user.viewSchedule', {
+            url: '/viewSchedule',
+            templateUrl: 'templateFiles/viewSchedule.html',
+            controller: 'scheduleController',
             controllerAs: 'schedCtrl'
         });
 }])
@@ -129,8 +133,17 @@ app.controller('LoginController', ['$state', 'HttpService', 'ApiEndpoints', func
     };
 }])
 
-app.controller('dashController', ['$state', 'HttpService', 'ApiEndpoints', function($state, HttpService, ApiEndpoints) {
+app.controller('dashController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var dashCtrl = this;
+
+    dashCtrl.fetchDashboard = function() {
+        HttpService.get(ApiEndpoints.user.dashboard)
+            .then(function(response) {
+                dashCtrl.dashboard = response.data;
+            });
+    };
+
+    dashCtrl.fetchDashboard();
 }])
 
 app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', function($state, HttpService, ApiEndpoints) {
@@ -408,6 +421,10 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
         };
 
         addCtrl.createSubjects = function() {
+            var subjects = addCtrl.subjects.map(function(subject) {
+                return subject.text;
+            });
+        
             HttpService.post(ApiEndpoints.create.main, {
                 "pid": addCtrl.year,
                 "value": subjects
@@ -717,7 +734,7 @@ app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(Htt
     facCtrl.fetchDetails = function() {
         HttpService.get(ApiEndpoints.user.records + '?choice=' + "faculty")
             .then(function(response) {
-                facCtrl.facs = response.data;
+                facCtrl.facs = response.data[1].faculty;
             });
     };
 
@@ -733,5 +750,30 @@ app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(Htt
     // };
 
     facCtrl.fetchDetails();
+}]);
+
+app.controller('courseController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var coCtrl = this;
+
+    coCtrl.fetchDetails = function() {
+        HttpService.get(ApiEndpoints.user.records + '?choice=' + "courses")
+            .then(function(response) {
+                coCtrl.courses = response.data;
+                coCtrl.deps= response.data.departments;
+            });
+    };
+
+    // facCtrl.editCourse = function(course) {
+    //     alert('Editing course: ' + course.name);
+    // };
+
+    // facCtrl.deleteCourse = function(course) {
+    //     var index = academicCtrl.academicData.courses.indexOf(course);
+    //     if (index > -1) {
+    //         academicCtrl.academicData.courses.splice(index, 1);
+    //     }
+    // };
+
+    coCtrl.fetchDetails();
 }]);
 

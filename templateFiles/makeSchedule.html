@@ -1,0 +1,109 @@
+<div ng-controller="makeController as makeCtrl">
+  <div class="container-fluid vh-100 d-flex flex-column" style="background-color: #121212;">
+      <div class="container my-auto">
+          <div class="row justify-content-center">
+              <div class="col-12 col-xl-10 py-5 py-md-5">
+                <div class="d-flex align-items-center mb-4">
+                  <h1 class="display-6 fw-bold mb-0 text-white mb-4">
+                    Schedule Examinations
+                  </h1>
+                </div>
+                  <div class="card mt-2" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                      <div class="card-body p-5 p-md-5" id="form">
+                          <div class="row mb-3">
+                              <div class="col-12 col-md-6 mb-3">
+                                  <select class="form-select text-white" ng-model="makeCtrl.course" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="">Select Course</option>
+                                      <option value="cs">Computer Science</option>
+                                      <option value="it">Information Technology</option>
+                                  </select>
+                              </div>
+                              <div class="col-12 col-md-6 mb-3">
+                                  <select class="form-select text-white" ng-model="makeCtrl.department" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="">Select Department</option>
+                                      <option value="eng">Engineering</option>
+                                      <option value="mgmt">Management</option>
+                                  </select>
+                              </div>
+                              <div class="col-12 col-md-6 mb-3">
+                                  <select class="form-select text-white" ng-model="makeCtrl.year" required style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="">Select Year</option>
+                                      <option value="1">First Year</option>
+                                  </select>
+                              </div>
+                              <div class="col-12 col-md-6 mb-3">
+                                <input type="text" placeholder="Examination Type" ng-model="makeCtrl.exam" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" id="dob" name="dob" required>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-12">
+                                  <button class="btn btn-primary w-100" 
+                                          ng-click="makeCtrl.openScheduleModal()" 
+                                          ng-disabled="!makeCtrl.subject" 
+                                          data-bs-toggle="modal" 
+                                          data-bs-target="#scheduleModal">
+                                      Create Exam Schedule
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content" id="form" style="background-color: #1a1a1a;">
+          <div class="modal-header border-bottom border-secondary">
+            <h5 class="modal-title text-white">Make Schedule</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form ng-submit="makeCtrl.saveSchedule()">
+                <div ng-repeat="subject in makeCtrl.subjects" class="card mb-3" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                  <div class="row mb-3 card-body">
+                    <div class="col-12 col-md-6 mb-3">
+                        <select class="form-select" ng-model="makeCtrl.subject" required style="background-color: rgba(255,255,255,0.1); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);">
+                            <option value="">Select Subject</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                        <label class="form-label text-white">Exam Date</label>
+                        <input type="date" class="form-control text-white" required ng-model="makeCtrl.date" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                      <label class="form-label text-white">Start Time</label>
+                      <input type="time" class="form-control text-white" required ng-model="makeCtrl.start" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                      <label class="form-label text-white">End Time</label>
+                      <input type="time" class="form-control text-white" required ng-model="makeCtrl.end" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid #404040;">
+                    </div>
+                  </div>
+                    <div class="row mt-3" ng-if="makeCtrl.subjects.length > 1">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-danger w-100" ng-click="makeCtrl.remove($index)">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-success mb-3" ng-click="makeCtrl.addSubjects()">
+                                <i class="bi bi-plus"></i> Add More
+                            </button>
+                        </div>
+                    </div>                    
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-success" ng-click="makeCtrl.saveSchedule()">
+                    Submit Schedule
+                </button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
