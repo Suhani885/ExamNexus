@@ -17,11 +17,12 @@ angular.module('app.services', [])
             },
             create: {
                 main: `${BASE_URL}/portal/dropdowns/`,
-                course: `${BASE_URL}/portal/get-courses/`,
+                course: `${BASE_URL}/portal/get-courses/`
             },
-            questionPaper: {
-                create: `${BASE_URL}/portal/qp/`,
+            exam: {
+                makeSchedule: `${BASE_URL}/faculty/create-schedule/`,
                 view: `${BASE_URL}/portal/records/`,
+                type: `${BASE_URL}/portal/exam-types/`
             }
         };
     }])

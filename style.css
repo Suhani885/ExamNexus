@@ -1,119 +1,152 @@
 body {
-    transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .dark-mode .text-muted {
-    color: #f7f4f4 !important;
+  color: #f7f4f4 !important;
 }
 
 .dark-mode .main {
-    background-color: #020202 !important;
+  background-color: #020202 !important;
 }
 
 .light-mode #form{
-    background-color: #f4f4f4 !important;
+  background-color: #f4f4f4 !important;
 }
 
 .light-mode .modal-content{
-    background-color: #f4f4f4 !important;
+  background-color: #f4f4f4 !important;
 }
 
 .light-mode .container-fluid ,
 .light-mode .main {
-    background-color: #abd4fa !important;
+  background-color: #abd4fa !important;
 }
 
 .light-mode .custom-dropdown-menu {
-    background-color: #81bdf5  !important;
-    color: black;
+  background-color: #81bdf5  !important;
+  color: black;
 }
 
 .light-mode .text-white {
-    color: #0b0b0b !important;
+  color: #0b0b0b !important;
 }
 
 .light-mode .card {
-    background-color: #84c1fb !important;
-    border: 1px solid #f9f6f6 !important;
+  background-color: #8ec5f8 !important;
+  border: 1px solid #f9f6f6 !important;
 }
 
 .light-mode .cardC,
 .light-mode .card-header {
-    background-color: #d4eafe !important;
-    border: 1px solid #f9f6f6 !important;
+  background-color: #d4eafe !important;
+  border: 1px solid #f9f6f6 !important;
 }
 
 .light-mode .bg-dark {
-    background-color: #c4dbf3 !important;
+  background-color: #c4dbf3 !important;
 }
 
 .light-mode #sidebar {
-    background-color:#71b8fa !important;
-    color: #171717 !important;
+  background-color:#71b8fa !important;
+  color: #171717 !important;
 }
 
 .light-mode .form-control,
 .light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #333333 !important;
+  background-color: #ffffff !important;
+  border-color: #ced4da !important;
+  color: #333333 !important;
 }
 
 .light-mode .form-label {
-    color: #333333 !important;
+  color: #333333 !important;
 }
 
 .light-mode .btn-outline-secondary {
-    border-color: #ced4da !important;
-    color: #333333 !important;
+  border-color: #ced4da !important;
+  color: #333333 !important;
 }
 
 .light-mode .cardB {
-    background-color: #f8f9fa !important;
+  background-color: #f8f9fa !important;
 }
 
 .light-mode .theme-toggle {
-    color: #333333 !important;
+  color: #333333 !important;
+}
+
+.light-mode .table-responsive {
+  background-color: #ffffff !important;
+  border-radius: 10px;
+}
+
+.light-mode .table {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.light-mode .table thead {
+  background-color: #e6f2ff;
+}
+
+.light-mode .table thead th {
+  color: #1a5f7a !important;
+  border-bottom: 2px solid #b3d7ff;
+}
+
+.light-mode .table tbody tr {
+  background-color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.light-mode .table tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+.light-mode .card:hover {
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
 }
 
 .card {
-    transition: 
-        transform 0.3s ease, 
-        box-shadow 0.3s ease, 
-        background-color 0.3s ease !important;
+  transition: 
+      transform 0.3s ease, 
+      box-shadow 0.3s ease, 
+      background-color 0.3s ease !important;
 }
 
 .card:hover {
-    transform: translateY(-10px) !important;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+  transform: translateY(-10px) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
 }
 
 .card-body {
-    transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;
 }
 
 .card-body .rounded-circle {
-    transition: 
-        transform 0.3s ease, 
-        box-shadow 0.3s ease !important;
+  transition: 
+      transform 0.3s ease, 
+      box-shadow 0.3s ease !important;
 }
 
 .card-body .rounded-circle:hover {
-    transform: rotate(360deg) scale(1.1) !important;
+  transform: rotate(360deg) scale(1.1) !important;
 }
 
 #chart_div {
-    transition: opacity 0.5s ease !important;
+  transition: opacity 0.5s ease !important;
 }
 
 .btn {
-    transition: 
-        transform 0.2s ease, 
-        box-shadow 0.2s ease !important;
+  transition: 
+      transform 0.2s ease, 
+      box-shadow 0.2s ease !important;
 }
 
 .btn:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
 }
 

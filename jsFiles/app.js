@@ -67,9 +67,9 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'facultyController',
             controllerAs: 'facCtrl'
         })
-        .state('user.studentRec', {
-            url: '/studentRecords',
-            templateUrl: 'templateFiles/students.html',
+        .state('user.makePaper', {
+            url: '/makeExam',
+            templateUrl: 'templateFiles/makePaper.html',
             controller: 'questionController',
             controllerAs: 'qpCtrl'
         })
@@ -79,12 +79,12 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'courseController',
             controllerAs: 'coCtrl'
         })
-        // .state('user.studentRec', {
-        //     url: '/studentRecords',
-        //     templateUrl: 'templateFiles/students.html',
-        //     controller: 'studentController',
-        //     controllerAs: 'studentCtrl'
-        // })
+        .state('user.studentRec', {
+            url: '/studentRecords',
+            templateUrl: 'templateFiles/students.html',
+            controller: 'studentController',
+            controllerAs: 'studentCtrl'
+        })
         .state('user.schedule', {
             url: '/schedule',
             templateUrl: 'templateFiles/makeSchedule.html',
@@ -442,6 +442,36 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
             });
         };
 
+        addCtrl.createExam = function() {
+
+            HttpService.post(ApiEndpoints.create.main, {
+                "pid": addCtrl.exam,
+                "pid": addCtrl.marks,
+                "value": addCtrl.duration
+            }).then(function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                });
+                $('#addExamModal').modal('hide');
+            });
+        };
+
+        addCtrl.createGender = function() {
+
+            HttpService.post(ApiEndpoints.user.gender, {
+                "gender": addCtrl.gender
+            }).then(function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message
+                });
+                $('#addGenderModal').modal('hide');
+            });
+        };
+
         addCtrl.subjects = [{ text: '' }];
 
         addCtrl.addSubject = function() {
@@ -691,8 +721,6 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
             questions: qpCtrl.questions
         };
         
-        // console.log(JSON.stringify(data, null, 2));
-        
         HttpService.post(ApiEndpoints.auth.save, data)
             .then(function(response) {
                 Swal.fire({
@@ -763,11 +791,11 @@ app.controller('courseController', ['HttpService', 'ApiEndpoints', function(Http
             });
     };
 
-    // facCtrl.editCourse = function(course) {
+    // coCtrl.editCourse = function(course) {
     //     alert('Editing course: ' + course.name);
     // };
 
-    // facCtrl.deleteCourse = function(course) {
+    // coCtrl.deleteCourse = function(course) {
     //     var index = academicCtrl.academicData.courses.indexOf(course);
     //     if (index > -1) {
     //         academicCtrl.academicData.courses.splice(index, 1);
@@ -777,3 +805,96 @@ app.controller('courseController', ['HttpService', 'ApiEndpoints', function(Http
     coCtrl.fetchDetails();
 }]);
 
+app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var makeCtrl = this;
+    
+    makeCtrl.course = '';
+    makeCtrl.department = '';
+    makeCtrl.year = '';
+    makeCtrl.exam = '';
+    makeCtrl.subjects = [];
+
+    makeCtrl.openScheduleModal = function() {
+        if (makeCtrl.subjects.length === 0) {
+            makeCtrl.addSubjects();
+        }
+    };
+
+    makeCtrl.addSubjects = function() {
+        makeCtrl.subjects.push({
+            subject: '',
+            date: '',
+            start_time: '',
+            end_time: ''
+        });
+    };
+
+    makeCtrl.remove = function(index) {
+        makeCtrl.subjects.splice(index, 1);
+    };
+
+    makeCtrl.saveSchedule = function() {
+        var data = {
+            course_id: makeCtrl.course,
+            department_id: makeCtrl.department,
+            year_id: makeCtrl.year,
+            exam_type: makeCtrl.exam,
+            exam_details: makeCtrl.subjects
+        };
+        HttpService.post(ApiEndpoints.exam.makeSchedule, data)
+            .then(function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Successful!',
+                    text: response.message || 'Schedule Submitted Successfully!'
+                });
+            });
+    };
+
+    makeCtrl.fetchExams = function() {
+        HttpService.get(ApiEndpoints.exam.type)
+            .then(function(response) {
+                makeCtrl.exams = response.data;
+            });
+    };
+
+    makeCtrl.fetchCourses = function() {
+        HttpService.get(ApiEndpoints.create.course)
+            .then(function(response) {
+                makeCtrl.courses = response.data;
+            });
+    };
+
+    makeCtrl.fetchDeps = function(courseId) {
+        if (!courseId) {
+            courseId = makeCtrl.course;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+            .then(function(response) {
+                makeCtrl.deps = response.data;
+            });
+    };
+
+    makeCtrl.fetchYears = function(depId) {
+        if (!depId) {
+            depId = makeCtrl.dep;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+            .then(function(response) {
+                makeCtrl.years = response.data;
+            });
+    };
+
+    makeCtrl.fetchSubjects = function(yearId) {
+        if (!yearId) {
+            yearId = makeCtrl.year;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+            .then(function(response) {
+                makeCtrl.subjects = response.subjects;
+            });
+    };
+
+    makeCtrl.fetchCourses();
+    makeCtrl.fetchExams();
+}]);
