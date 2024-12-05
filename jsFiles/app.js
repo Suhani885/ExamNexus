@@ -91,6 +91,12 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'makeController',
             controllerAs: 'makeCtrl'
         })
+        .state('user.exam', {
+            url: '/exam',
+            templateUrl: 'templateFiles/exam.html',
+            controller: 'examController',
+            controllerAs: 'examCtrl'
+        })
         .state('user.viewSchedule', {
             url: '/viewSchedule',
             templateUrl: 'templateFiles/viewSchedule.html',
@@ -384,6 +390,8 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                 });
                 addCtrl.fetchCourses();
                 $('#addCourseModal').modal('hide');
+                addCtrl.course = '';
+                addCtrl.duration = '';
             });
         };
       
@@ -398,6 +406,8 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                     text: response.message
                 });
                 $('#addDepartmentModal').modal('hide');
+                addCtrl.dep = '';
+                addCtrl.courseId = '';
             });
         };
 
@@ -444,10 +454,10 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
 
         addCtrl.createExam = function() {
 
-            HttpService.post(ApiEndpoints.create.main, {
-                "pid": addCtrl.exam,
-                "pid": addCtrl.marks,
-                "value": addCtrl.duration
+            HttpService.post(ApiEndpoints.exam.type, {
+                "exam_name": addCtrl.exam,
+                "maximum_marks": addCtrl.marks,
+                "exam_duration": parseInt(addCtrl.duration)
             }).then(function(response) {
                 Swal.fire({
                     icon: 'success',
@@ -455,6 +465,9 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                     text: response.message
                 });
                 $('#addExamModal').modal('hide');
+                addCtrl.exam = '';
+                addCtrl.marks = '';
+                addCtrl.duration = '';
             });
         };
 
@@ -469,6 +482,7 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                     text: response.message
                 });
                 $('#addGenderModal').modal('hide');
+                addCtrl.gender = '';
             });
         };
 
@@ -807,12 +821,41 @@ app.controller('courseController', ['HttpService', 'ApiEndpoints', function(Http
 
 app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var makeCtrl = this;
-    
+
     makeCtrl.course = '';
     makeCtrl.department = '';
     makeCtrl.year = '';
     makeCtrl.exam = '';
     makeCtrl.subjects = [];
+
+    makeCtrl.formatTime = function(time) {
+        if (!time) return null;
+        const timeObj = new Date(`1970-01-01T${time}`);
+        
+        return `${
+            timeObj.getHours().padStart(2, '0')
+        }:${
+            timeObj.getMinutes().padStart(2, '0')
+        }:${
+            timeObj.getSeconds().padStart(2, '0')
+        }`;
+    };
+
+    makeCtrl.validateDate = function() {
+        return makeCtrl.subjects.every(subject => {
+            const isValid = subject.end_time > subject.start_time;
+            
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Time',
+                    text: 'End time must be after start time'
+                });
+            }
+            
+            return isValid;
+        });
+    };
 
     makeCtrl.openScheduleModal = function() {
         if (makeCtrl.subjects.length === 0) {
@@ -834,13 +877,22 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
     };
 
     makeCtrl.saveSchedule = function() {
+        // if (!makeCtrl.validateDate()) {
+        //     return;
+        // }
         var data = {
             course_id: makeCtrl.course,
             department_id: makeCtrl.department,
             year_id: makeCtrl.year,
             exam_type: makeCtrl.exam,
-            exam_details: makeCtrl.subjects
+            exam_details: makeCtrl.subjects.map(subject => ({
+                subject: subject.subject,
+                date: subject.date,
+                start_time: makeCtrl.formatTime(subject.start_time),
+                end_time: makeCtrl.formatTime(subject.end_time)
+            }))
         };
+
         HttpService.post(ApiEndpoints.exam.makeSchedule, data)
             .then(function(response) {
                 Swal.fire({
@@ -848,6 +900,7 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
                     title: 'Successful!',
                     text: response.message || 'Schedule Submitted Successfully!'
                 });
+                makeCtrl.subjects = [];
             });
     };
 
@@ -897,4 +950,140 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
 
     makeCtrl.fetchCourses();
     makeCtrl.fetchExams();
+}]);
+
+app.controller('scheduleController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var schedCtrl = this;
+
+    // schedCtrl.fetchSchedule = function() {
+    //     var params = {
+    //         exam_id: schedCtrl.exam,
+    //         course_id:schedCtrl.course,
+    //         department_id: schedCtrl.department,
+    //         year_id: schedCtrl.year
+    //     }
+
+    //     HttpService.get(ApiEndpoints.exam.makeSchedule, params)
+    //         .then(function(response) {
+    //             schedCtrl.schedules = response.data;
+    //         });
+    // };
+
+    schedCtrl.fetchSchedule = function() {
+        HttpService.get(ApiEndpoints.exam.makeSchedule + '?exam_id=' + schedCtrl.exam + "&" + 'course_id='+ schedCtrl.course+'&'+ 'department_id=' + schedCtrl.dep + "&" + 'year_id=' + schedCtrl.year)
+            .then(function(response) {
+                schedCtrl.schedules = response.data;
+            });
+    };
+
+    schedCtrl.fetchExams = function() {
+        HttpService.get(ApiEndpoints.exam.type)
+            .then(function(response) {
+                schedCtrl.exams = response.data;
+            });
+    };
+
+    schedCtrl.fetchCourses = function() {
+        HttpService.get(ApiEndpoints.create.course)
+            .then(function(response) {
+                schedCtrl.courses = response.data;
+            });
+    };
+
+    schedCtrl.fetchDeps = function(courseId) {
+        if (!courseId) {
+            courseId = schedCtrl.course;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+            .then(function(response) {
+                schedCtrl.deps = response.data;
+            });
+    };
+
+    schedCtrl.fetchYears = function(depId) {
+        if (!depId) {
+            depId = schedCtrl.dep;
+        }
+        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+            .then(function(response) {
+                schedCtrl.years = response.data;
+            });
+    };
+
+    schedCtrl.fetchExams();
+    schedCtrl.fetchCourses();
+}]);
+
+app.controller('examController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+    var examCtrl = this;
+    examCtrl.currentQuestionIndex = 0;
+    examCtrl.selectedAnswer = null;
+    examCtrl.examCompleted = false;
+    examCtrl.score = 0;
+    examCtrl.timeRemaining = '30:00';
+    examCtrl.currentSubject = 'Computer Science';
+
+    // examCtrl.fetchQuestions = function() {
+    //     $http.get('/api/questions')
+    //         .then(function(response) {
+    //             examCtrl.questions = response.data;
+    //             examCtrl.totalQuestions = examCtrl.questions.length;
+    //             examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
+    //         })
+    //             examCtrl.totalQuestions = examCtrl.questions.length;
+    //         };
+    // };
+
+    examCtrl.submitExam = function() {
+        examCtrl.examResults.questions = examCtrl.questions.map(function(question) {
+            return {
+                questionId: question.id,
+                selectedOption: question.selectedAnswer,
+                isCorrect: question.selectedAnswer
+            };
+        });
+        $http.post('/api/exam/submit', examCtrl.examResults)
+            .then(function(response) {
+                examCtrl.examCompleted = true;
+                examCtrl.submissionResult = response.data;
+                examCtrl.resultMessage = response.data.message;
+            });
+    };
+
+    examCtrl.startTimer = function() {
+        var totalSeconds = 30 * 60;
+        var timer = $interval(function() {
+            totalSeconds--;
+            var minutes = Math.floor(totalSeconds / 60);
+            var seconds = totalSeconds % 60;
+            examCtrl.timeRemaining = 
+                (minutes < 10 ? '0' : '') + minutes + ':' + 
+                (seconds < 10 ? '0' : '') + seconds;
+            
+            if (totalSeconds <= 0) {
+                $interval.cancel(timer);
+                examCtrl.submitExam();
+            }
+        }, 1000);
+    };
+
+    examCtrl.nextQuestion = function() {
+        if (examCtrl.currentQuestionIndex + 1 < examCtrl.totalQuestions) {
+            examCtrl.currentQuestionIndex++;
+            examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
+            examCtrl.selectedAnswer = null;
+        } else {
+            examCtrl.submitExam();
+        }
+    };
+
+    examCtrl.previousQuestion = function() {
+        if (examCtrl.currentQuestionIndex > 0) {
+            examCtrl.currentQuestionIndex--;
+            examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
+        }
+    };
+    
+    examCtrl.fetchQuestions();
+    examCtrl.startTimer();
 }]);

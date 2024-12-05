@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-    .constant('BASE_URL', 'https://10.21.98.33:8000')
+    .constant('BASE_URL', 'https://10.21.99.8:8000')
     
     .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
         return {
@@ -20,7 +20,7 @@ angular.module('app.services', [])
                 course: `${BASE_URL}/portal/get-courses/`
             },
             exam: {
-                makeSchedule: `${BASE_URL}/faculty/create-schedule/`,
+                makeSchedule: `${BASE_URL}/faculty/schedule/`,
                 view: `${BASE_URL}/portal/records/`,
                 type: `${BASE_URL}/portal/exam-types/`
             }
@@ -110,8 +110,8 @@ angular.module('app.services', [])
         }
         
         return {
-            get: function(url) {
-                return handleRequest('GET', url);
+            get: function(url, params) {
+                return handleRequest('GET', url, params);
             },
             post: function(url, data) {
                 return handleRequest('POST', url, data);

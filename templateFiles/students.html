@@ -23,8 +23,9 @@
                                                 <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">DOB</th>
                                                 <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Course</th>
                                                 <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Department</th>
-                                                <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Year</th>
-                                                <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Section</th>
+                                                <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Year & Section</th>
+                                                <!-- <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Section</th> -->
+                                                <th scope="col" class="py-3 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -35,8 +36,13 @@
                                                 <td class="py-3 text-white">{{ student.dob }}</td>
                                                 <td class="py-3 text-white">{{ student.academic_info.course}}</td>
                                                 <td class="py-3 text-white">{{ student.academic_info.department}}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.year}}</td>
-                                                <td class="py-3 text-white">{{ student.academic_info.section}}</td>
+                                                <td class="py-3 text-white">{{ student.academic_info.year}} - {{ student.academic_info.section}}</td>
+                                                <!-- <td class="py-3 text-white">{{ student.academic_info.section}}</td> -->
+                                                <td class="py-3">  
+                                                    <button class="btn btn-sm me-2" style="background-color: rgba(220, 53, 69, 0.15); color: #dc3545; border: none;">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

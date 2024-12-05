@@ -1,0 +1,58 @@
+<div ng-controller="examController as examCtrl" style="background-color: #121212;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040;">
+                    <div class="card-header text-white text-center">
+                        <!-- <h2>{{ examCtrl.currentSubject }} Exam</h2> -->
+                        <h2>Today's Exam</h2>
+                        <!-- <div class="d-flex justify-content-between">
+                            <span>Question: {{ examCtrl.currentQuestionIndex + 1 }}/{{ examCtrl.totalQuestions }}</span>
+                            <span>Time Remaining: {{ examCtrl.timeRemaining }}</span>
+                        </div> -->
+                    </div>
+                    <div class="card-body">
+                        <div ng-if="examCtrl.currentQuestion" class="mb-4">
+                            <h4 class="text-white mb-3">{{ examCtrl.currentQuestion.text }}</h4>
+                            
+                            <form ng-submit="examCtrl.submitAnswer()">
+                                <div class="mb-3" ng-repeat="(index, option) in examCtrl.currentQuestion.options">
+                                    <label class="form-check-label w-100 p-2" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px;">
+                                        <input 
+                                            type="radio" 
+                                            name="answer" 
+                                            ng-model="examCtrl.selectedAnswer" 
+                                            ng-value="index" 
+                                            class="form-check-input me-2"
+                                        >
+                                        {{ option }}
+                                    </label>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary" 
+                                        ng-click="examCtrl.previousQuestion()" 
+                                        ng-disabled="examCtrl.currentQuestionIndex === 0">
+                                        Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary" ng-click="examCtrl.nextQuestion()">
+                                        {{ examCtrl.currentQuestionIndex + 1 === examCtrl.totalQuestions ? 'Submit Exam' : 'Next' }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div ng-if="examCtrl.examCompleted" class="text-center">
+                            <h3 class="text-white">Exam Completed</h3>
+                            <p class="text-white">Your Score: {{ examCtrl.score }}/{{ examCtrl.totalQuestions }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    
+    
