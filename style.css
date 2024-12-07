@@ -78,35 +78,35 @@ body {
 
 .light-mode .table-responsive {
   background-color: #ffffff !important;
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
 
 .light-mode .table {
-  background-color: #ffffff;
-  color: #333;
+  background-color: #ffffff !important;
+  color: #333 !important;
 }
 
 .light-mode .table thead {
-  background-color: #e6f2ff;
+  background-color: #e6f2ff !important;
 }
 
 .light-mode .table thead th {
   color: #1a5f7a !important;
-  border-bottom: 2px solid #b3d7ff;
+  border-bottom: 2px solid #b3d7ff !important;
 }
 
 .light-mode .table tbody tr {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   transition: background-color 0.2s ease;
 }
 
 .light-mode .table tbody tr:hover {
-  background-color: #f0f8ff;
+  background-color: #f0f8ff !important;
 }
 
 .light-mode .card:hover {
-  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+  transform: translateY(-5px) !important;
 }
 
 .card {

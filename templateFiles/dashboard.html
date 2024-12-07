@@ -1,11 +1,40 @@
-<div ng-controller="dashController as dashCtrl" >
+<div ng-controller="dashController as dashCtrl">
     <div class="container-fluid py-5" style="background-color: #121212;">
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
+
                 <div class="d-flex align-items-center mb-4">
-                    <h1 class="display-6 fw-bold mb-0 text-white">
+                    <h1 class="display-5 fw-bold mb-0 text-white">
                         Dashboard
                     </h1>
+                </div>
+
+                <div class="card mb-4" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="text-white mb-2 fw-bold">{{dashCtrl.user.name || 'Abhay Singh Jadaun'}}</h4>
+                                
+                                <div class="profile-details">
+                                    <div ng-if="dashCtrl.user.role" class="text-white mb-1">
+                                        <i class="bi bi-person-badge me-2"></i>
+                                        {{dashCtrl.user.role || 'Faculty'}}
+                                    </div>
+                                    
+                                    <div ng-if="dashCtrl.user.email" class="text-white mb-1">
+                                        <i class="bi bi-envelope me-2"></i>
+                                        {{dashCtrl.user.email}}
+                                    </div>
+                                    
+                                    <div ng-if="dashCtrl.user.department" class="text-white">
+                                        <i class="bi bi-building me-2"></i>
+                                        {{dashCtrl.user.department}}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row g-3 mb-5" ng-repeat="dash in dashCtrl.dashboard">
@@ -41,7 +70,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-md-4">
+                    <div class="col-12 col-sm-6 col-md-4" ng-if="dashCtrl.role=='admin'">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
                             <div class="card-body cardC p-3 p-md-4">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -102,3 +131,4 @@
         }
     </script>
 </div>
+

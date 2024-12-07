@@ -1,0 +1,81 @@
+<div ng-controller="hodPaperController as hodCtrl" class="container-fluid py-5" style="background-color: #121212;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="d-flex align-items-center mb-4">
+                    <h1 class="display-5 fw-bold mb-0 text-white">Question Paper Selection</h1>
+                </div>
+                
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div class="col" ng-repeat="faculty in hodCtrl.facultyPapers">
+                        <div class="card" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title text-white">{{faculty.faculty_name}}</h5>
+                                        <p class="card-text text-white-50">
+                                            Subject: {{faculty.subject_name}}<br>
+                                            Year: {{faculty.year}}<br>
+                                            Exam: {{faculty.exam_name}}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <input type="radio" 
+                                               name="selectedPaper" 
+                                               ng-model="hodCtrl.selectedFaculty" 
+                                               ng-value="faculty">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary mt-3" 
+                                        ng-click="hodCtrl.viewPaperDetails(faculty)"
+                                        ng-disabled="!hodCtrl.selectedFaculty">
+                                    View Paper Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paperDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #1a1a1a;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-white">Paper Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div ng-if="hodCtrl.currentPaperDetails">
+                        <div class="row mb-3" ng-repeat="question in hodCtrl.currentPaperDetails.questions">
+                            <div class="col-12 card mb-2" style="background-color: rgba(255,255,255,0.05);">
+                                <div class="card-body">
+                                    <h6 class="text-white">Q{{$index + 1}}: {{question.text}}</h6>
+                                    <div class="row">
+                                        <div class="col-6" ng-repeat="option in question.options">
+                                            <p class="text-white-50" 
+                                               ng-class="{'text-success': option === question.correctAnswer}">
+                                                {{option}}
+                                                <span ng-if="option === question.correctAnswer">
+                                                    (Correct Answer)
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" 
+                            ng-click="hodCtrl.approvePaper()"
+                            ng-disabled="!hodCtrl.selectedFaculty">
+                        Approve Paper
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

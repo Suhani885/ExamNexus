@@ -1,127 +1,124 @@
 <div ng-controller="makeController as makeCtrl">
-  <div class="container-fluid vh-100 d-flex flex-column" style="background-color: #121212;">
-      <div class="container my-auto">
-          <div class="row justify-content-center">
-              <div class="col-12 col-xl-10 py-5 py-md-5">
-                  <div class="d-flex align-items-center mb-4">
-                      <h1 class="display-6 fw-bold mb-0 text-white mb-4">
-                          Schedule Examinations
-                      </h1>
-                  </div>
-                  <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                      <div class="card-body p-5 p-md-5" id="form">
-                          <div class="row mb-3">
-                              <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label text-white">Course</label>
-                                <select class="form-select text-white" required ng-model="makeCtrl.course" style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                                    <option value="" disabled selected>Select Course</option>
-                                    <option ng-repeat="course in makeCtrl.courses" ng-click="makeCtrl.fetchDeps(makeCtrl.course)" ng-value="course.course_id">
-                                        {{course.course_name}}
-                                    </option>
-                                </select>
-                              </div>
-                              <div class="col-12 col-md-6 mb-3">
-                                    <label class="form-label text-white">Department</label>
-                                    <select class="form-select text-white" required ng-model="makeCtrl.dep" ng-disabled="!makeCtrl.course" style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                                        <option value="" disabled selected>Select Department</option>
-                                        <option ng-repeat="dep in makeCtrl.deps" ng-click="makeCtrl.fetchYears(makeCtrl.dep)" ng-value="dep.id">
-                                            {{dep.value}}
-                                        </option>
-                                    </select>
-                              </div>
-                              <div class="col-12 col-md-6 mb-3">
-                                <label for="year" class="form-label text-white">Year</label>
-                                <select class="form-select text-white" id="year" name="year" ng-disabled="!makeCtrl.dep"
-                                        ng-model="makeCtrl.year" ng-click="makeCtrl.fetchSubjects(makeCtrl.year)" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                                    <option value="" disabled selected>Select Year</option>
-                                    <option ng-repeat="year in makeCtrl.years" ng-value="year.id">
-                                        {{year.value}}
-                                    </option>
-                                </select>
-                              </div>
-                              <div class="col-12 col-md-6 mb-3">
-                                  <label for="year" class="form-label text-white"> Examination Type</label>
-                                  <select class="form-select text-white" id="type" name="type" ng-disabled="!makeCtrl.year"
-                                        ng-model="makeCtrl.exam" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                                    <option value="" disabled selected>Select Exam Type</option>
-                                    <option ng-repeat="exam in makeCtrl.exams" ng-value="exam.id">
-                                        {{exam.value}}
-                                    </option>
+    <div class="container-fluid vh-100 d-flex flex-column" style="background-color: #121212;">
+        <div class="container my-auto">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-10 py-5 py-md-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <h1 class="display-6 fw-bold mb-0 text-white mb-4">
+                            Schedule Examinations
+                        </h1>
+                    </div>
+                    <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                        <div class="card-body p-5 p-md-5" id="form">
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6 mb-3">
+                                  <label class="form-label text-white">Course</label>
+                                  <select class="form-select text-white" required ng-model="makeCtrl.course" style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="" disabled selected>Select Course</option>
+                                      <option ng-repeat="course in makeCtrl.courses" ng-click="makeCtrl.fetchDeps(makeCtrl.course)" ng-value="course.course_id">
+                                          {{course.course_name}}
+                                      </option>
                                   </select>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="col-12">
-                                  <button class="btn btn-primary w-100" 
-                                          ng-click="makeCtrl.openScheduleModal()" 
-                                          ng-disabled="!makeCtrl.exam" 
-                                          data-bs-toggle="modal" 
-                                          data-bs-target="#scheduleModal">
-                                      Create Exam Schedule
-                                  </button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="modal fade" id="scheduleModal" tabindex="-1">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable">
-          <div class="modal-content" id="form" style="background-color: #1a1a1a;">
-              <div class="modal-header border-bottom border-secondary">
-                  <h5 class="modal-title text-white">Make Schedule</h5>
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <form ng-submit="makeCtrl.saveSchedule()">
-                      <div ng-repeat="subject in makeCtrl.subjects" class="card mb-3" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                          <div class="card-body">
-                              <div class="row mb-3">
-                                  <div class="col-12 col-md-6 mb-3">
-                                    <select style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-select text-white"  id="subject" ng-model="subject.subject" required>
-                                        <option value="" disabled selected>Select Subject</option>
-                                        <option ng-repeat="sub in makeCtrl.subjects" ng-value="sub.id">{{sub.value}}</option>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                      <label class="form-label text-white">Department</label>
+                                      <select class="form-select text-white" required ng-model="makeCtrl.dep" ng-disabled="!makeCtrl.course" style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                          <option value="" disabled selected>Select Department</option>
+                                          <option ng-repeat="dep in makeCtrl.deps" ng-click="makeCtrl.fetchYears(makeCtrl.dep)" ng-value="dep.id">
+                                              {{dep.value}}
+                                          </option>
+                                      </select>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                  <label for="year" class="form-label text-white">Year</label>
+                                  <select class="form-select text-white" id="year" name="year" ng-disabled="!makeCtrl.dep"
+                                          ng-model="makeCtrl.year" ng-click="makeCtrl.fetchSubjects(makeCtrl.year)" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="" disabled selected>Select Year</option>
+                                      <option ng-repeat="year in makeCtrl.years" ng-value="year.id">
+                                          {{year.value}}
+                                      </option>
+                                  </select>
+                                </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="year" class="form-label text-white"> Examination Type</label>
+                                    <select class="form-select text-white" id="type" name="type" ng-disabled="!makeCtrl.year"
+                                          ng-model="makeCtrl.exam" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="" disabled selected>Select Exam Type</option>
+                                      <option ng-repeat="exam in makeCtrl.exams" ng-value="exam.id">
+                                          {{exam.value}}
+                                      </option>
                                     </select>
-                                      
-                                  </div>
-                                  <div class="col-12 col-md-6 mb-3">
-                                      <input type="date" placeholder="Enter Date" ng-model="subject.date" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" required>
-                                  </div>
-                                  <div class="col-12 col-md-6 mb-3">
-                                      <input type="time" placeholder="Enter Start Time" ng-model="subject.start_time" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" required>
-                                  </div>
-                                  <div class="col-12 col-md-6 mb-3">
-                                      <input type="time" placeholder="Enter End Time" ng-model="subject.end_time" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" required>
-                                  </div>
-                              </div>
-      
-                              <div class="row mt-3" ng-if="makeCtrl.subjects.length > 1">
-                                  <div class="col-12">
-                                      <button type="button" class="btn btn-danger w-100" ng-click="makeCtrl.remove($index)">
-                                          Remove Subject
-                                      </button>
-                                  </div>
-                              </div>
-                              <div class="row mt-3">
-                                  <div class="col-12">
-                                      <button type="button" class="btn btn-success mb-3" ng-click="makeCtrl.addSubjects()">
-                                          <i class="bi bi-plus"></i> Add Another Subject
-                                      </button>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-success" ng-click="makeCtrl.saveSchedule()">
-                      Submit Schedule
-                  </button>
-              </div>
-          </div>
-      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn w-100" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442;" 
+                                            ng-click="makeCtrl.openScheduleModal()" 
+                                            ng-disabled="!makeCtrl.exam" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#scheduleModal">
+                                        Create Exam Schedule
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="modal fade" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content" id="form" style="background-color: #1a1a1a;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-white">Make Schedule</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form ng-submit="makeCtrl.saveSchedule()">
+                        <div ng-repeat="subject in makeCtrl.subjects" class="card mb-3" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-12 col-md-4 mb-3">
+                                      <select style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-select text-white"  id="subject" ng-model="subject.subject" required>
+                                          <option value="" disabled selected>Select Subject</option>
+                                          <option ng-repeat="sub in makeCtrl.availableSubjects" ng-value="sub.id">{{sub.value}}</option>
+                                      </select>
+                                    </div>
+                                    <div class="col-12 col-md-4 mb-3">
+                                        <input type="date" placeholder="Enter Date" ng-model="subject.date" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" required>
+                                    </div>
+                                    <div class="col-12 col-md-4 mb-3">
+                                        <input type="time" placeholder="Enter Time" ng-model="subject.start_time" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" class="form-control text-white" required>
+                                    </div>
+                                </div>
+        
+                                <div class="row mt-3" ng-if="makeCtrl.subjects.length > 1">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-danger w-100" ng-click="makeCtrl.remove($index)">
+                                            Remove Subject
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-success mb-3" ng-click="makeCtrl.addSubjects()">
+                                            <i class="bi bi-plus"></i> Add Another Subject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn text-white" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" ng-click="makeCtrl.saveSchedule()">
+                        Submit Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
-</div>

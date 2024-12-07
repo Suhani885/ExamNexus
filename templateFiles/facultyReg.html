@@ -145,8 +145,8 @@
                   Passwords must match.
                 </div>
               </div>
-              <div class="col-12 mb-4">
-                <div ng-repeat="detail in fRegCtrl.teachingDetails track by $index" class="row mb-3">
+              <div class="col-12 mb-0">
+                <div ng-repeat="detail in fRegCtrl.teachingDetails track by $index" class="row mb-1">
                   <div class="col-sm-4 mb-2">
                     <label for="year" class="form-label text-white">Year</label>
                     <select class="form-control" 
@@ -169,21 +169,21 @@
                       <option ng-repeat="sub in fRegCtrl.subjects" ng-value="sub.id">{{sub.value}}</option>
                     </select>
                   </div>
-                  <div class="col-12 mt-2" ng-if="fRegCtrl.teachingDetails.length > 1">
+                  <!-- <div class="col-12 mt-2" ng-if="fRegCtrl.teachingDetails.length > 1">
                     <button type="button" 
                             class="btn btn-danger btn-sm" 
                             ng-click="fRegCtrl.removeTeachingDetail($index)">
                       Remove
                     </button>
-                  </div>
+                  </div> -->
                 </div>
-                <div class="col-12">
+                <!-- <div class="col-12">
                   <button type="button" 
                           class="btn btn-secondary" 
                           ng-click="fRegCtrl.addTeachingDetail()">
                     Add
                   </button>
-                </div>
+                </div> -->
               </div>
 
               <div class="col-12 mb-3">

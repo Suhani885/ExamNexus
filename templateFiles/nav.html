@@ -64,6 +64,9 @@
             
             sidebar.style.width = isCollapsed ? '320px' : '80px';
             mainContent.style.marginLeft = isCollapsed ? '320px' : '80px';
+            
+            sidebar.classList.toggle('sidebar-collapsed', !isCollapsed);
+            
             const navTexts = document.querySelectorAll('.nav-text');
             const navIcons = document.querySelectorAll('.nav-icon');
             navTexts.forEach(text => {
@@ -76,39 +79,42 @@
     </script>
 
     <style>
-        .nav-item i {
-            font-size: 20px;
-        }
-        .nav-item {
-            cursor: pointer;
-        }
-        .nav-text {
-            transition: display 0.3s ease;
-        }
-        .custom-dropdown .nav-link {
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .custom-dropdown .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .custom-dropdown-menu {
-            z-index: 1000;
-            display: none;
-            padding: 0.1rem ;
-            font-size: 1rem;
-            color: #ffffff;
-            list-style: none;
-        }
-        .custom-dropdown-menu.show {
-            display: block;
-        }
-        .custom-dropdown-menu li a {
-            padding: 0.5rem ;
-        }
-        .custom-dropdown-menu li a:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
+    .nav-item i {
+        font-size: 20px;
+    }
+    .nav-item {
+        cursor: pointer;
+    }
+    .nav-text {
+        transition: display 0.3s ease;
+    }
+    .custom-dropdown .nav-link {
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .custom-dropdown .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .custom-dropdown-menu {
+        z-index: 1000;
+        display: none;
+        padding: 0.1rem;
+        font-size: 1rem;
+        color: #ffffff;
+        list-style: none;
+    }
+    .custom-dropdown-menu.show {
+        display: block;
+    }
+    .custom-dropdown-menu li a {
+        padding: 0.5rem;
+    }
+    .custom-dropdown-menu li a:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+    .sidebar-collapsed .custom-dropdown-menu {
+        display: none !important;
+    }
     </style>
 </div>
 

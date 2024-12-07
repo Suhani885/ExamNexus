@@ -1,19 +1,19 @@
 <div ng-controller="courseController as coCtrl">
     <div class="container-fluid py-5" style="background-color: #121212;">
-        <div class="row justify-content-center h-100">
+        <div class="row justify-content-center h-100 mb-5">
             <div class="col-12 col-xl-11 mb-5">
                 <div class="d-flex align-items-center mb-4">
-                    <h1 class="display-6 fw-bold mb-0 text-white">
+                    <h1 class="display-5 fw-bold mb-0 text-white">
                         Course Records
                     </h1>
                 </div>
 
                 <div class="row g-4 mb-5 mt-3">
-                    <div class="col-12">
+                    <div class="col-12 mb-5">
                         <div class="card h-100 position-relative overflow-hidden" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-4 cardC">
                                 <div class="table-responsive" style="background-color: rgba(18, 18, 18, 0.5); border-radius: 10px;">
-                                    <table class="table table-dark table-striped table-hover mb-0">
+                                    <table class="table table-dark mb-0">
                                         <thead>
                                             <tr>
                                                 <th scope="col" class="py-3 px-4 text-white" style="font-weight: 500; background-color: rgba(0, 0, 0, 0.2);">Course Name</th>
@@ -24,13 +24,13 @@
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="course in coCtrl.courses">
-                                                <td class="py-3 px-4 text-white">{{ course.course_name }}</td>
-                                                <td class="py-3 text-white">{{ course.course_duration }}</td>
-                                                <div ng-repeat="dep in coCtrl.deps"><td class="py-3 text-white">{{ dep.department_name }}</td></div>
+                                                <td class="py-3 px-4 text-white cardC">{{ course.course_name }}</td>
+                                                <td class="py-3 text-white cardC">{{ course.course_duration }}</td>
+                                                <div ng-repeat="dep in coCtrl.deps"><td class="py-3 text-white cardC">{{ dep.department_name }}</td></div>
                                                 <!-- <td class="py-3 text-white">{{ course.departments.sections.join(', ') }}</td>
                                                 <td class="py-3 text-white">{{ course.faculty.join(', ') }}</td>
                                                 <td class="py-3 text-white">{{ course.students.join(', ') }}</td>  -->
-                                                <td class="py-3">
+                                                <td class="py-3 cardC">
                                                     <!-- <button class="btn btn-sm me-2" style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107; border: none;">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </button> -->
