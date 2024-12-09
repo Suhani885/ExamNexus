@@ -127,7 +127,6 @@ app.controller('LoginController', ['$state', 'HttpService', 'ApiEndpoints', func
             "email": loginCtrl.email,
             "password": loginCtrl.password
         };
-  
         HttpService.post(ApiEndpoints.auth.login, loginData)
             .then(function(response) {
                 Swal.fire({
@@ -142,7 +141,6 @@ app.controller('LoginController', ['$state', 'HttpService', 'ApiEndpoints', func
 
     loginCtrl.passwordVisibility = {
         password: false,
-        
         toggle: function(field) {
             this[field] = !this[field];
             var inputElement = document.getElementById(field);
@@ -161,18 +159,22 @@ app.controller('dashController', ['HttpService', 'ApiEndpoints', function(HttpSe
                 dashCtrl.role = response.roles;
             });
     };
+    
+    dashCtrl.fetchProfile = function() {
+        HttpService.get(ApiEndpoints.user.profile)
+            .then(function(response) {
+                dashCtrl.profile = response.data;
+            });
+    };
 
     dashCtrl.fetchDashboard();
+    dashCtrl.fetchProfile();
 }])
 
 app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', function($state, HttpService, ApiEndpoints) {
     var navCtrl = this;
     
     navCtrl.currentMode = localStorage.getItem('appMode') || 'dark';
-
-    navCtrl.init = function() {
-        navCtrl.applyMode();
-    };
     
     navCtrl.applyMode = function() {
         if (navCtrl.currentMode === 'dark') {
@@ -223,8 +225,6 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
             if (result.isConfirmed) {
                 HttpService.post(ApiEndpoints.auth.logout, {})
                     .then(function(response) {
-                        localStorage.removeItem('userToken');
-                        sessionStorage.clear();
                         Swal.fire(
                             'Logged Out!',
                             response.message || 'You have been successfully logged out.',
@@ -245,19 +245,16 @@ app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', functi
     
     $state.go('user.dashboard');
     navCtrl.fetchNav();
-    navCtrl.init();
 }])
 
 app.controller('sRegController', ['HttpService', 'ApiEndpoints',
 function(HttpService, ApiEndpoints) {
     var regCtrl = this;
-
     regCtrl.courses=[];
     regCtrl.deps=[];
     regCtrl.years=[];
     regCtrl.genders=[];
     regCtrl.sections=[];
-
     regCtrl.fname = '';
     regCtrl.mname = '';
     regCtrl.lname = '';
@@ -352,8 +349,10 @@ function(HttpService, ApiEndpoints) {
         if (!courseId) {
             courseId = regCtrl.course;
         }
-        
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+        var params = {
+            pid: courseId
+        }
+        HttpService.get(ApiEndpoints.create.main,params)
             .then(function(response) {
                 console.log('Department Fetch Response:', response);
                 regCtrl.deps = response.data;
@@ -364,7 +363,10 @@ function(HttpService, ApiEndpoints) {
         if (!depId) {
             depId = regCtrl.dep;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+        var params = {
+            pid: depId
+        }
+        HttpService.get(ApiEndpoints.create.main,params)
             .then(function(response) {
                 regCtrl.years = response.data;
             });
@@ -374,7 +376,10 @@ function(HttpService, ApiEndpoints) {
         if (!yearId) {
             yearId = detail.year;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+        var params = {
+            pid: yearId
+        }
+        HttpService.get(ApiEndpoints.create.main,params)
             .then(function(response) {
                 regCtrl.sections = response.sections;
             });
@@ -470,6 +475,7 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
             HttpService.post(ApiEndpoints.exam.type, {
                 "exam_name": addCtrl.exam,
                 "maximum_marks": addCtrl.marks,
+                "questions": addCtrl.ques,
                 "exam_duration": parseInt(addCtrl.duration)
             }).then(function(response) {
                 Swal.fire({
@@ -481,11 +487,11 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
                 addCtrl.exam = '';
                 addCtrl.marks = '';
                 addCtrl.duration = '';
+                addCtrl.ques='';
             });
         };
 
         addCtrl.createGender = function() {
-
             HttpService.post(ApiEndpoints.user.gender, {
                 "gender": addCtrl.gender
             }).then(function(response) {
@@ -522,7 +528,10 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
             if (!courseId) {
                 courseId = addCtrl.course;
             }
-            HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+            var params = {
+                pid: courseId
+            }
+            HttpService.get(ApiEndpoints.create.main,params)
                 .then(function(response) {
                     addCtrl.deps = response.data;
                 });
@@ -532,7 +541,10 @@ app.controller('AddController', ['HttpService', 'ApiEndpoints', '$http',function
             if (!depId) {
                 depId = addCtrl.dep;
             }
-            HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+            var params = {
+                pid: depId
+            }
+            HttpService.get(ApiEndpoints.create.main,params)
                 .then(function(response) {
                     addCtrl.years = response.data;
                 });
@@ -566,7 +578,6 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
     fRegCtrl.passwordVisibility = {
         password: false,
         confirmPassword: false,
-        
         toggle: function(field) {
             this[field] = !this[field];
             var inputElement = document.getElementById(field);
@@ -607,7 +618,6 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
             });
             return;
         }
-
         var formattedDate = '';
         if (fRegCtrl.dob) {
             var dateObj = new Date(fRegCtrl.dob);
@@ -617,7 +627,6 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
                 year: 'numeric'
             });
         }
-    
         var registrationData = {
             "type":"faculty",
             "email": fRegCtrl.email,
@@ -640,6 +649,21 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
                     title: 'Successful!',
                     text: response.message || 'Account has been created.'
                 });
+                fRegCtrl.fname = '';
+                fRegCtrl.mname = '';
+                fRegCtrl.lname = '';
+                fRegCtrl.email = '';
+                fRegCtrl.number = '';
+                fRegCtrl.gender = '';
+                fRegCtrl.dob = '';
+                fRegCtrl.course = '';
+                fRegCtrl.dep = '';
+                fRegCtrl.password = '';
+                fRegCtrl.confirmPassword = '';
+                detail.year='';
+                detail.subject='';
+                detail.section='';
+
             });
     };
 
@@ -661,8 +685,10 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
         if (!courseId) {
             courseId = fRegCtrl.course;
         }
-        
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+        var params = {
+            pid: courseId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 console.log('Department Fetch Response:', response);
                 fRegCtrl.deps = response.data;
@@ -673,7 +699,10 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
         if (!depId) {
             depId = fRegCtrl.dep;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+        var params = {
+            pid: depId
+        }
+        HttpService.get(ApiEndpoints.create.main,params)
             .then(function(response) {
                 fRegCtrl.years = response.data;
             });
@@ -683,7 +712,10 @@ app.controller('fRegController', ['HttpService', 'ApiEndpoints',function(HttpSer
         if (!yearId) {
             yearId = detail.year;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+        var params = {
+            pid: yearId
+        }
+        HttpService.get(ApiEndpoints.create.main,params)
             .then(function(response) {
                 fRegCtrl.sections = response.sections;
                 fRegCtrl.subjects = response.subjects;
@@ -726,8 +758,7 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
         if (qpCtrl.questions[questionIndex].options.length > 2) {
             qpCtrl.questions[questionIndex].options.splice(optionIndex, 1);
             
-            if (qpCtrl.questions[questionIndex].correctAnswer === 
-                qpCtrl.questions[questionIndex].options[optionIndex]) {
+            if (qpCtrl.questions[questionIndex].correctAnswer === qpCtrl.questions[questionIndex].options[optionIndex]) {
                 qpCtrl.questions[questionIndex].correctAnswer = '';
             }
         }
@@ -745,15 +776,13 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
     };
     
     qpCtrl.saveQuestionPaper = function() {
-       
         var data = {
             year_id: qpCtrl.selectedExam.year_id,
             subject_id: qpCtrl.selectedExam.subject_id,
             schedule_id:qpCtrl.selectedExam.schedule_id,
             questions: qpCtrl.questions
         };
-        console.log(data);
-    
+        
         HttpService.post(ApiEndpoints.create.exam, data)
             .then(function(response) {
                 Swal.fire({
@@ -774,7 +803,10 @@ app.controller('studentController', ['HttpService', 'ApiEndpoints', function(Htt
     var studentCtrl = this;
 
     studentCtrl.fetchDetails = function() {
-        HttpService.get(ApiEndpoints.user.records + '?choice=' + "student")
+        var params = {
+            choice: "student"
+        }
+        HttpService.get(ApiEndpoints.user.records, params)
             .then(function(response) {
                 studentCtrl.students = response.data;
             });
@@ -787,7 +819,10 @@ app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(Htt
     var facCtrl = this;
 
     facCtrl.fetchDetails = function() {
-        HttpService.get(ApiEndpoints.user.records + '?choice=' + "faculty")
+        var params = {
+            choice: "faculty"
+        }
+        HttpService.get(ApiEndpoints.user.records, params)
             .then(function(response) {
                 facCtrl.coe = response.data[0].coe;
                 facCtrl.hods = response.data[1].hod;
@@ -795,16 +830,47 @@ app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(Htt
             });
     };
 
-    // facCtrl.editCourse = function(course) {
-    //     alert('Editing course: ' + course.name);
-    // };
+    facCtrl.search = function() {
+        if (facCtrl.searchQuery.length > 0) {
+            facCtrl.searchResults = facCtrl.facs.filter(function(patient) {
+                return fac.full_name.toLowerCase().includes(facCtrl.searchQuery.toLowerCase()) ||
+                       (fac.email && fac.emailr.toLowerCase().includes(facCtrl.searchQuery.toLowerCase()));
+            });
+        } else {
+            facCtrl.searchResults = [];
+        }
+    };
+    
 
-    // facCtrl.deleteCourse = function(course) {
-    //     var index = academicCtrl.academicData.courses.indexOf(course);
-    //     if (index > -1) {
-    //         academicCtrl.academicData.courses.splice(index, 1);
-    //     }
-    // };
+    facCtrl.exportToExcel = function() {
+        var data = facCtrl.facs;
+        var htmlContent = '<table><tr><th>Name</th><th>Email</th><th>Phone Number</th><th>DOB</th><th>Course</th><th>Department</th></tr>';
+
+        data.forEach(function(fac) {
+            htmlContent += '<tr>';
+            htmlContent += `<td>${fac.full_name}</td>`;
+            htmlContent += `<td>${fac.email}</td>`;
+            htmlContent += `<td>${fac.phone_number}</td>`;
+            htmlContent += `<td>${new Date(fac.dob).toLocaleDateString()}</td>`;
+            htmlContent += `<td>${fac.academic_info.course}</td>`;
+            htmlContent += `<td>${fac.academic_info.department}</td>`;
+            htmlContent += '</tr>';
+        });
+
+        htmlContent += '</table>';
+
+        var blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+        var link = document.createElement("a");
+        if (link.download !== undefined) {
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "faculty_records.xls");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
 
     facCtrl.fetchDetails();
 }]);
@@ -813,7 +879,10 @@ app.controller('courseController', ['HttpService', 'ApiEndpoints', function(Http
     var coCtrl = this;
 
     coCtrl.fetchDetails = function() {
-        HttpService.get(ApiEndpoints.user.records + '?choice=' + "courses")
+        var params = {
+            choice: "courses"
+        }
+        HttpService.get(ApiEndpoints.user.records,params)
             .then(function(response) {
                 coCtrl.courses = response.data;
                 coCtrl.deps= response.data.departments;
@@ -834,7 +903,6 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
     
     makeCtrl.formatTime = function(time) {
         if (!time) return null;
-    
         if (Object.prototype.toString.call(time) === '[object Date]') {
             return time.toTimeString().slice(0, 8); 
         }
@@ -843,7 +911,6 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
     
     makeCtrl.formatDate = function(dateString) {
         if (!dateString) return null;
-        
         var dateObj = new Date(dateString);
         return dateObj.toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -883,7 +950,6 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
                 };
             })
         };
-        
         HttpService.post(ApiEndpoints.exam.makeSchedule, data)
             .then(function(response) {
                 Swal.fire({
@@ -913,7 +979,10 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
         if (!courseId) {
             courseId = makeCtrl.course;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+        var params = {
+            pid: courseId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 makeCtrl.deps = response.data;
             });
@@ -923,7 +992,10 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
         if (!depId) {
             depId = makeCtrl.dep;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+        var params = {
+            pid: depId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 makeCtrl.years = response.data;
             });
@@ -933,7 +1005,10 @@ app.controller('makeController', ['HttpService', 'ApiEndpoints', function(HttpSe
         if (!yearId) {
             yearId = makeCtrl.year;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + yearId)
+        var params = {
+            pid: yearId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 makeCtrl.availableSubjects = response.subjects;
             });
@@ -953,7 +1028,6 @@ app.controller('scheduleController', ['HttpService', 'ApiEndpoints', function(Ht
             department_id: schedCtrl.dep,
             year_id: schedCtrl.year
         }
-
         HttpService.get(ApiEndpoints.exam.makeSchedule, params)
             .then(function(response) {
                 schedCtrl.schedules = response.data;
@@ -978,7 +1052,10 @@ app.controller('scheduleController', ['HttpService', 'ApiEndpoints', function(Ht
         if (!courseId) {
             courseId = schedCtrl.course;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + courseId)
+        var params = {
+            pid: courseId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 schedCtrl.deps = response.data;
             });
@@ -988,7 +1065,10 @@ app.controller('scheduleController', ['HttpService', 'ApiEndpoints', function(Ht
         if (!depId) {
             depId = schedCtrl.dep;
         }
-        HttpService.get(ApiEndpoints.create.main + '?pid=' + depId)
+        var params = {
+            pid: depId
+        }
+        HttpService.get(ApiEndpoints.create.main, params)
             .then(function(response) {
                 schedCtrl.years = response.data;
             });
@@ -1006,9 +1086,9 @@ app.controller('hodPaperController', ['HttpService', 'ApiEndpoints', function(Ht
     hodCtrl.currentPaperDetails = null;
 
     hodCtrl.fetchFacultyPapers = function() {
-        HttpService.get(ApiEndpoints.hod.facultyPapers)
+        HttpService.get(ApiEndpoints.create.exam)
             .then(function(response) {
-                hodCtrl.facultyPapers = response.data;
+                hodCtrl.papers = response.data;
             });
     };
 
@@ -1021,7 +1101,6 @@ app.controller('hodPaperController', ['HttpService', 'ApiEndpoints', function(Ht
     };
 
     hodCtrl.approvePaper = function() {
-    
         HttpService.post(ApiEndpoints.hod.approvePaper, {
             paper_id: hodCtrl.selectedFaculty.paper_id
         })
@@ -1039,76 +1118,3 @@ app.controller('hodPaperController', ['HttpService', 'ApiEndpoints', function(Ht
     hodCtrl.fetchFacultyPapers();
 }]);
 
-app.controller('examController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
-    var examCtrl = this;
-    examCtrl.currentQuestionIndex = 0;
-    examCtrl.selectedAnswer = null;
-    examCtrl.examCompleted = false;
-    examCtrl.score = 0;
-    examCtrl.timeRemaining = '30:00';
-    examCtrl.currentSubject = 'Computer Science';
-
-    // examCtrl.fetchQuestions = function() {
-    //     $http.get('/api/questions')
-    //         .then(function(response) {
-    //             examCtrl.questions = response.data;
-    //             examCtrl.totalQuestions = examCtrl.questions.length;
-    //             examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
-    //         })
-    //             examCtrl.totalQuestions = examCtrl.questions.length;
-    //         };
-    // };
-
-    examCtrl.submitExam = function() {
-        examCtrl.examResults.questions = examCtrl.questions.map(function(question) {
-            return {
-                questionId: question.id,
-                selectedOption: question.selectedAnswer,
-                isCorrect: question.selectedAnswer
-            };
-        });
-        $http.post('/api/exam/submit', examCtrl.examResults)
-            .then(function(response) {
-                examCtrl.examCompleted = true;
-                examCtrl.submissionResult = response.data;
-                examCtrl.resultMessage = response.data.message;
-            });
-    };
-
-    examCtrl.startTimer = function() {
-        var totalSeconds = 30 * 60;
-        var timer = $interval(function() {
-            totalSeconds--;
-            var minutes = Math.floor(totalSeconds / 60);
-            var seconds = totalSeconds % 60;
-            examCtrl.timeRemaining = 
-                (minutes < 10 ? '0' : '') + minutes + ':' + 
-                (seconds < 10 ? '0' : '') + seconds;
-            
-            if (totalSeconds <= 0) {
-                $interval.cancel(timer);
-                examCtrl.submitExam();
-            }
-        }, 1000);
-    };
-
-    examCtrl.nextQuestion = function() {
-        if (examCtrl.currentQuestionIndex + 1 < examCtrl.totalQuestions) {
-            examCtrl.currentQuestionIndex++;
-            examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
-            examCtrl.selectedAnswer = null;
-        } else {
-            examCtrl.submitExam();
-        }
-    };
-
-    examCtrl.previousQuestion = function() {
-        if (examCtrl.currentQuestionIndex > 0) {
-            examCtrl.currentQuestionIndex--;
-            examCtrl.currentQuestion = examCtrl.questions[examCtrl.currentQuestionIndex];
-        }
-    };
-    
-    examCtrl.fetchQuestions();
-    examCtrl.startTimer();
-}]);

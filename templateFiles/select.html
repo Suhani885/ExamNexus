@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
                 <div class="d-flex align-items-center mb-4">
-                    <h1 class="display-5 fw-bold mb-0 text-white">Question Paper Selection</h1>
+                    <h1 class="display-6 fw-bold mb-0 text-white">Question Paper Selection</h1>
                 </div>
                 
                 <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -20,10 +20,7 @@
                                         </p>
                                     </div>
                                     <div>
-                                        <input type="radio" 
-                                               name="selectedPaper" 
-                                               ng-model="hodCtrl.selectedFaculty" 
-                                               ng-value="faculty">
+                                        <input type="radio" name="selectedPaper" ng-model="hodCtrl.selectedFaculty" ng-value="faculty">
                                     </div>
                                 </div>
                                 <button class="btn btn-primary mt-3" 
@@ -34,6 +31,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div ng-if="hodCtrl.papers && hodCtrl.papers.length === 0" class="alert alert-info text-center mt-3">
+                    No exams scheduled !!!
                 </div>
             </div>
         </div>

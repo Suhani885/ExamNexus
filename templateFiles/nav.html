@@ -16,7 +16,7 @@
                             <div class="nav-link d-flex align-items-center px-0 align-middle text-white nav-icon-container" ng-click="nav.isOpen = !nav.isOpen">
                                 <i class="{{nav.icon}} me-3 px-1 nav-icon d-md-inline d-none"></i>
                                 <span class="ms-1 nav-text flex-grow-1">{{nav.title}}</span>
-                                <i ng-class="nav.isOpen ? 'bi bi-chevron-up' : 'bi bi-chevron-down'" class="ms-2"></i>
+                                <i ng-class="nav.isOpen ? 'bi bi-chevron-up' : 'bi bi-chevron-down'" class="ms-0"></i>
                             </div>
                             <ul class="custom-dropdown-menu" ng-class="{'show': nav.isOpen}">
                                 <li ng-repeat="subItem in nav.subItems">

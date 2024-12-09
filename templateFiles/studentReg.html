@@ -13,24 +13,16 @@
                 <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="firstName" placeholder="Ron" ng-model="regCtrl.fname" name="firstName" required pattern="[a-zA-Z]+" maxlength="20">
               </div>
               <div class="col-sm-4 mb-2">
-                <label for="midName" class="form-label text-white">Middle Name (Optional)</label>
-                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="midName" placeholder="Van" ng-model="regCtrl.mname" pattern="[a-zA-Z]*" maxlength="20">
+                <label for="midName" class="form-label text-white">Middle Name</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="midName" placeholder="Van (Optional)" ng-model="regCtrl.mname" pattern="[a-zA-Z]*" maxlength="20">
               </div>
               <div class="col-sm-4 mb-2">
-                <label for="lastName" class="form-label text-white">Last Name (Optional)</label>
-                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="lastName" placeholder="Doe" ng-model="regCtrl.lname" pattern="[a-zA-Z]+" maxlength="20">
+                <label for="lastName" class="form-label text-white">Last Name</label>
+                <input type="text" style="background-color: rgb(233, 231, 231);" class="form-control" id="lastName" placeholder="Doe (Optional)" ng-model="regCtrl.lname" pattern="[a-zA-Z]+" maxlength="20">
               </div>
               <div class="col-sm-6 mb-2">
                 <label for="email" class="form-label text-white">Email Address</label>
-                <input type="email" 
-                       style="background-color: rgb(233, 231, 231);" 
-                       class="form-control" 
-                       id="email" 
-                       placeholder="xyz@abc.com" 
-                       ng-model="regCtrl.email"
-                       name="email"
-                       required
-                       ng-pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
+                <input type="email" style="background-color: rgb(233, 231, 231);" class="form-control" id="email" placeholder="xyz@abc.com" ng-model="regCtrl.email" name="email" required pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
               </div>
               <div class="col-sm-6 mb-2">
                 <label for="phone" class="form-label text-white">Phone Number</label>

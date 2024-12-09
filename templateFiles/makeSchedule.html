@@ -96,29 +96,29 @@
         
                                 <div class="row mt-3" ng-if="makeCtrl.subjects.length > 1">
                                     <div class="col-12">
-                                        <button type="button" class="btn btn-danger w-100" ng-click="makeCtrl.remove($index)">
+                                        <button type="button" class="btn w-100" style="background-color: rgba(220, 53, 69, 0.15); color: #dc3545; " ng-click="makeCtrl.remove($index)">
                                             Remove Subject
                                         </button>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-success mb-3" ng-click="makeCtrl.addSubjects()">
-                                            <i class="bi bi-plus"></i> Add Another Subject
-                                        </button>
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="button" class="btn mb-3" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442;"  ng-click="makeCtrl.addSubjects()">
+                                    <i class="bi bi-plus"></i> Add Another Subject
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn text-white" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" ng-click="makeCtrl.saveSchedule()">
+                    <button type="button" class="btn" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442;"  ng-click="makeCtrl.saveSchedule()">
                         Submit Schedule
                     </button>
                 </div>
             </div>
         </div>
     </div>
-  </div>
+</div>

@@ -15,21 +15,21 @@
                        maxlength="20">
               </div>
               <div class="col-sm-4 mb-2">
-                <label for="midName" class="form-label text-white">Middle Name (Optional)</label>
+                <label for="midName" class="form-label text-white">Middle Name</label>
                 <input type="text" style="background-color: rgb(233, 231, 231);" 
                        class="form-control" id="midName" 
-                       placeholder="Van" 
+                       placeholder="Van (Optional)" 
                        ng-model="fRegCtrl.mname"
                        pattern="[a-zA-Z]*"
                        maxlength="20">
               </div>
               <div class="col-sm-4 mb-2">
-                <label for="lastName" class="form-label text-white">Last Name (Optional)</label>
+                <label for="lastName" class="form-label text-white">Last Name</label>
                 <input type="text" 
                        style="background-color: rgb(233, 231, 231);" 
                        class="form-control" 
                        id="lastName" 
-                       placeholder="Doe" 
+                       placeholder="Doe (Optional)" 
                        ng-model="fRegCtrl.lname"
                        pattern="[a-zA-Z]+"
                        maxlength="20">
@@ -44,7 +44,7 @@
                        ng-model="fRegCtrl.email"
                        name="email"
                        required
-                       ng-pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
+                       pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
               </div>
               <div class="col-sm-6 mb-2">
                 <label for="phone" class="form-label text-white">Phone Number</label>

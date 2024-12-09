@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-    .constant('BASE_URL', 'https://10.21.98.70:8000')
+    .constant('BASE_URL', 'https://10.21.99.93:8000')
     
     .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
         return {
@@ -10,6 +10,7 @@ angular.module('app.services', [])
             },
             user: {
                 dashboard: `${BASE_URL}/portal/dashboard/`,
+                profile: `${BASE_URL}/portal/profile/`,
                 records: `${BASE_URL}/portal/records/`,
                 gender: `${BASE_URL}/portal/get-genders/`,
                 navbar: `${BASE_URL}/portal/`
@@ -17,7 +18,7 @@ angular.module('app.services', [])
             create: {
                 main: `${BASE_URL}/portal/dropdowns/`,
                 paper: `${BASE_URL}/faculty/my-schedule-info/`,
-                exam: `${BASE_URL}/faculty/create-paper/`,
+                exam: `${BASE_URL}/faculty/question-paper/`,
                 course: `${BASE_URL}/portal/get-courses/`
             },
             exam: {
@@ -99,10 +100,7 @@ angular.module('app.services', [])
                         errorMessage = response.data.message;
                     } else if (response.data && response.data.error) {
                         errorMessage = response.data.error;
-                    } else if (response.statusText) {
-                        errorMessage = response.statusText;
-                    }
-                    
+                    } 
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
