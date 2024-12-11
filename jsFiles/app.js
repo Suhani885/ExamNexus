@@ -73,6 +73,12 @@ function($urlRouterProvider, $stateProvider, $httpProvider) {
             controller: 'questionController',
             controllerAs: 'qpCtrl'
         })
+        .state('user.giveExam', {
+            url: '/giveExam',
+            templateUrl: 'templateFiles/exam.html',
+            controller: 'ExamController',
+            controllerAs: 'examCtrl'
+        })
         .state('user.course', {
             url: '/courseRecords',
             templateUrl: 'templateFiles/courses.html',
@@ -149,7 +155,7 @@ app.controller('LoginController', ['$state', 'HttpService', 'ApiEndpoints', func
     };
 }])
 
-app.controller('dashController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
+app.controller('dashController', ['HttpService', 'ApiEndpoints', '$timeout', function(HttpService, ApiEndpoints, $timeout) {
     var dashCtrl = this;
 
     dashCtrl.fetchDashboard = function() {
@@ -157,6 +163,12 @@ app.controller('dashController', ['HttpService', 'ApiEndpoints', function(HttpSe
             .then(function(response) {
                 dashCtrl.dashboard = response.data;
                 dashCtrl.role = response.roles;
+                $timeout(function() {
+                    if (google && google.charts) {
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(dashCtrl.drawDonutChart);
+                    }
+                });
             });
     };
     
@@ -167,9 +179,37 @@ app.controller('dashController', ['HttpService', 'ApiEndpoints', function(HttpSe
             });
     };
 
+    dashCtrl.drawDonutChart = function() {
+        if (!dashCtrl.dashboard || dashCtrl.dashboard.length === 0) return;
+
+        var students = dashCtrl.dashboard[0].students || 0;
+        var courses = dashCtrl.dashboard[0].courses || 0;
+        var employees = dashCtrl.dashboard[0].employees || 0;
+
+        var data = google.visualization.arrayToDataTable([
+            ['Category', 'Count'],
+            ['Students', students],
+            ['Courses', courses],
+            ['Employees', employees]
+        ]);
+
+        var options = {
+            title: 'Organizational Data',
+            pieHole: 0.4,
+            backgroundColor: 'transparent',
+            titleTextStyle: { color: '#ffffff' },
+            legendTextStyle: { color: '#ffffff' },
+            colors: ['#10e442', '#ffc107', '#356fdc'],
+            pieSliceTextStyle: { color: 'white' }
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donut_chart'));
+        chart.draw(data, options);
+    };
+
     dashCtrl.fetchDashboard();
     dashCtrl.fetchProfile();
-}])
+}]);
 
 app.controller('NavController', ['$state', 'HttpService', 'ApiEndpoints', function($state, HttpService, ApiEndpoints) {
     var navCtrl = this;
@@ -801,77 +841,163 @@ app.controller('questionController', ['HttpService', 'ApiEndpoints', function(Ht
 
 app.controller('studentController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var studentCtrl = this;
-
+    studentCtrl.searchQuery = '';
+    studentCtrl.students = [];
+    studentCtrl.searchResults = [];
+    
     studentCtrl.fetchDetails = function() {
         var params = {
             choice: "student"
-        }
+        };
+        
         HttpService.get(ApiEndpoints.user.records, params)
             .then(function(response) {
                 studentCtrl.students = response.data;
+                studentCtrl.searchResults = studentCtrl.students;
             });
     };
-
+    
+    studentCtrl.search = function() {
+        var query = studentCtrl.searchQuery.trim().toLowerCase();
+        if (!query) {
+            studentCtrl.searchResults = studentCtrl.students;
+            return;
+        }
+        
+        studentCtrl.searchResults = studentCtrl.students.filter(function(student) {
+            return (
+                student.full_name.toLowerCase().includes(query) ||
+                (student.email && student.email.toLowerCase().includes(query)) ||
+                (student.phone_number && student.phone_number.toLowerCase().includes(query)) ||
+                (student.academic_info.course && student.academic_info.course.toLowerCase().includes(query)) ||
+                (student.academic_info.department && student.academic_info.department.toLowerCase().includes(query)) ||
+                (student.academic_info.year && student.academic_info.year.toLowerCase().includes(query)) ||
+                (student.academic_info.section && student.academic_info.section.toLowerCase().includes(query))
+            );
+        });
+    };
+    
+    studentCtrl.exportToExcel = function() {
+        if (!studentCtrl.searchResults || studentCtrl.searchResults.length === 0) {
+            alert("No data available to export.");
+            return;
+        }
+        var htmlContent = '<table><tr>' +
+            '<th>Name</th>' +
+            '<th>Email</th>' +
+            '<th>Phone Number</th>' +
+            '<th>Date of Birth</th>' +
+            '<th>Course</th>' +
+            '<th>Department</th>' +
+            '<th>Year</th>' +
+            '<th>Section</th>' +
+            '</tr>';
+        
+        studentCtrl.searchResults.forEach(function(student) {
+            htmlContent += '<tr>';
+            htmlContent += `<td>${student.full_name || 'N/A'}</td>`;
+            htmlContent += `<td>${student.email || 'N/A'}</td>`;
+            htmlContent += `<td>${student.phone_number || 'N/A'}</td>`;
+            htmlContent += `<td>${student.dob ? new Date(student.dob).toLocaleDateString() : 'N/A'}</td>`;
+            htmlContent += `<td>${student.academic_info.course || 'N/A'}</td>`;
+            htmlContent += `<td>${student.academic_info.department || 'N/A'}</td>`;
+            htmlContent += `<td>${student.academic_info.year || 'N/A'}</td>`;
+            htmlContent += `<td>${student.academic_info.section || 'N/A'}</td>`;
+            htmlContent += '</tr>';
+        });
+        
+        htmlContent += '</table>';
+        
+        var blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+        var link = document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", "student_records.xls");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    
+    studentCtrl.deleteStudent = function(studentId) {
+        var confirmDelete = confirm("Are you sure you want to delete this student record?");
+        if (confirmDelete) {
+            console.log('Student deletion would be implemented here');
+        }
+    };
+    
     studentCtrl.fetchDetails();
 }]);
 
 app.controller('facultyController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var facCtrl = this;
-
+    
+    facCtrl.searchQuery = '';
+    facCtrl.searchResults = [];
+    
     facCtrl.fetchDetails = function() {
-        var params = {
-            choice: "faculty"
-        }
+        var params = { choice: "faculty" };
         HttpService.get(ApiEndpoints.user.records, params)
             .then(function(response) {
                 facCtrl.coe = response.data[0].coe;
                 facCtrl.hods = response.data[1].hod;
                 facCtrl.facs = response.data[2].faculty;
+                facCtrl.searchResults = facCtrl.facs;
             });
-    };
-
-    facCtrl.search = function() {
-        if (facCtrl.searchQuery.length > 0) {
-            facCtrl.searchResults = facCtrl.facs.filter(function(patient) {
-                return fac.full_name.toLowerCase().includes(facCtrl.searchQuery.toLowerCase()) ||
-                       (fac.email && fac.emailr.toLowerCase().includes(facCtrl.searchQuery.toLowerCase()));
-            });
-        } else {
-            facCtrl.searchResults = [];
-        }
     };
     
-
+    facCtrl.search = function() {
+        var query = facCtrl.searchQuery.trim().toLowerCase();
+        if (!query) {
+            facCtrl.searchResults = facCtrl.facs;
+            return;
+        }
+        
+        facCtrl.searchResults = facCtrl.facs.filter(function(fac) {
+            return (
+                fac.full_name.toLowerCase().includes(query) ||
+                (fac.email && fac.email.toLowerCase().includes(query)) ||
+                (fac.phone_number && fac.phone_number.toLowerCase().includes(query)) ||
+                (fac.academic_info.course && fac.academic_info.course.toLowerCase().includes(query)) ||
+                (fac.academic_info.department && fac.academic_info.department.toLowerCase().includes(query))
+            );
+        });
+    };
+    
     facCtrl.exportToExcel = function() {
-        var data = facCtrl.facs;
+        if (!facCtrl.searchResults || facCtrl.searchResults.length === 0) {
+            alert("No data available to export.");
+            return;
+        }
+        
         var htmlContent = '<table><tr><th>Name</th><th>Email</th><th>Phone Number</th><th>DOB</th><th>Course</th><th>Department</th></tr>';
-
-        data.forEach(function(fac) {
+        
+        facCtrl.searchResults.forEach(function(fac) {
             htmlContent += '<tr>';
-            htmlContent += `<td>${fac.full_name}</td>`;
-            htmlContent += `<td>${fac.email}</td>`;
-            htmlContent += `<td>${fac.phone_number}</td>`;
-            htmlContent += `<td>${new Date(fac.dob).toLocaleDateString()}</td>`;
-            htmlContent += `<td>${fac.academic_info.course}</td>`;
-            htmlContent += `<td>${fac.academic_info.department}</td>`;
+            htmlContent += `<td>${fac.full_name || 'N/A'}</td>`;
+            htmlContent += `<td>${fac.email || 'N/A'}</td>`;
+            htmlContent += `<td>${fac.phone_number || 'N/A'}</td>`;
+            htmlContent += `<td>${fac.dob ? new Date(fac.dob).toLocaleDateString() : 'N/A'}</td>`;
+            htmlContent += `<td>${fac.academic_info.course || 'N/A'}</td>`;
+            htmlContent += `<td>${fac.academic_info.department || 'N/A'}</td>`;
             htmlContent += '</tr>';
         });
-
+        
         htmlContent += '</table>';
-
+        
         var blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
         var link = document.createElement("a");
-        if (link.download !== undefined) {
-            var url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "faculty_records.xls");
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        var url = URL.createObjectURL(blob);
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", "faculty_records.xls");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
-
+    
     facCtrl.fetchDetails();
 }]);
 
@@ -1080,41 +1206,304 @@ app.controller('scheduleController', ['HttpService', 'ApiEndpoints', function(Ht
 
 app.controller('hodPaperController', ['HttpService', 'ApiEndpoints', function(HttpService, ApiEndpoints) {
     var hodCtrl = this;
-    
-    hodCtrl.facultyPapers = [];
+  
+    hodCtrl.facs = [];
     hodCtrl.selectedFaculty = null;
     hodCtrl.currentPaperDetails = null;
-
-    hodCtrl.fetchFacultyPapers = function() {
-        HttpService.get(ApiEndpoints.create.exam)
-            .then(function(response) {
-                hodCtrl.papers = response.data;
-            });
-    };
-
-    hodCtrl.viewPaperDetails = function(faculty) {
-        HttpService.get(ApiEndpoints.hod.paperDetails + '/' + faculty.paper_id)
-            .then(function(response) {
-                hodCtrl.currentPaperDetails = response.data;
-                $('#paperDetailsModal').modal('show');
-            });
-    };
-
-    hodCtrl.approvePaper = function() {
-        HttpService.post(ApiEndpoints.hod.approvePaper, {
-            paper_id: hodCtrl.selectedFaculty.paper_id
-        })
+  
+    hodCtrl.fetchExams = function() {
+      HttpService.get(ApiEndpoints.exam.type)
         .then(function(response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Approved',
-                text: 'Paper approved successfully'
+          hodCtrl.exams = response.data;
+        });
+    };
+  
+    hodCtrl.fetchYears = function() {
+      HttpService.get(ApiEndpoints.exam.years)
+        .then(function(response) {
+          hodCtrl.years = response.data;
+        });
+    };
+  
+    hodCtrl.fetchData = function(examId) {
+      if (!examId) {
+        examId = hodCtrl.exam;
+      }
+      var params = {
+        exam_id: examId
+      }
+      HttpService.get(ApiEndpoints.exam.select, params)
+        .then(function(response) {
+          hodCtrl.subjects = response.data;
+        });
+    };
+  
+    hodCtrl.fetchDetails = function() {
+      var params = {
+        exam_id: hodCtrl.exam,
+        year_id: hodCtrl.year,
+        subject_id: hodCtrl.sub
+      }
+      HttpService.get(ApiEndpoints.exam.select, params)
+        .then(function(response) {
+          hodCtrl.facs = response.data;
+        });
+    };
+  
+    hodCtrl.viewPaper = function(faculty_id, schedule_id) {
+      var params = {
+        faculty_id: faculty_id,
+        schedule_id: schedule_id
+      }
+      HttpService.get(ApiEndpoints.exam.select, params)
+        .then(function(response) {
+          hodCtrl.currentPaperDetails = response.data;
+          hodCtrl.sched = response.schedule_id;
+          $('#paperDetailsModal').modal('show');
+        });
+    };
+  
+    hodCtrl.approvePaper = function(faculty_id, schedule_id) {
+      var data = {
+        faculty_id: faculty_id,
+        schedule_id: schedule_id
+      }
+      HttpService.patch(ApiEndpoints.exam.select, data)
+      .then(function(response) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Approved',
+          text: 'Paper approved successfully'
+        });
+        $('#paperDetailsModal').modal('hide');
+      });
+    };
+  
+    hodCtrl.fetchExams();
+    hodCtrl.fetchYears();
+  }]);
+
+app.controller('ExamController', ['$window', '$document','HttpService','ApiEndpoints', function($window, $document,HttpService,ApiEndpoints) {
+    var examCtrl = this;
+    examCtrl.details=[];
+    examCtrl.questions=[];
+
+    examCtrl.fetchExams = function() {
+        HttpService.get(ApiEndpoints.user.exam)
+            .then(function(response) {
+                examCtrl.exams = response.data;
             });
-            $('#paperDetailsModal').modal('hide');
-            hodCtrl.fetchFacultyPapers(); 
+    };
+
+    examCtrl.fetchSubjects = function(exam_id) {
+        var params = {
+          exam_id: exam_id
+        }
+        HttpService.get(ApiEndpoints.user.sub, params)
+        .then(function(response) {
+            examCtrl.subjects = response.data;
         });
     };
 
-    hodCtrl.fetchFacultyPapers();
-}]);
+    examCtrl.fetchDetails = function(exam_id,subject_id) {
+        var params = {
+          exam_id: exam_id,
+          subject_id: subject_id
+        }
+        HttpService.get(ApiEndpoints.exam.questions, params)
+        .then(function(response) {
+            examCtrl.details = response.data;
+            examCtrl.questions = response.data.question_sheet;
+        });
+    };
 
+    // var examConfiguration = {
+    //     subject: "General Knowledge",
+    //     totalTime: 600 
+    // };
+
+    // examCtrl.questions = [
+    //     {
+    //         questionId: 1,
+    //         text: "What is France?",
+    //         options: ["London", "Berlin", "Paris", "Madrid"]
+    //     },
+    //     {
+    //         questionId: 2,
+    //         text: "Which planet Planet?",
+    //         options: ["Venus", "Mars", "Jupiter", "Saturn"]
+    //     },
+    //     {
+    //         questionId: 3,
+    //         text: "What is 7 * 8?",
+    //         options: ["54", "56", "62", "64"]
+    //     },
+    //     {
+    //         questionId: 4,
+    //         text: "Who wrote G?",
+    //         options: ["Charles", "William", "Jane", "Mark"]
+    //     }
+    // ];
+
+    // examCtrl.currentSubject = examCtrl.details.subject;
+    // examCtrl.currentQuestionIndex = 0;
+    // examCtrl.totalQuestions = examCtrl.details.total_questions.length;
+    // examCtrl.selectedAnswer = null;
+    // examCtrl.examCompleted = false;
+    // examCtrl.userResponses = [];
+
+    // examCtrl.timeRemaining = examCtrl.details.totalTime;
+    // examCtrl.timeRemainingFormatted = '';
+
+    // function startTimer() {
+    //     var timer = $timeout(function() {
+    //         examCtrl.timeRemaining--;
+
+    //         var minutes = Math.floor(examCtrl.timeRemaining / 60);
+    //         var seconds = examCtrl.timeRemaining % 60;
+    //         examCtrl.timeRemainingFormatted = 
+    //             (minutes < 10 ? '0' : '') + minutes + ':' + 
+    //             (seconds < 10 ? '0' : '') + seconds;
+
+    //         if (examCtrl.timeRemaining > 0 && !examCtrl.examCompleted) {
+    //             startTimer();
+    //         } else if (examCtrl.timeRemaining <= 0) {
+    //             examCtrl.submitExam();
+    //         }
+    //     }, 1000);
+    // }
+    // startTimer();
+
+    examCtrl.getCurrentQuestion = function() {
+        return examCtrl.questions[examCtrl.currentQuestionIndex];
+    };
+
+    examCtrl.nextQuestion = function() {
+        if (examCtrl.selectedAnswer !== null) {
+            examCtrl.userResponses.push({
+                questionNumber: examCtrl.getCurrentQuestion().questionNumber,
+                questionText: examCtrl.getCurrentQuestion().text,
+                selectedOption: examCtrl.selectedAnswer
+            });
+
+            if (examCtrl.currentQuestionIndex < examCtrl.totalQuestions - 1) {
+                examCtrl.currentQuestionIndex++;
+                examCtrl.selectedAnswer = null;
+            } else {
+                examCtrl.submitExam();
+            }
+        } else {
+            alert('Please select an answer before proceeding.');
+        }
+    };
+
+    examCtrl.previousQuestion = function() {
+        if (examCtrl.currentQuestionIndex > 0) {
+            examCtrl.currentQuestionIndex--;
+        }
+    };
+
+    // Prevent copy-paste-cut
+    // $document.on('copy', function(event) {
+    //     alert('This action is not allowed during the exam.');
+    //     event.preventDefault();
+    //     return false;
+    // });
+    // $document.on('cut', function(event) {
+    //     alert('This action is not allowed during the exam.');
+    //     event.preventDefault();
+    //     return false;
+    // });
+    // $document.on('paste', function(event) {
+    //     alert('This action is not allowed during the exam.');
+    //     event.preventDefault();
+    //     return false;
+    // });
+
+    // Disable right-click
+    $document.on('contextmenu', function(event) {
+        event.preventDefault();
+        return false;
+    });
+
+    // Disable text selection
+    $document.on('selectstart', function(event) {
+        event.preventDefault();
+        return false;
+    });
+
+    // function enterFullScreen() {
+    //     var docElm = document.documentElement;
+    //     if (docElm.requestFullscreen) {
+    //         docElm.requestFullscreen();
+    //     } else if (docElm.mozRequestFullScreen) { // Firefox
+    //         docElm.mozRequestFullScreen();
+    //     } else if (docElm.webkitRequestFullScreen) { // Chrome, Safari and Opera
+    //         docElm.webkitRequestFullScreen();
+    //     }
+    // }
+
+    // Tab change detection 
+    var tabChangeCount = 0;
+    var maxTabChanges = 1; // Tab changes before auto-submit
+
+    function handleTabChange() {
+        tabChangeCount++;
+        if (tabChangeCount > maxTabChanges) {
+            examCtrl.submitExam(true); 
+        }
+    }
+
+    // Add event listeners for visibility change
+    $document.on('visibilitychange', function() {
+        if (document.hidden) {
+            handleTabChange();
+        }
+    });
+
+    // Detect browser tab/window switch
+    $window.addEventListener('blur', function() {
+        handleTabChange();
+    });
+
+    $document.on('keydown', function(event) {
+        const isBlockedKey = 
+            ((event.ctrlKey || event.metaKey) && 
+                ['c', 'v', 'x', 'a', 'i'].includes(event.key.toLowerCase())) ||
+            
+            // Dev tools for different platforms
+            (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') || // Windows/Linux
+            (event.metaKey && event.altKey && event.key === 'i') || // Mac
+
+            (event.altKey && ['ArrowLeft', 'ArrowRight'].includes(event.key));
+    
+        if (isBlockedKey) {
+            alert('This action is not allowed during the exam.');
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    examCtrl.submitExam = function(forcedSubmit) {
+        examCtrl.examCompleted = true;
+        var examSubmissionData = {
+            subject: examCtrl.currentSubject,
+            responses: examCtrl.userResponses,
+            forcedSubmit: forcedSubmit || false, 
+        };
+
+        console.log('Exam Submission Data:', examSubmissionData);
+
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+
+        // $http.post('/api/submit-exam', examSubmissionData)
+        //     .then(function(response) {
+        //         // Handle submission response
+        //     });
+    };
+
+    // enterFullScreen();
+    examCtrl.fetchExams();
+}]);

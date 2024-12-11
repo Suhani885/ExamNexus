@@ -44,7 +44,7 @@
                        ng-model="fRegCtrl.email"
                        name="email"
                        required
-                       pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
+                       ng-pattern="/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/">
               </div>
               <div class="col-sm-6 mb-2">
                 <label for="phone" class="form-label text-white">Phone Number</label>
@@ -169,21 +169,21 @@
                       <option ng-repeat="sub in fRegCtrl.subjects" ng-value="sub.id">{{sub.value}}</option>
                     </select>
                   </div>
-                  <!-- <div class="col-12 mt-2" ng-if="fRegCtrl.teachingDetails.length > 1">
+                  <div class="col-12 mt-2" ng-if="fRegCtrl.teachingDetails.length > 1">
                     <button type="button" 
                             class="btn btn-danger btn-sm" 
                             ng-click="fRegCtrl.removeTeachingDetail($index)">
                       Remove
                     </button>
-                  </div> -->
+                  </div>
                 </div>
-                <!-- <div class="col-12">
+                <div class="col-12">
                   <button type="button" 
                           class="btn btn-secondary" 
                           ng-click="fRegCtrl.addTeachingDetail()">
                     Add
                   </button>
-                </div> -->
+                </div>
               </div>
 
               <div class="col-12 mb-3">

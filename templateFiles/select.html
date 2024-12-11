@@ -2,39 +2,81 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
-                <div class="d-flex align-items-center mb-4">
+                <div class="d-flex align-items-center mb-5">
                     <h1 class="display-6 fw-bold mb-0 text-white">Question Paper Selection</h1>
+                </div>
+
+                <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                    <div class="card-body p-3 p-md-5" id="form">
+                        <form ng-submit="hodCtrl.fetchDetails()">
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6 mb-2">
+                                    <label for="year" class="form-label text-white">Year</label>
+                                    <select class="form-select text-white" id="year" name="year"
+                                          ng-model="hodCtrl.year" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="" disabled selected>Select Year</option>
+                                      <option ng-repeat="year in hodCtrl.years" ng-value="year.id">
+                                          {{year.value}}
+                                      </option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6 mb-2">
+                                      <label for="exam" class="form-label text-white"> Examination Type</label>
+                                      <select class="form-select text-white" id="type" name="type" ng-click="hodCtrl.fetchData(hodCtrl.exam)"
+                                            ng-model="hodCtrl.exam" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="" disabled selected>Select Exam Type</option>
+                                        <option ng-repeat="exam in hodCtrl.exams" ng-value="exam.id">
+                                            {{exam.value}}
+                                        </option>
+                                      </select>
+                                </div>
+                                <div class="col-12 col-md-12 mb-2">
+                                    <label for="sub" class="form-label text-white">Subject</label>
+                                    <select class="form-select text-white" id="sub" name="sub" ng-model="hodCtrl.sub" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
+                                      <option value="" disabled selected>Select Subject</option>
+                                      <option ng-repeat="sub in hodCtrl.subjects" ng-value="sub.subject_id">
+                                          {{sub.subject__value}}
+                                      </option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mt-3 ">
+                                    <button type="submit" ng-disabled="!hodCtrl.sub" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442;" class="btn w-100 py-2" >
+                                        View 
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 
                 <div class="row row-cols-1 row-cols-md-2 g-4">
-                    <div class="col" ng-repeat="faculty in hodCtrl.facultyPapers">
+                    <div class="col" ng-repeat="faculty in hodCtrl.facs">
                         <div class="card" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h5 class="card-title text-white">{{faculty.faculty_name}}</h5>
+                                        <h5 class="card-title text-white">{{faculty.faculty__first_name}} {{faculty.faculty__middle_name}} {{faculty.faculty__last_name}}</h5>
                                         <p class="card-text text-white-50">
-                                            Subject: {{faculty.subject_name}}<br>
+                                            Subject: {{faculty.subject}}<br>
                                             Year: {{faculty.year}}<br>
-                                            Exam: {{faculty.exam_name}}
+                                            Exam: {{faculty.examination}}
                                         </p>
                                     </div>
                                     <div>
-                                        <input type="radio" name="selectedPaper" ng-model="hodCtrl.selectedFaculty" ng-value="faculty">
+                                        <input type="radio" name="selectedPaper" ng-model="hodCtrl.selectedFaculty" ng-value="faculty.faculty_id">
                                     </div>
                                 </div>
                                 <button class="btn btn-primary mt-3" 
-                                        ng-click="hodCtrl.viewPaperDetails(faculty)"
-                                        ng-disabled="!hodCtrl.selectedFaculty">
+                                        ng-click="hodCtrl.viewPaper(faculty.faculty_id, faculty.schedule_id)">
                                     View Paper Details
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div ng-if="hodCtrl.papers && hodCtrl.papers.length === 0" class="alert alert-info text-center mt-3">
+                <!-- <div ng-if="hodCtrl.facs && hodCtrl.facs.length === 0" class="alert alert-info text-center mt-3">
                     No exams scheduled !!!
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -48,19 +90,21 @@
                 </div>
                 <div class="modal-body">
                     <div ng-if="hodCtrl.currentPaperDetails">
-                        <div class="row mb-3" ng-repeat="question in hodCtrl.currentPaperDetails.questions">
+                        <div class="row mb-3" ng-repeat="question in hodCtrl.currentPaperDetails.data">
                             <div class="col-12 card mb-2" style="background-color: rgba(255,255,255,0.05);">
                                 <div class="card-body">
-                                    <h6 class="text-white">Q{{$index + 1}}: {{question.text}}</h6>
+                                    <h6 class="text-white">Q{{question.question_number}}: {{question.question_text}}</h6>
                                     <div class="row">
                                         <div class="col-6" ng-repeat="option in question.options">
-                                            <p class="text-white-50" 
-                                               ng-class="{'text-success': option === question.correctAnswer}">
-                                                {{option}}
-                                                <span ng-if="option === question.correctAnswer">
-                                                    (Correct Answer)
-                                                </span>
-                                            </p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="question{{question.question_number}}" id="option{{$index}}" ng-model="question.selectedAnswer" ng-value="option" style="width: 1.5em; height: 1.5em;">
+                                                <label class="form-check-label text-white-50" for="option{{$index}}" ng-class="{'text-success': option === question.answer}" style="font-size: 1.2rem; font-weight: 500;">
+                                                    {{option}}
+                                                    <span ng-if="option === question.answer">
+                                                        (Correct Answer)
+                                                    </span>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -69,9 +113,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" 
-                            ng-click="hodCtrl.approvePaper()"
-                            ng-disabled="!hodCtrl.selectedFaculty">
+                    <button class="btn btn-success" ng-click="hodCtrl.approvePaper(hodCtrl.selectedFaculty, hodCtrl.sched)">
                         Approve Paper
                     </button>
                 </div>

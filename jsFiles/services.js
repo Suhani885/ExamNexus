@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-    .constant('BASE_URL', 'https://10.21.99.93:8000')
+    .constant('BASE_URL', 'https://10.21.99.26:8000')
     
     .service('ApiEndpoints', ['BASE_URL', function(BASE_URL) {
         return {
@@ -13,18 +13,23 @@ angular.module('app.services', [])
                 profile: `${BASE_URL}/portal/profile/`,
                 records: `${BASE_URL}/portal/records/`,
                 gender: `${BASE_URL}/portal/get-genders/`,
-                navbar: `${BASE_URL}/portal/`
+                navbar: `${BASE_URL}/portal/`,
+                exam: `${BASE_URL}/student/get-exam`,
+                sub: `${BASE_URL}/student/get-subjects`
             },
             create: {
                 main: `${BASE_URL}/portal/dropdowns/`,
-                paper: `${BASE_URL}/faculty/my-schedule-info/`,
-                exam: `${BASE_URL}/faculty/question-paper/`,
+                paper: `${BASE_URL}/faculty/schedule/`,
+                exam: `${BASE_URL}/faculty/examination-paper/`,
                 course: `${BASE_URL}/portal/get-courses/`
             },
             exam: {
-                makeSchedule: `${BASE_URL}/faculty/schedule/`,
+                makeSchedule: `${BASE_URL}/faculty/coe/schedule/`,
+                questions: `${BASE_URL}/student/examination/`,
                 view: `${BASE_URL}/portal/records/`,
-                type: `${BASE_URL}/portal/exam-types/`
+                type: `${BASE_URL}/portal/exam-types/`,
+                years: `${BASE_URL}/faculty/get-years/`,
+                select: `${BASE_URL}/faculty/hod/examination-paper/`
             }
         };
     }])
