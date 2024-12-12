@@ -1,72 +1,76 @@
 <div ng-controller="ExamController as examCtrl">
-    <div class="container py-5">
+    <div class="container-fluid vh-100 text-white" style="background-color: #121212;">
+        <div id="exam-selection" class="row h-100 align-items-center justify-content-center">
+            <div class="col-12 col-md-8 p-5">
+                <div class="d-flex align-items-center mb-2">
+                    <h1 class="display-6 fw-bold mb-0 text-white mb-5">
+                        Start Online Examination
+                    </h1>
+                </div>
+                <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
+                    <div class="card-body p-5">
+                        <form ng-submit="examCtrl.fetchDetails(examCtrl.exam, examCtrl.sub)">
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-12 mb-3">
+                                    <label for="type" class="form-label text-white">Examination Type</label>
+                                    <select class="form-select text-white" id="type" name="type" ng-click="examCtrl.fetchSubjects(examCtrl.exam)" ng-model="examCtrl.exam" required style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="" disabled selected>Select Exam Type</option>
+                                        <option ng-repeat="exam in examCtrl.exams" ng-value="exam.id">
+                                            {{exam.value}}
+                                        </option>
+                                    </select>
+                                </div>
 
-        <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040; border-radius: 12px;">
-            <div class="card-body p-3 p-md-5" id="form">
-                <form ng-submit="examCtrl.fetchDetails(examCtrl.exam,examCtrl.sub)">
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6 mb-2">
-                              <label for="type" class="form-label text-white">Examination Type</label>
-                              <select class="form-select text-white" id="type" name="type" ng-click="examCtrl.fetchSubjects(examCtrl.exam)"
-                                    ng-model="examCtrl.exam" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                                <option value="" disabled selected>Select Exam Type</option>
-                                <option ng-repeat="exam in examCtrl.exams" ng-value="exam.id">
-                                    {{exam.value}}
-                                </option>
-                              </select>
-                        </div>
-                        <div class="col-12 col-md-6 mb-2">
-                            <label for="sub" class="form-label text-white">Subject</label>
-                            <select class="form-select text-white" id="sub" name="sub" ng-model="examCtrl.sub" required style="background-color: rgba(255,255,255,0.1);border: 1px solid rgba(255,255,255,0.2);">
-                              <option value="" disabled selected>Select Subject</option>
-                              <option ng-repeat="sub in examCtrl.subjects" ng-value="sub.subject__id">
-                                  {{sub.subject__value}}
-                              </option>
-                            </select>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <button type="submit" ng-disabled="!examCtrl.sub" style="background-color: rgba(16, 228, 66, 0.15); color: #10e442;" class="btn w-100 py-2" >
-                                View 
-                            </button>
-                        </div>
+                                <div class="col-12 col-md-12 mb-2">
+                                    <label for="sub" class="form-label text-white">Subject</label>
+                                    <select class="form-select text-white" id="sub" name="sub" ng-model="examCtrl.sub" required style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                                        <option value="" disabled selected>Select Subject</option>
+                                        <option ng-repeat="sub in examCtrl.subjects" ng-value="sub.subject__id">
+                                            {{sub.subject__value}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button type="submit" ng-disabled="!examCtrl.sub" class="btn btn-success w-100 py-2">
+                                        Start Exam
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
-        <div class="row justify-content-center mt-5">
-            <div class="col-12 col-md-8 col-lg-6">
+        <div id="exam-container" class="row h-100 align-items-center justify-content-center p-5" style="display:none;">
+            <div class="col-12 col-md-8 col-lg-6 p-5">
                 <div class="card" style="background: linear-gradient(45deg, #1a1a1a, #2d2d2d); border: 1px solid #404040;">
-                    <div class="card-header text-white text-center">
+                    <div class="card-header text-white text-center mt-3 mb-2">
                         <h2>{{examCtrl.details.examination_name}} Exam</h2>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mb-2">
                             <span>Question: {{examCtrl.currentQuestionIndex + 1}}/{{examCtrl.totalQuestions}}</span>
                             <span ng-if="examCtrl.timeRemaining">Time Remaining: {{examCtrl.timeRemainingFormatted}}</span>
                         </div>
                     </div>
+
                     <div class="card-body">
-                        <div ng-if="!examCtrl.examCompleted" class="mb-4">
-                            <h4 class="text-white mb-3">{{examCtrl.getCurrentQuestion().text}}</h4>
+                        <div ng-if="!examCtrl.examCompleted" class="mb-5">
+                            <h4 class="text-white mb-4">{{examCtrl.getCurrentQuestion().question_text}}</h4>
+                            
                             <form ng-submit="examCtrl.nextQuestion()">
-                                <div class="mb-3" ng-repeat="(index, option) in examCtrl.getCurrentQuestion().options">
-                                    <label class="form-check-label w-100 p-2" 
-                                           style="background-color: rgba(255,255,255,0.1); 
-                                                  border: 1px solid rgba(255,255,255,0.2); 
-                                                  border-radius: 5px;">
+                                <div class="mb-4" ng-repeat="(index, option) in examCtrl.getCurrentQuestion().options">
+                                    <label class="form-check-label w-100 p-2 rounded" style="background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;color: aliceblue;">
                                         <input type="radio" name="answer" ng-model="examCtrl.selectedAnswer" ng-value="index" class="form-check-input me-2">
-                                        {{option}}
+                                        {{option.value}}
                                     </label>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <button type="button" 
-                                            class="btn btn-secondary"
-                                            ng-click="examCtrl.previousQuestion()"
-                                            ng-disabled="examCtrl.currentQuestionIndex === 0">
+
+                                <div class="d-flex justify-content-between mt-5">
+                                    <button type="button" class="btn btn-secondary" ng-click="examCtrl.previousQuestion()" ng-disabled="examCtrl.currentQuestionIndex === 0">
                                         Previous
                                     </button>
-                                    <button type="button" 
-                                            class="btn btn-primary" 
-                                            ng-click="examCtrl.nextQuestion()">
+                                    <button type="button" class="btn btn-primary" ng-click="examCtrl.nextQuestion()">
                                         {{examCtrl.currentQuestionIndex + 1 === examCtrl.totalQuestions ? 'Submit Exam' : 'Next'}}
                                     </button>
                                 </div>
@@ -76,11 +80,11 @@
                         <div ng-if="examCtrl.examCompleted" class="text-center">
                             <h3 class="text-white">Exam Submitted</h3>
                             <p class="text-white">Thank you for completing the exam.</p>
+                            <p class="text-white">Maximum Marks: {{examCtrl.details.maximum_marks}}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
