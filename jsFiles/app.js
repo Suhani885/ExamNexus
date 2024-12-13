@@ -1287,6 +1287,7 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
     var examCtrl = this; 
     examCtrl.details = {};
     examCtrl.questions = [];
+    examCtrl.selectedAnswers = {}; 
 
     const dummyExamData = {
         "message": "success",
@@ -1298,12 +1299,14 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
                 "question_sheet": [
                     {
                         "question_number": "1",
-                        "question_text": "What is DSTL ?",
+                        "question_text": "Kya aapke toothpaste me namak hai ?",
                         "options": [
-                            {"id": 2, "value": "football"},
-                            {"id": 3, "value": "basketball"},
-                            {"id": 4, "value": "leprosy"},
-                            {"id": 5, "value": "subject"}
+                            {"id": 1, "value": "Shayad"},
+                            {"id": 2, "value": "Haan"},
+                            {"id": 3, "value": "Nahi"},
+                            {"id": 4, "value": "Thoda sa"},
+                            {"id": 5, "value": "Pata nahi"},
+                            {"id": 6, "value": "Bohot sara"}
                         ]
                     },
                     {
@@ -1333,15 +1336,11 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
     };
 
     examCtrl.fetchExams = function() {
-        examCtrl.exams = [
-            {id: 1, value: 'CT Exam'}
-        ];
+        examCtrl.exams = [{ id: 1, value: 'CT Exam' }];
     };
 
     examCtrl.fetchSubjects = function(exam_id) {
-        examCtrl.subjects = [
-            {subject__id: 1, subject__value: 'Sample Subject'}
-        ];
+        examCtrl.subjects = [{ subject__id: 1, subject__value: 'Sample Subject' }];
     };
 
     examCtrl.fetchDetails = function(exam_id, subject_id) {
@@ -1354,11 +1353,12 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
         examCtrl.selectedAnswer = null;
         examCtrl.examCompleted = false;
         examCtrl.userResponses = [];
+        examCtrl.selectedAnswers = {}; 
 
         examCtrl.timeRemaining = examCtrl.details.time_duration;
         enterFullScreen();
         startTimer();
-        
+
         angular.element(document.getElementById('exam-selection')).hide();
         angular.element(document.getElementById('exam-container')).show();
     };
@@ -1369,6 +1369,8 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
 
     examCtrl.nextQuestion = function() {
         if (examCtrl.selectedAnswer !== null) {
+            examCtrl.selectedAnswers[examCtrl.currentQuestionIndex] = examCtrl.selectedAnswer;
+
             var currentQuestion = examCtrl.getCurrentQuestion();
             var selectedOption = currentQuestion.options[examCtrl.selectedAnswer];
 
@@ -1383,31 +1385,51 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
 
             if (examCtrl.currentQuestionIndex < examCtrl.totalQuestions - 1) {
                 examCtrl.currentQuestionIndex++;
-                examCtrl.selectedAnswer = null;
+                examCtrl.selectedAnswer = examCtrl.selectedAnswers[examCtrl.currentQuestionIndex] || null;
             } else {
-                examCtrl.submitExam();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You're about to submit your exam!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        examCtrl.submitExam();
+                    }
+                });
             }
-        } 
-        // else {
-        //     alert('Please select an answer before proceeding.');
-        // }
+        } else {
+            Swal.fire({
+                text: "Please select an answer before proceeding.",
+                icon: "warning",
+                confirmButtonText: "OK",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+        }
     };
 
     examCtrl.previousQuestion = function() {
         if (examCtrl.currentQuestionIndex > 0) {
             examCtrl.currentQuestionIndex--;
+            examCtrl.selectedAnswer = examCtrl.selectedAnswers[examCtrl.currentQuestionIndex] || null;
         }
     };
 
     function startTimer() {
         var timer = $timeout(function() {
             examCtrl.timeRemaining--;
-            var minutes = Math.floor(examCtrl.timeRemaining / 60);
-            // var hours = Math.floor(minutes / 60);
+            var hours = Math.floor(examCtrl.timeRemaining / 3600);
+            var minutes = Math.floor((examCtrl.timeRemaining % 3600) / 60);
             var seconds = examCtrl.timeRemaining % 60;
+
             examCtrl.timeRemainingFormatted = 
-                // (hours < 10 ? '0' : '') + hours + ':' +
-                (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                (hours < 10 ? '0' : '') + hours + ':' +
+                (minutes < 10 ? '0' : '') + minutes + ':' +
+                (seconds < 10 ? '0' : '') + seconds;
 
             if (examCtrl.timeRemaining > 0 && !examCtrl.examCompleted) {
                 startTimer();
@@ -1424,7 +1446,7 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
         var examSubmissionData = {
             examination_name: examCtrl.currentSubject,
             responses: examCtrl.userResponses,
-            // forcedSubmit: forcedSubmit || false,
+            forcedSubmit: forcedSubmit || false,
             maximum_marks: examCtrl.details.maximum_marks
         };
 
@@ -1438,71 +1460,76 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
             document.webkitExitFullscreen();
         }
 
-        angular.element(document.getElementById('exam-selection')).show();
-        angular.element(document.getElementById('exam-container')).hide();
+        // angular.element(document.getElementById('exam-selection')).show();
+        // angular.element(document.getElementById('exam-container')).hide();
     };
 
     function cheatDetection() {
-        // Prevent copy-paste-cut
-        $document.on('copy cut paste', function(event) {
+        // Block copy, paste, cut, and context menu(right-click)
+        $document.on('copy cut paste contextmenu', function(event) {
             event.preventDefault();
-            alert('This action is not allowed during the exam.');
-            return false;
+            Swal.fire({
+                text: "This action is not allowed during the exam.",
+                icon: "warning",
+                confirmButtonText: "OK",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
         });
 
-        // Disable right-click
-        $document.on('contextmenu', function(event) {
-            event.preventDefault();
-            return false;
-        });
-
-        // Disable text selection
-        $document.on('selectstart', function(event) {
-            event.preventDefault();
-            return false;
-        });
-
+        // specific key combinations (Dev tools, alt+tab, cmd+tab)
         $document.on('keydown', function(event) {
+            const blockedKeys = ['c', 'v', 'x', 'a', 'i', 'j', 'd','t'];
             const isBlockedKey = 
-                ((event.ctrlKey || event.metaKey) && 
-                    ['c', 'v', 'x', 'a', 'i', 'j', 'd'].includes(event.key.toLowerCase())) ||
-                
-                // Dev tools 
-                (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(event.key.toLowerCase())) || // Windows/Linux
-                (event.metaKey && event.altKey && ['i', 'j'].includes(event.key)) || // Mac
+                (event.ctrlKey || event.metaKey) && blockedKeys.includes(event.key.toLowerCase()) ||
+                (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(event.key.toLowerCase())) ||
+                (event.altKey && ['ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key));
 
-                // alt+tab or cmd+tab
-                (event.altKey && ['ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) ||
-                (event.metaKey && event.key === 'Tab');
-        
             if (isBlockedKey) {
-                alert('This action is not allowed during the exam.');
+                Swal.fire({
+                    text: "This action is not allowed during the exam.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
                 event.preventDefault();
-                return false;
             }
         });
 
-        // Tab change and visibility 
+        // Tab change detection
         let tabChangeCount = 0;
         const maxTabChanges = 1;
 
-        function handleTabChange() {
-            tabChangeCount++;
-            if (tabChangeCount > maxTabChanges && !examCtrl.examCompleted) {
-                alert('Multiple tab switches are not allowed. Your exam will be submitted.');
-                examCtrl.submitExam(true);
-            }
-        }
-
         $document.on('visibilitychange', function() {
             if (document.hidden && !examCtrl.examCompleted) {
-                handleTabChange();
+                tabChangeCount++;
+                if (tabChangeCount > maxTabChanges) {
+                    Swal.fire({
+                        text: "This action is not allowed during the exam. Submitting your exam.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    });
+                    examCtrl.submitExam(true);
+                }
             }
         });
 
         $window.addEventListener('blur', function() {
             if (!examCtrl.examCompleted) {
-                handleTabChange();
+                tabChangeCount++;
+                if (tabChangeCount > maxTabChanges) {
+                    Swal.fire({
+                        text: "Window change is not allowed. Submitting your exam.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    });
+                    examCtrl.submitExam(true);
+                }
             }
         });
     }
@@ -1522,183 +1549,5 @@ app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEnd
     cheatDetection();
 }]);
 
-// app.controller('ExamController', ['$window', '$document', 'HttpService', 'ApiEndpoints', '$timeout', function($window, $document, HttpService, ApiEndpoints, $timeout) {
-//     var examCtrl = this; 
-//     examCtrl.details = {};
-//     examCtrl.questions = [];
 
-//     examCtrl.fetchExams = function() {
-//         HttpService.get(ApiEndpoints.user.exam)
-//             .then(function(response) {
-//                 examCtrl.exams = response.data;
-//             });
-//     };
-
-//     examCtrl.fetchSubjects = function(exam_id) {
-//         var params = {
-//           exam_id: exam_id
-//         }
-//         HttpService.get(ApiEndpoints.user.sub, params)
-//         .then(function(response) {
-//             examCtrl.subjects = response.data;
-//         });
-//     };
-
-//     examCtrl.fetchDetails = function(exam_id, subject_id) {
-//         var params = {
-//           exam_id: exam_id,
-//           subject_id: subject_id
-//         }
-//         HttpService.get(ApiEndpoints.exam.questions, params)
-//         .then(function(response) {
-//             examCtrl.details = response.data[0];
-//             examCtrl.questions = examCtrl.details.question_sheet;
-//             examCtrl.currentSubject = examCtrl.details.examination_name;
-//             examCtrl.currentQuestionIndex = 0;
-//             examCtrl.totalQuestions = examCtrl.details.total_questions;
-//             examCtrl.selectedAnswer = null;
-//             examCtrl.examCompleted = false;
-//             examCtrl.userResponses = [];
-
-//             examCtrl.timeRemaining = examCtrl.details.time_duration;
-//             enterFullScreen();
-//             startTimer();
-//         });
-//     };
-
-//     examCtrl.getCurrentQuestion = function() {
-//         return examCtrl.questions[examCtrl.currentQuestionIndex];
-//     };
-
-//     examCtrl.nextQuestion = function() {
-//         if (examCtrl.selectedAnswer !== null) {
-//             var currentQuestion = examCtrl.getCurrentQuestion();
-//             var selectedOption = currentQuestion.options[examCtrl.selectedAnswer];
-
-//             examCtrl.userResponses.push({
-//                 questionNumber: currentQuestion.question_number,
-//                 questionText: currentQuestion.question_text,
-//                 selectedOption: {
-//                     id: selectedOption.id,
-//                     value: selectedOption.value
-//                 }
-//             });
-
-//             if (examCtrl.currentQuestionIndex < examCtrl.totalQuestions - 1) {
-//                 examCtrl.currentQuestionIndex++;
-//                 examCtrl.selectedAnswer = null;
-//             } else {
-//                 examCtrl.submitExam();
-//             }
-//         } else {
-//             alert('Please select an answer before proceeding.');
-//         }
-//     };
-
-//     function startTimer() {
-//         var timer = $timeout(function() {
-//             examCtrl.timeRemaining--;
-
-//             var minutes = Math.floor(examCtrl.timeRemaining / 60);
-//             var seconds = examCtrl.timeRemaining % 60;
-//             examCtrl.timeRemainingFormatted = 
-//                 (minutes < 10 ? '0' : '') + minutes + ':' + 
-//                 (seconds < 10 ? '0' : '') + seconds;
-
-//             if (examCtrl.timeRemaining > 0 && !examCtrl.examCompleted) {
-//                 startTimer();
-//             } else if (examCtrl.timeRemaining <= 0) {
-//                 examCtrl.submitExam(true); 
-//             }
-//         }, 1000);
-//     }
-
-//     examCtrl.submitExam = function(forcedSubmit) {
-//         examCtrl.examCompleted = true;
-//         var examSubmissionData = {
-//             examination_name: examCtrl.currentSubject,
-//             responses: examCtrl.userResponses,
-//             forcedSubmit: forcedSubmit || false,
-//             maximum_marks: examCtrl.details.maximum_marks
-//         };
-
-//         console.log('Exam Submission Data:', examSubmissionData);
-//     };
-
-//     $document.on('copy', function(event) {
-//         alert('This action is not allowed during the exam.');
-//         event.preventDefault();
-//         return false;
-//     });
-//     $document.on('cut', function(event) {
-//         alert('This action is not allowed during the exam.');
-//         event.preventDefault();
-//         return false;
-//     });
-//     $document.on('paste', function(event) {
-//         alert('This action is not allowed during the exam.');
-//         event.preventDefault();
-//         return false;
-//     });
-
-//     $document.on('contextmenu', function(event) {
-//         event.preventDefault();
-//         return false;
-//     });
-
-//     $document.on('selectstart', function(event) {
-//         event.preventDefault();
-//         return false;
-//     });
-
-//     function enterFullScreen() {
-//         var docElm = document.documentElement;
-//         if (docElm.requestFullscreen) {
-//             docElm.requestFullscreen();
-//         } else if (docElm.mozRequestFullScreen) { 
-//             docElm.mozRequestFullScreen();
-//         } else if (docElm.webkitRequestFullScreen) { 
-//             docElm.webkitRequestFullScreen();
-//         }
-//     }
-
-//     var tabChangeCount = 0;
-//     var maxTabChanges = 1; 
-
-//     function handleTabChange() {
-//         tabChangeCount++;
-//         if (tabChangeCount > maxTabChanges) {
-//             examCtrl.submitExam(true); 
-//         }
-//     }
-
-//     $document.on('visibilitychange', function() {
-//         if (document.hidden) {
-//             handleTabChange();
-//         }
-//     });
-
-//     $window.addEventListener('blur', function() {
-//         handleTabChange();
-//     });
-
-//     $document.on('keydown', function(event) {
-//         const isBlockedKey = 
-//             ((event.ctrlKey || event.metaKey) && 
-//                 ['c', 'v', 'x', 'a', 'i'].includes(event.key.toLowerCase())) ||
-            
-//             (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') || 
-//             (event.metaKey && event.altKey && event.key === 'i') || 
-
-//             (event.altKey && ['ArrowLeft', 'ArrowRight'].includes(event.key));
-    
-//         if (isBlockedKey) {
-//             alert('This action is not allowed during the exam.');
-//             event.preventDefault();
-//             return false;
-//         }
-//     });
-
-//     examCtrl.fetchExams();
-// }]);
 
